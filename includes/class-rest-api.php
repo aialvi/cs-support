@@ -1,4 +1,9 @@
 <?php
+/**
+ * REST API class.
+ *
+ * @package cs-support
+ */
 
 namespace ClientSync\CS_Support;
 

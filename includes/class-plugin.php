@@ -1,4 +1,9 @@
 <?php
+/**
+ * Plugin class.
+ *
+ * @package cs-support
+ */
 
 namespace ClientSync\CS_Support;
 
