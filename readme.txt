@@ -1,25 +1,25 @@
 === CS Support ===
-Contributors:      Aminul Islam Alvi
-Tags:              block
-Tested up to:      6.7
-Stable tag:        0.1.0
-License:           GPL-2.0-or-later
-License URI:       https://www.gnu.org/licenses/gpl-2.0.html
+
+Contributors: clientsync
+Donate link: https://www.buymeacoffee.com/aialvi
+Tags: support, help, customer support
+Requires at least: 5.0
+Tested up to: 6.7.2
+Stable tag: 0.1.0
+Requires PHP: 5.6
+License: GPLv2 or later
+License URI: https://www.gnu.org/licenses/gpl-2.0.html
+
+A simple plugin to provide support to your customers.
 
 CS Support plugin
 
 == Description ==
 
-This is the long description. No limit, and you can use Markdown (as well as in the following sections).
+This plugin provides a simple way to offer customer support through your WordPress website. It includes a contact form and a system for managing and responding to customer inquiries.
 
-For backwards compatibility, if this section is missing, the full length of the short description will be used, and
-Markdown parsed.
 
 == Installation ==
-
-This section describes how to install the plugin and get it working.
-
-e.g.
 
 1. Upload the plugin files to the `/wp-content/plugins/cs-support` directory, or install the plugin through the WordPress plugins screen directly.
 1. Activate the plugin through the 'Plugins' screen in WordPress
@@ -27,29 +27,29 @@ e.g.
 
 == Frequently Asked Questions ==
 
-= A question that someone might have =
+= How do I use the contact form? =
 
-An answer to that question.
+The contact form can be found on the support page. Simply fill out the form and submit it.
 
-= What about foo bar? =
+= How do I manage customer inquiries? =
 
-Answer to foo bar dilemma.
+Customer inquiries can be managed through the admin panel.
+
+= How do I respond to customer inquiries? =
+
+You can respond to customer inquiries through the admin panel.
+
+= Is this plugin free? =
+
+Yes, this plugin is free.
 
 == Screenshots ==
 
-1. This screen shot description corresponds to screenshot-1.(png|jpg|jpeg|gif). Note that the screenshot is taken from
-the /assets directory or the directory that contains the stable readme.txt (tags or trunk). Screenshots in the /assets
-directory take precedence. For example, `/assets/screenshot-1.png` would win over `/tags/4.3/screenshot-1.png`
-(or jpg, jpeg, gif).
-2. This is the second screen shot
+1. This is the contact form that customers will use to submit inquiries.
+2. This is the admin panel where you can manage and respond to customer inquiries.
+3. This is the settings page where you can configure the plugin.
 
 == Changelog ==
 
 = 0.1.0 =
 * Release
-
-== Arbitrary section ==
-
-You may provide arbitrary sections, in the same format as the ones above. This may be of use for extremely complicated
-plugins where more information needs to be conveyed that doesn't fit into the categories of "description" or
-"installation." Arbitrary sections will be shown below the built-in sections outlined above.
