@@ -6,15 +6,42 @@
 	"license": "GPL-2.0-or-later",
 	"main": "build/index.js",
 	"scripts": {
-		"build": "wp-scripts build --webpack-copy-php",
+		"build": "npm run build:blocks && npm run build:admin",
+		"dev": "concurrently \"npm run dev:blocks\" \"npm run dev:admin\"",
 		"format": "wp-scripts format",
 		"lint:css": "wp-scripts lint-style",
 		"lint:js": "wp-scripts lint-js",
 		"packages-update": "wp-scripts packages-update",
 		"plugin-zip": "wp-scripts plugin-zip",
-		"start": "wp-scripts start --webpack-copy-php"
+		"build:blocks": "wp-scripts build --webpack-copy-php",
+		"dev:blocks": "wp-scripts start --webpack-copy-php",
+		"build:admin": "webpack --config webpack.config.admin.js --mode=production && tailwindcss -i ./src/admin/admin.css -o ./build/admin.css",
+		"dev:admin": "webpack --config webpack.config.admin.js --watch --mode=development & tailwindcss -i ./src/admin/admin.css -o ./build/admin.css --watch"
 	},
 	"devDependencies": {
-		"@wordpress/scripts": "^30.11.0"
+		"@rollup/plugin-alias": "^5.0.0",
+		"@rollup/plugin-commonjs": "^25.0.0",
+		"@rollup/plugin-node-resolve": "^15.0.0",
+		"@wordpress/scripts": "^30.11.0",
+		"concurrently": "^8.2.0",
+		"webpack": "^5.98.0",
+		"webpack-cli": "^6.0.1",
+		"webpack-merge": "^5.9.0",
+		"tailwindcss": "^3.4.1",
+		"postcss": "^8.4.35",
+		"postcss-loader": "^8.1.0",
+		"css-loader": "^6.11.0",
+		"mini-css-extract-plugin": "^2.9.2",
+		"autoprefixer": "^10.4.17"
+	},
+	"dependencies": {
+		"@headlessui/react": "^2.2.0",
+		"@heroicons/react": "^2.2.0",
+		"@tailwindcss/postcss": "^4.0.9",
+		"chart.js": "^4.4.8",
+		"path": "^0.12.7",
+		"react": "^18.2.0",
+		"react-chartjs-2": "^5.3.0",
+		"react-dom": "^18.2.0"
 	}
 }

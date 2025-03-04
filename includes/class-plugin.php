@@ -103,7 +103,7 @@ class Plugin {
             $file,
             [
                 'display_name' => 'CS Support',
-                'version'      => '1.0.0',
+                'version'      => '0.1.0',
                 'text_domain'  => 'cs-support',
             ]
         );
