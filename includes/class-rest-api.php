@@ -175,13 +175,13 @@ class Rest_API
 			'category' => sanitize_text_field($params['category']),
 			'priority' => sanitize_text_field($params['priority']),
 			'description' => sanitize_text_field($params['description']),
-			'status' => 'NEW'
+			'status' => sanitize_text_field($params['status'] ?? 'NEW'),
 		];
 
 		$result = $wpdb->insert(
 			$wpdb->prefix . 'cs_support_tickets',
 			$data,
-			['%d', '%s', '%s', '%s', '%s']
+			['%d', '%s', '%s', '%s', '%s', '%s']
 		);
 
 		if ($result === false) {

@@ -5,11 +5,106 @@
 	"version": "0.1.0",
 	"title": "CS Support",
 	"category": "widgets",
-	"icon": "smiley",
+	"icon": "admin-comments",
+	"keywords": ["support", "ticket", "help"],
 	"description": "CS Support plugin for WordPress websites.",
 	"example": {},
 	"supports": {
 		"html": false
+	},
+	"attributes": {
+		"title": {
+			"type": "string",
+			"default": "Create a new support ticket"
+		},
+		"showTitle": {
+			"type": "boolean",
+			"default": true
+		},
+		"submitButtonText": {
+			"type": "string",
+			"default": "Create Ticket"
+		},
+		"successMessage": {
+			"type": "string",
+			"default": "Ticket created successfully!"
+		},
+		"errorMessage": {
+			"type": "string",
+			"default": "Failed to create ticket. Please try again."
+		},
+		"backgroundColor": {
+			"type": "string",
+			"default": "#ffffff"
+		},
+		"textColor": {
+			"type": "string",
+			"default": "#000000"
+		},
+		"buttonColor": {
+			"type": "string",
+			"default": "#2c3338"
+		},
+		"buttonTextColor": {
+			"type": "string",
+			"default": "#ffffff"
+		},
+		"formWidth": {
+			"type": "string",
+			"default": "100%"
+		},
+		"maxWidth": {
+			"type": "string",
+			"default": "600px"
+		},
+		"padding": {
+			"type": "string",
+			"default": "20px"
+		},
+		"borderWidth": {
+			"type": "string",
+			"default": "0px"
+		},
+		"borderColor": {
+			"type": "string",
+			"default": "#dddddd"
+		},
+		"borderRadius": {
+			"type": "string",
+			"default": "8px"
+		},
+		"boxShadow": {
+			"type": "boolean",
+			"default": false
+		},
+		"boxShadowColor": {
+			"type": "string",
+			"default": "rgba(0, 0, 0, 0.1)"
+		},
+		"inputBorderColor": {
+			"type": "string",
+			"default": "#dddddd"
+		},
+		"inputBorderRadius": {
+			"type": "string",
+			"default": "4px"
+		},
+		"buttonBorderRadius": {
+			"type": "string",
+			"default": "4px"
+		},
+		"buttonPadding": {
+			"type": "string",
+			"default": "10px 15px"
+		},
+		"buttonAlign": {
+			"type": "string",
+			"default": "left"
+		},
+		"buttonFullWidth": {
+			"type": "boolean",
+			"default": false
+		}
 	},
 	"textdomain": "cs-support",
 	"editorScript": "file:./index.js",

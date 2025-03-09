@@ -6,7 +6,109 @@
  */
 
 .wp-block-clientsync-cs-support {
-	background-color: #21759b;
 	color: #fff;
-	padding: 2px;
+	margin: 0 auto;
+
+	.cs-support-ticket-form {
+		border-radius: 8px;
+
+		h2 {
+			margin-top: 0;
+			margin-bottom: 20px;
+		}
+
+		.cs-form-field {
+			margin-bottom: 20px;
+
+			label {
+				display: block;
+				margin-bottom: 5px;
+				font-weight: 500;
+			}
+
+			input,
+			select,
+			textarea {
+				width: 100%;
+				width: -moz-available;
+				width: -webkit-fill-available;
+				width: fill-available;
+				padding: 10px;
+				border: 1px solid;
+				font-size: 16px;
+
+				&:focus {
+					outline: 2px solid #007cba;
+					outline-offset: -2px;
+				}
+			}
+
+			textarea {
+				min-height: 120px;
+			}
+		}
+
+		.form-field-with-icon {
+			display: flex;
+			align-items: center;
+			gap: 8px;
+			margin-bottom: 5px;
+
+			svg {
+				width: 20px;
+				height: 20px;
+			}
+		}
+
+		.cs-form-message {
+			padding: 12px;
+			margin: 15px 0;
+			border-radius: 4px;
+
+			&.success {
+				background-color: #d4edda;
+				color: #155724;
+			}
+
+			&.error {
+				background-color: #f8d7da;
+				color: #721c24;
+			}
+		}
+
+		.cs-form-submit {
+			border: none;
+			cursor: pointer;
+			font-weight: 500;
+			font-size: 16px;
+
+			&:disabled {
+				opacity: 0.7;
+				cursor: not-allowed;
+			}
+		}
+	}
+
+	.cs-support-login-required {
+		text-align: center;
+		padding: 20px;
+		background-color: #f8f9fa;
+		border-radius: 8px;
+		color: #333;
+
+		.cs-support-login-link {
+			display: inline-block;
+			margin-top: 10px;
+			padding: 8px 16px;
+			background-color: #007cba;
+			color: white;
+			text-decoration: none;
+			border-radius: 4px;
+			font-weight: 500;
+
+			&:hover {
+				background-color: #0069a8;
+			}
+		}
+	}
 }

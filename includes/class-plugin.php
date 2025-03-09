@@ -134,23 +134,6 @@ class Plugin {
             ]
         );
 
-        // Add Support Executive role
-        add_role(
-            'support_executive',
-            __('Support Executive', 'clientsync-support-helpdesk'),
-            [
-                'read' => true,
-                'edit_tickets' => true,
-                'delete_tickets' => false,
-            ]
-        );
-
-        // Client role is all other role except the above two
-        $client_role = get_role('subscriber');
-        if ($client_role) {
-            $client_role->add_cap('create_tickets');
-        }
-
         // Add capabilities to Administrator role
         $admin_role = get_role('administrator');
         if ($admin_role) {

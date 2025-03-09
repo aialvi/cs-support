@@ -12,6 +12,7 @@ export default function CreateTicket() {
     category: '',
     priority: 'normal',
     description: '',
+    status: 'NEW',
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [message, setMessage] = useState('');
