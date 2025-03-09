@@ -1,6 +1,6 @@
 import { createRoot } from 'react-dom/client';
 import CreateTicket from './CreateTicket';
-import './admin.css';
+import './tailwind-style.css';
 
 const container = document.getElementById('cs-create-ticket-form');
 if (container) {

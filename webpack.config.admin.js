@@ -12,7 +12,7 @@ module.exports = merge(defaultConfig, {
 		settings: path.resolve(process.cwd(), "src/admin/settings.js"),
 	},
 	output: {
-		path: path.resolve(process.cwd(), "build"),
+		path: path.resolve(process.cwd(), "build/admin"),
 		filename: "[name].js",
 	},
 	module: {

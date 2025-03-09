@@ -1,6 +1,6 @@
 import { createRoot } from 'react-dom/client';
 import FAQ from './FAQ.jsx';
-import './admin.css';
+import './tailwind-style.css';
 
 const container = document.getElementById('cs-faq');
 if (container) {

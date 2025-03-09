@@ -15,8 +15,8 @@
 		"plugin-zip": "wp-scripts plugin-zip",
 		"build:blocks": "wp-scripts build --webpack-copy-php",
 		"dev:blocks": "wp-scripts start --webpack-copy-php",
-		"build:admin": "webpack --config webpack.config.admin.js --mode=production && tailwindcss -i ./src/admin/admin.css -o ./build/admin.css",
-		"dev:admin": "webpack --config webpack.config.admin.js --watch --mode=development & tailwindcss -i ./src/admin/admin.css -o ./build/admin.css --watch"
+		"build:admin": "webpack --config webpack.config.admin.js --mode=production && tailwindcss -i ./src/admin/tailwind-style.css -o ./build/tailwind-style.css",
+		"dev:admin": "webpack --config webpack.config.admin.js --watch --mode=development & tailwindcss -i ./src/admin/tailwind-style.css -o ./build/tailwind-style.css --watch"
 	},
 	"devDependencies": {
 		"@rollup/plugin-alias": "^5.0.0",

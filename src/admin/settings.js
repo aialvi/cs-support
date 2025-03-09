@@ -1,6 +1,6 @@
 import { createRoot } from 'react-dom/client';
 import Settings from './Settings.jsx';
-import './admin.css';
+import './tailwind-style.css';
 
 const container = document.getElementById('cs-settings');
 if (container) {

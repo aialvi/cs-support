@@ -1,6 +1,6 @@
 import { createRoot } from 'react-dom/client';
 import Tickets from './Tickets.jsx';
-import './admin.css';
+import './tailwind-style.css';
 
 const container = document.getElementById('cs-tickets-table');
 if (container) {

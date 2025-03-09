@@ -1,7 +1,7 @@
 import React from "react";
 import { createRoot } from "react-dom/client";
 import App from "./app";
-import './admin.css';
+import './tailwind-style.css';
 
 const config = window.CS_SUPPORT_HELPDESK_CONFIG;
 const domNode = document.getElementById(config.containerId);

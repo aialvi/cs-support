@@ -60,7 +60,7 @@ class Admin
 			return;
 		}
 
-		$asset_filepath = "{$this->plugin->dir}build/admin.asset.php";
+		$asset_filepath = "{$this->plugin->dir}build/admin/admin.asset.php";
 
 		if (! file_exists($asset_filepath)) {
 			wp_trigger_error(
@@ -88,13 +88,13 @@ class Admin
 
 		wp_enqueue_style(
 			"{$this->plugin->prefix}-admin",
-			"{$this->plugin->url}build/admin.css",
+			"{$this->plugin->url}build/tailwind-style.css",
 			$asset['version']
 		);
 
 		wp_enqueue_script(
 			"{$this->plugin->prefix}-admin",
-			"{$this->plugin->url}build/admin.js",
+			"{$this->plugin->url}build/admin/admin.js",
 			$asset['dependencies'],
 			$asset['version'],
 			true
@@ -112,18 +112,18 @@ class Admin
 
 		// Load create ticket assets
 		if ($hook === 'cs-support_page_clientsync-support-helpdesk-create-ticket') {
-			$asset_file = include "{$this->plugin->dir}build/create-ticket.asset.php";
+			$asset_file = include "{$this->plugin->dir}build/admin/create-ticket.asset.php";
 
 			wp_enqueue_style(
 				"{$this->plugin->prefix}-create-ticket",
-				"{$this->plugin->url}build/create-ticket.css",
+				"{$this->plugin->url}build/admin/create-ticket.css",
 				[],
 				$asset_file['version']
 			);
 
 			wp_enqueue_script(
 				"{$this->plugin->prefix}-create-ticket",
-				"{$this->plugin->url}build/create-ticket.js",
+				"{$this->plugin->url}build/admin/create-ticket.js",
 				$asset_file['dependencies'],
 				$asset_file['version'],
 				true
@@ -138,11 +138,11 @@ class Admin
 
 		// Load tickets list assets
 		if ($hook === 'cs-support_page_clientsync-support-helpdesk-tickets') {
-			$asset_file = include "{$this->plugin->dir}build/tickets.asset.php";
+			$asset_file = include "{$this->plugin->dir}build/admin/tickets.asset.php";
 
 			wp_enqueue_script(
 				"{$this->plugin->prefix}-tickets",
-				"{$this->plugin->url}build/tickets.js",
+				"{$this->plugin->url}build/admin/tickets.js",
 				$asset_file['dependencies'],
 				$asset_file['version'],
 				true
@@ -157,11 +157,11 @@ class Admin
 
 		// Load settings page assets
 		if ($hook === 'cs-support_page_clientsync-support-helpdesk-settings') {
-			$asset_file = include "{$this->plugin->dir}build/settings.asset.php";
+			$asset_file = include "{$this->plugin->dir}build/admin/settings.asset.php";
 
 			wp_enqueue_script(
 				"{$this->plugin->prefix}-settings",
-				"{$this->plugin->url}build/settings.js",
+				"{$this->plugin->url}build/admin/settings.js",
 				$asset_file['dependencies'],
 				$asset_file['version'],
 				true
@@ -179,11 +179,11 @@ class Admin
 
 		// Load FAQ page assets
 		if ($hook === 'cs-support_page_clientsync-support-helpdesk-help') {
-			$asset_file = include "{$this->plugin->dir}build/faq.asset.php";
+			$asset_file = include "{$this->plugin->dir}build/admin/faq.asset.php";
 
 			wp_enqueue_script(
 				"{$this->plugin->prefix}-faq",
-				"{$this->plugin->url}build/faq.js",
+				"{$this->plugin->url}build/admin/faq.js",
 				$asset_file['dependencies'],
 				$asset_file['version'],
 				true
