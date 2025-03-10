@@ -154,6 +154,8 @@ export default function Dashboard({ navigate }) {
 			if (data.success) {
 				notify();
 				setReply("");
+				// Fetch updated replies after successful submission
+				fetchReplies(selectedTicket.id);
 			} else {
 				console.log(data);
 			}
