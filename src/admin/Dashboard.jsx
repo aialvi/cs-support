@@ -97,12 +97,36 @@ export default function Dashboard({ navigate }) {
 	const [selectedTicket, setSelectedTicket] = useState(null);
 	const [reply, setReply] = useState("");
 	const [supportTickets, setSupportTickets] = useState([]);
+	const [ticketReplies, setTicketReplies] = useState([]);
 
 	const notify = () =>
 		toast("Reply added", {
 			autoClose: 2000,
 			position: "bottom-right",
 		});
+
+	const fetchReplies = async (ticketId) => {
+		try {
+			const response = await fetch(
+				`${CS_SUPPORT_HELPDESK_CONFIG.ticketsUrl}/${ticketId}/replies`,
+				{
+					headers: {
+						"X-WP-Nonce": CS_SUPPORT_HELPDESK_CONFIG.nonce,
+					},
+				},
+			);
+			const data = await response.json();
+			setTicketReplies(data);
+		} catch (error) {
+			console.log("Error fetching replies:", error);
+		}
+	};
+
+	useEffect(() => {
+		if (selectedTicket?.id) {
+			fetchReplies(selectedTicket.id);
+		}
+	}, [selectedTicket]);
 
 	useEffect(() => {
 		const fetchTickets = async () => {
@@ -507,21 +531,69 @@ export default function Dashboard({ navigate }) {
 									<div className="bg-white overflow-hidden shadow rounded-lg h-96">
 										<div className="p-5 h-full flex flex-col">
 											<h2 className="text-lg font-medium text-gray-900">
-												Teams
+												{selectedTicket
+													? `Replies for: ${selectedTicket.subject}`
+													: "Select a ticket to view replies"}
 											</h2>
-											<div className="flex-1">
-												<ul className="mt-2 overflow-y-auto flex-1">
-													{teams.map((team) => (
-														<li key={team.id} className="py-2">
-															<div className="flex justify-between">
-																<span className="font-medium">{team.name}</span>
+											<div className="flex-1 mt-4">
+												{selectedTicket ? (
+													<div className="space-y-4 overflow-y-auto h-full">
+														{/* Original ticket message */}
+														<div className="bg-gray-50 p-4 rounded-lg">
+															<div className="flex items-center justify-between mb-2">
+																<span className="font-medium text-gray-900">
+																	Original Ticket
+																</span>
 																<span className="text-sm text-gray-500">
-																	{team.initial}
+																	{timeAgo(selectedTicket.created_at)}
 																</span>
 															</div>
-														</li>
-													))}
-												</ul>
+															<p className="text-gray-700">
+																{selectedTicket.description}
+															</p>
+														</div>
+
+														{/* Replies */}
+														{ticketReplies.length > 0 ? (
+															ticketReplies.map((reply) => (
+																<div
+																	key={reply.id}
+																	className="bg-white border border-gray-200 p-4 rounded-lg"
+																>
+																	<div className="flex items-center justify-between mb-2">
+																		<div className="flex items-center space-x-2">
+																			<UserCircleIcon className="h-5 w-5 text-gray-500" />
+																			<span className="font-medium text-gray-900">
+																				{reply.user_id ===
+																				selectedTicket.user_id
+																					? "Customer"
+																					: "Support Agent"}
+																			</span>
+																		</div>
+																		<span className="text-sm text-gray-500">
+																			{timeAgo(reply.created_at)}
+																		</span>
+																	</div>
+																	<p className="text-gray-700">
+																		{reply.reply}
+																	</p>
+																</div>
+															))
+														) : (
+															<div className="text-center text-gray-500 mt-4">
+																No replies yet
+															</div>
+														)}
+													</div>
+												) : (
+													<div className="flex items-center justify-center h-full text-gray-500">
+														<div className="text-center">
+															<span className="block mb-2">👈</span>
+															Select a ticket from the quick reply form to view
+															the conversation
+														</div>
+													</div>
+												)}
 											</div>
 										</div>
 									</div>
