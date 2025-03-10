@@ -85,7 +85,7 @@ export default function Tickets() {
 			);
 
 			if (response.ok) {
-        notify();
+				notify();
 				setNewReply("");
 				fetchReplies(selectedTicket.id);
 			}
@@ -103,7 +103,7 @@ export default function Tickets() {
 			{loading ? (
 				<div>Loading tickets...</div>
 			) : (
-				<div className="bg-white shadow-md rounded-lg overflow-hidden">
+				<div className="bg-white shadow-md rounded-lg overflow-hidden mt-2">
 					<table className="min-w-full divide-y divide-gray-200">
 						<thead className="bg-gray-50">
 							<tr>
@@ -127,18 +127,19 @@ export default function Tickets() {
 								</th>
 							</tr>
 						</thead>
-						<tbody className="divide-y divide-gray-200">
-							{tickets.map((ticket) => (
-								<tr key={ticket.id}>
-									<td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-										#{ticket.id}
-									</td>
-									<td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-										{ticket.subject}
-									</td>
-									<td className="px-6 py-4 whitespace-nowrap">
-										<span
-											className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
+						{tickets.length > 0 ? (
+							<tbody className="divide-y divide-gray-200">
+								{tickets.map((ticket) => (
+									<tr key={ticket.id}>
+										<td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+											#{ticket.id}
+										</td>
+										<td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+											{ticket.subject}
+										</td>
+										<td className="px-6 py-4 whitespace-nowrap">
+											<span
+												className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
                       ${
 												ticket.status === "NEW"
 													? "bg-yellow-100 text-yellow-800"
@@ -146,27 +147,36 @@ export default function Tickets() {
 													? "bg-blue-100 text-blue-800"
 													: "bg-green-100 text-green-800"
 											}`}
-										>
-											{ticket.status}
-										</span>
-									</td>
+											>
+												{ticket.status}
+											</span>
+										</td>
+										<td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+											{ticket.priority}
+										</td>
+										<td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+											{new Date(ticket.created_at).toLocaleDateString()}
+										</td>
+										<td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+											<button
+												onClick={() => setSelectedTicket(ticket)}
+												className="text-emerald-600 hover:text-emerald-900"
+											>
+												<EyeIcon className="h-5 w-5" />
+											</button>
+										</td>
+									</tr>
+								))}
+							</tbody>
+						) : (
+							<tbody>
+								<tr>
 									<td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-										{ticket.priority}
-									</td>
-									<td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-										{new Date(ticket.created_at).toLocaleDateString()}
-									</td>
-									<td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-										<button
-											onClick={() => setSelectedTicket(ticket)}
-											className="text-emerald-600 hover:text-emerald-900"
-										>
-											<EyeIcon className="h-5 w-5" />
-										</button>
+										No tickets found.
 									</td>
 								</tr>
-							))}
-						</tbody>
+							</tbody>
+						)}
 					</table>
 				</div>
 			)}

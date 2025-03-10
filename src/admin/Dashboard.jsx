@@ -25,7 +25,7 @@ import {
 	LinearScale,
 	BarElement,
 	Title,
-	Tooltip,
+	Tooltip as ChartTooltip,
 	Legend,
 } from "chart.js";
 
@@ -34,21 +34,72 @@ ChartJS.register(
 	LinearScale,
 	BarElement,
 	Title,
-	Tooltip,
+	ChartTooltip,
 	Legend,
 );
 
 const navigation = [
-	{ name: "Dashboard", href: "#", icon: HomeIcon, current: true },
-	{ name: "Team", href: "#", icon: UserCircleIcon, current: false },
-	{ name: "Projects", href: "#", icon: FolderIcon, current: false },
-	{ name: "Calendar", href: "#", icon: CalendarIcon, current: false },
-	{ name: "Documents", href: "#", icon: DocumentDuplicateIcon, current: false },
-	{ name: "Reports", href: "#", icon: ChartPieIcon, current: false },
+	{
+		name: "Dashboard",
+		href: "#",
+		icon: HomeIcon,
+		current: true,
+		disabled: false,
+	},
+	{
+		name: "Team",
+		href: "#",
+		icon: UserCircleIcon,
+		current: false,
+		disabled: true,
+	},
+	{
+		name: "Projects",
+		href: "#",
+		icon: FolderIcon,
+		current: false,
+		disabled: true,
+	},
+	{
+		name: "Calendar",
+		href: "#",
+		icon: CalendarIcon,
+		current: false,
+		disabled: true,
+	},
+	{
+		name: "Documents",
+		href: "#",
+		icon: DocumentDuplicateIcon,
+		current: false,
+		disabled: true,
+	},
+	{
+		name: "Reports",
+		href: "#",
+		icon: ChartPieIcon,
+		current: false,
+		disabled: true,
+	},
 ];
 
 function classNames(...classes) {
 	return classes.filter(Boolean).join(" ");
+}
+
+// Pro Feature Popover Component
+function ProFeaturePopover({ children }) {
+	return (
+		<div className="group relative">
+			{children}
+			<div className="absolute left-full ml-2 top-1/2 -translate-y-1/2 hidden group-hover:block z-10">
+				<div className="bg-gray-800 text-white text-xs px-2 py-1 rounded whitespace-nowrap">
+					Pro Feature
+					<div className="absolute top-1/2 -left-1 -translate-y-1/2 transform rotate-45 w-2 h-2 bg-gray-800"></div>
+				</div>
+			</div>
+		</div>
+	);
 }
 
 const recentActivity = [
@@ -195,29 +246,41 @@ export default function Dashboard({ navigate }) {
 
 						<div className="flex-1 h-0 overflow-y-auto">
 							<nav className="flex-1 px-2 py-4 space-y-1">
-								{navigation.map((item) => (
-									<a
-										key={item.name}
-										href={item.href}
-										className={classNames(
-											item.current
-												? "bg-gray-100 text-gray-900"
-												: "text-gray-600 hover:bg-gray-50 hover:text-gray-900",
-											"group flex items-center px-2 py-2 text-sm font-medium rounded-md",
-										)}
-									>
-										<item.icon
+								{navigation.map((item) =>
+									item.disabled ? (
+										<ProFeaturePopover key={item.name}>
+											<div className="text-gray-300 group flex items-center px-2 py-2 text-sm font-medium rounded-md cursor-default">
+												<item.icon
+													className="text-gray-300 mr-3 h-6 w-6"
+													aria-hidden="true"
+												/>
+												{item.name}
+											</div>
+										</ProFeaturePopover>
+									) : (
+										<a
+											key={item.name}
+											href={item.href}
 											className={classNames(
 												item.current
-													? "text-gray-500"
-													: "text-gray-400 group-hover:text-gray-500",
-												"mr-3 h-6 w-6",
+													? "bg-gray-100 text-gray-900"
+													: "text-gray-600 hover:bg-gray-50 hover:text-gray-900",
+												"group flex items-center px-2 py-2 text-sm font-medium rounded-md",
 											)}
-											aria-hidden="true"
-										/>
-										{item.name}
-									</a>
-								))}
+										>
+											<item.icon
+												className={classNames(
+													item.current
+														? "text-gray-500"
+														: "text-gray-400 group-hover:text-gray-500",
+													"mr-3 h-6 w-6",
+												)}
+												aria-hidden="true"
+											/>
+											{item.name}
+										</a>
+									),
+								)}
 							</nav>
 						</div>
 					</div>
@@ -228,7 +291,7 @@ export default function Dashboard({ navigate }) {
 			<div className="hidden md:flex md:flex-shrink-0">
 				<div className="flex flex-col w-64">
 					<div className="flex flex-col h-0 flex-1 border-r border-gray-200 bg-white">
-						<div className="flex items-center justify-between flex-shrink-0 p-2">
+						<div className="md:hidden flex items-center justify-between flex-shrink-0 p-2">
 							<button
 								type="button"
 								className="rounded-md p-2 inline-flex items-center justify-center text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-gray-500"
@@ -241,29 +304,41 @@ export default function Dashboard({ navigate }) {
 
 						<div className="flex-1 h-0 overflow-y-auto">
 							<nav className="flex-1 px-2 py-4 space-y-1">
-								{navigation.map((item) => (
-									<a
-										key={item.name}
-										href={item.href}
-										className={classNames(
-											item.current
-												? "bg-gray-100 text-gray-900"
-												: "text-gray-600 hover:bg-gray-50 hover:text-gray-900",
-											"group flex items-center px-2 py-2 text-sm font-medium rounded-md",
-										)}
-									>
-										<item.icon
+								{navigation.map((item) =>
+									item.disabled ? (
+										<ProFeaturePopover key={item.name}>
+											<div className="text-gray-300 group flex items-center px-2 py-2 text-sm font-medium rounded-md cursor-default">
+												<item.icon
+													className="text-gray-300 mr-3 h-6 w-6"
+													aria-hidden="true"
+												/>
+												{item.name}
+											</div>
+										</ProFeaturePopover>
+									) : (
+										<a
+											key={item.name}
+											href={item.href}
 											className={classNames(
 												item.current
-													? "text-gray-500"
-													: "text-gray-400 group-hover:text-gray-500",
-												"mr-3 h-6 w-6",
+													? "bg-gray-100 text-gray-900"
+													: "text-gray-600 hover:bg-gray-50 hover:text-gray-900",
+												"group flex items-center px-2 py-2 text-sm font-medium rounded-md",
 											)}
-											aria-hidden="true"
-										/>
-										{item.name}
-									</a>
-								))}
+										>
+											<item.icon
+												className={classNames(
+													item.current
+														? "text-gray-500"
+														: "text-gray-400 group-hover:text-gray-500",
+													"mr-3 h-6 w-6",
+												)}
+												aria-hidden="true"
+											/>
+											{item.name}
+										</a>
+									),
+								)}
 							</nav>
 						</div>
 					</div>
@@ -335,57 +410,63 @@ export default function Dashboard({ navigate }) {
 											<h2 className="text-lg font-medium text-gray-900">
 												Support Tickets
 											</h2>
-											<ul className="mt-2 overflow-y-auto flex-1">
-												{supportTickets
-													.sort((a, b) => b.id - a.id)
-													.map((ticket) => (
-														<li
-															key={ticket.id}
-															className="py-2 border-b border-gray-100"
-														>
-															<div className="flex justify-between">
-																<span
-																	className="font-medium text-md text-purple-950"
-																	onClick={() => {
-																		console.log("ticket", ticket);
-																	}}
-																>
-																	{ticket.subject}
-																</span>
-																<span className="text-sm text-gray-500">
-																	{ticket.priority}
-																</span>
-															</div>
-															<div className="mt-1 flex items-center justify-between">
-																<div
-																	className={classNames(
-																		"text-sm px-2 py-1 rounded-md w-fit",
-																		ticket.status === "NEW"
-																			? "shadow shadow-rose-300/50 bg-rose-50 text-rose-900"
+											{supportTickets.length ? (
+												<ul className="mt-2 overflow-y-auto flex-1">
+													{supportTickets
+														.sort((a, b) => b.id - a.id)
+														.map((ticket) => (
+															<li
+																key={ticket.id}
+																className="py-2 border-b border-gray-100"
+															>
+																<div className="flex justify-between">
+																	<span
+																		className="font-medium text-md text-purple-950"
+																		onClick={() => {
+																			console.log("ticket", ticket);
+																		}}
+																	>
+																		{ticket.subject}
+																	</span>
+																	<span className="text-sm text-gray-500">
+																		{ticket.priority}
+																	</span>
+																</div>
+																<div className="mt-1 flex items-center justify-between">
+																	<div
+																		className={classNames(
+																			"text-sm px-2 py-1 rounded-md w-fit",
+																			ticket.status === "NEW"
+																				? "shadow shadow-rose-300/50 bg-rose-50 text-rose-900"
+																				: ticket.status === "IN_PROGRESS"
+																				? "shadow shadow-yellow-300/50 bg-yellow-50 text-yellow-900"
+																				: "shadow shadow-emerald-300/50 bg-emerald-50 text-emerald-900",
+																		)}
+																	>
+																		{ticket.status === "NEW"
+																			? "New"
 																			: ticket.status === "IN_PROGRESS"
-																			? "shadow shadow-yellow-300/50 bg-yellow-50 text-yellow-900"
-																			: "shadow shadow-emerald-300/50 bg-emerald-50 text-emerald-900",
-																	)}
-																>
-																	{ticket.status === "NEW"
-																		? "New"
-																		: ticket.status === "IN_PROGRESS"
-																		? "In Progress"
-																		: "Resolved"}
+																			? "In Progress"
+																			: "Resolved"}
+																	</div>
+																	<div className="text-sm text-gray-600 font-medium rounded-xl px-2 py-1 inline-flex">
+																		{timeAgo(ticket.created_at)}
+																	</div>
+																	<p className="text-sm text-gray-500 inline-flex space-x-1">
+																		<UserCircleIcon className="h-5 w-5 text-gray-500" />
+																		<a href="#" className="text-green-500">
+																			John Doe
+																		</a>
+																	</p>
 																</div>
-																<div className="text-sm text-gray-600 font-medium rounded-xl px-2 py-1 inline-flex">
-																	{timeAgo(ticket.created_at)}
-																</div>
-																<p className="text-sm text-gray-500 inline-flex space-x-1">
-																	<UserCircleIcon className="h-5 w-5 text-gray-500" />
-																	<a href="#" className="text-green-500">
-																		John Doe
-																	</a>
-																</p>
-															</div>
-														</li>
-													))}
-											</ul>
+															</li>
+														))}
+												</ul>
+											) : (
+												<div className="text-gray-500 mt-4">
+													No tickets available
+												</div>
+											)}
 										</div>
 									</div>
 									<div className="bg-white overflow-hidden shadow rounded-lg h-96">
