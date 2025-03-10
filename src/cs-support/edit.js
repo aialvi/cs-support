@@ -89,14 +89,6 @@ export default function Edit({ attributes, setAttributes }) {
 		borderColor,
 		borderStyle: borderWidth === "0px" ? "none" : "solid",
 		boxShadow: boxShadow ? `0 4px 8px ${boxShadowColor}` : "none",
-		marginLeft:
-			buttonAlign === "center"
-				? "auto"
-				: buttonAlign === "right"
-				? "auto"
-				: "0",
-		marginRight:
-			buttonAlign === "center" ? "auto" : buttonAlign === "left" ? "auto" : "0",
 	};
 
 	// Input style for preview
@@ -115,6 +107,15 @@ export default function Edit({ attributes, setAttributes }) {
 		cursor: "pointer",
 		marginTop: "10px",
 		width: buttonFullWidth ? "100%" : "auto",
+		display: "block",
+		marginLeft:
+			buttonAlign === "center"
+				? "auto"
+				: buttonAlign === "right"
+				? "auto"
+				: "0",
+		marginRight:
+			buttonAlign === "center" ? "auto" : buttonAlign === "left" ? "auto" : "0",
 	};
 
 	return (

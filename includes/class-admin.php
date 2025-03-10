@@ -173,6 +173,11 @@ class Admin
 				[
 					'nonce' => wp_create_nonce('wp_rest'),
 					'apiUrl' => rest_url('cs-support/v1/settings'),
+					'initialSettings' => get_option('cs_support_helpdesk_settings', [
+						'general' => [
+							'defaultPriority' => 'normal',
+						],
+					]),
 				]
 			);
 		}
@@ -338,7 +343,6 @@ class Admin
 	?>
 		<div class="wrap">
 			<div id="cs-faq"></div>
-		</div>
 <?php
 	}
 }

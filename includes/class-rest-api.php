@@ -136,13 +136,12 @@ class Rest_API
 	 */
 	public function update_settings(\WP_REST_Request $request): \WP_REST_Response
 	{
-		$settings = $request->get_params();
+		$settings = $request->get_json_params();
 
-		foreach ($settings as $key => $value) {
-			$settings[$key] = sanitize_text_field($value);
-		}
+		// Recursively sanitize settings
+		$sanitized_settings = $this->sanitize_settings($settings);
 
-		$updated = update_option('cs_support_helpdesk_settings', $settings);
+		$updated = update_option('cs_support_helpdesk_settings', $sanitized_settings);
 
 		if (!$updated) {
 			return new \WP_REST_Response([
@@ -158,6 +157,27 @@ class Rest_API
 	}
 
 	/**
+	 * Recursively sanitize settings.
+	 *
+	 * @param array $settings Settings to sanitize.
+	 * @return array Sanitized settings.
+	 */
+	private function sanitize_settings($settings): array
+	{
+		$sanitized = [];
+		
+		foreach ($settings as $key => $value) {
+			if (is_array($value)) {
+				$sanitized[$key] = $this->sanitize_settings($value);
+			} else {
+				$sanitized[$key] = sanitize_text_field($value);
+			}
+		}
+		
+		return $sanitized;
+	}
+
+	/**
 	 * Create ticket.
 	 *
 	 * @param \WP_REST_Request $request Request object.
@@ -168,12 +188,16 @@ class Rest_API
 		global $wpdb;
 
 		$params = $request->get_params();
-
+		
+		// Get default priority from settings
+		$settings = get_option('cs_support_helpdesk_settings', []);
+		$default_priority = isset($settings['general']['defaultPriority']) ? $settings['general']['defaultPriority'] : 'normal';
+		
 		$data = [
 			'user_id' => get_current_user_id(),
 			'subject' => sanitize_text_field($params['subject']),
 			'category' => sanitize_text_field($params['category']),
-			'priority' => sanitize_text_field($params['priority']),
+			'priority' => sanitize_text_field($params['priority'] ?? $default_priority), // Use default priority if none provided
 			'description' => sanitize_text_field($params['description']),
 			'status' => sanitize_text_field($params['status'] ?? 'NEW'),
 		];

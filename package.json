@@ -13,6 +13,7 @@
 		"lint:js": "wp-scripts lint-js",
 		"packages-update": "wp-scripts packages-update",
 		"plugin-zip": "wp-scripts plugin-zip",
+		"build:plugin": "node scripts/build-plugin.js",
 		"build:blocks": "wp-scripts build --webpack-copy-php",
 		"dev:blocks": "wp-scripts start --webpack-copy-php",
 		"build:admin": "webpack --config webpack.config.admin.js --mode=production && tailwindcss -i ./src/admin/tailwind-style.css -o ./build/tailwind-style.css",
