@@ -46,18 +46,6 @@ const navigation = [
 	{ name: "Documents", href: "#", icon: DocumentDuplicateIcon, current: false },
 	{ name: "Reports", href: "#", icon: ChartPieIcon, current: false },
 ];
-const teams = [
-	{ id: 1, name: "Engineering", initial: "E" },
-	{ id: 2, name: "Design", initial: "D" },
-	{ id: 3, name: "Marketing", initial: "M" },
-	{ id: 4, name: "Sales", initial: "S" },
-	{ id: 5, name: "Customer Success", initial: "CS" },
-	{ id: 6, name: "Product", initial: "P" },
-];
-const userNavigation = [
-	{ name: "Your profile", href: "#" },
-	{ name: "Sign out", href: "#" },
-];
 
 function classNames(...classes) {
 	return classes.filter(Boolean).join(" ");
@@ -574,9 +562,7 @@ export default function Dashboard({ navigate }) {
 																			{timeAgo(reply.created_at)}
 																		</span>
 																	</div>
-																	<p className="text-gray-700">
-																		{reply.reply}
-																	</p>
+																	<p className="text-gray-700">{reply.reply}</p>
 																</div>
 															))
 														) : (
