@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 
 import {
 	EyeIcon,
@@ -96,10 +96,10 @@ export default function Tickets() {
 			setSubmitting(false);
 		}
 	};
-	
+
 	const handleStatusUpdate = async (newStatus) => {
 		if (!selectedTicket || newStatus === selectedTicket.status) return;
-		
+
 		setUpdatingStatus(true);
 		try {
 			const response = await fetch(
@@ -113,28 +113,28 @@ export default function Tickets() {
 					body: JSON.stringify({ status: newStatus }),
 				},
 			);
-			
+
 			if (response.ok) {
 				const updatedTicket = await response.json();
-				
+
 				// Update the selected ticket with the new status
 				setSelectedTicket(prevTicket => ({
 					...prevTicket,
 					status: newStatus
 				}));
-				
+
 				// Update the ticket in the tickets list
-				setTickets(prevTickets => 
-					prevTickets.map(ticket => 
-						ticket.id === selectedTicket.id 
+				setTickets(prevTickets =>
+					prevTickets.map(ticket =>
+						ticket.id === selectedTicket.id
 							? { ...ticket, status: newStatus }
 							: ticket
 					)
 				);
-				
+
 				// Add a system note about the status change
 				const statusMessage = `System: Ticket status changed to "${newStatus === 'NEW' ? 'New' : newStatus === 'IN_PROGRESS' ? 'In Progress' : 'Resolved'}"`;
-				
+
 				try {
 					// Add a system note as a reply
 					await fetch(
@@ -145,19 +145,19 @@ export default function Tickets() {
 								"Content-Type": "application/json",
 								"X-WP-Nonce": CS_SUPPORT_HELPDESK_TICKETS_CONFIG.nonce,
 							},
-							body: JSON.stringify({ 
+							body: JSON.stringify({
 								reply: statusMessage,
 								is_system_note: true
 							}),
 						}
 					);
-					
+
 					// Refresh replies to show the system note
 					fetchReplies(selectedTicket.id);
 				} catch (error) {
 					console.error("Error adding system note:", error);
 				}
-				
+
 				notify("Status updated");
 			} else {
 				console.error("Failed to update status");
@@ -221,19 +221,18 @@ export default function Tickets() {
 										<td className="px-6 py-4 whitespace-nowrap">
 											<span
 												className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
-                      ${
-												ticket.status === "NEW"
-													? "bg-yellow-100 text-yellow-800"
-													: ticket.status === "IN_PROGRESS"
-													? "bg-blue-100 text-blue-800"
-													: "bg-green-100 text-green-800"
-											}`}
+                      ${ticket.status === "NEW"
+														? "bg-yellow-100 text-yellow-800"
+														: ticket.status === "IN_PROGRESS"
+															? "bg-blue-100 text-blue-800"
+															: "bg-green-100 text-green-800"
+													}`}
 											>
-												{ticket.status === "NEW" 
-													? "New" 
-													: ticket.status === "IN_PROGRESS" 
-													? "In Progress" 
-													: "Resolved"}
+												{ticket.status === "NEW"
+													? "New"
+													: ticket.status === "IN_PROGRESS"
+														? "In Progress"
+														: "Resolved"}
 											</span>
 										</td>
 										<td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
@@ -281,11 +280,11 @@ export default function Tickets() {
 										onChange={(e) => handleStatusUpdate(e.target.value)}
 										disabled={updatingStatus}
 										className={`text-sm font-medium py-1 px-3 rounded-full border focus:outline-none focus:ring-2 focus:ring-offset-1
-											${selectedTicket.status === "NEW" 
-												? "bg-yellow-100 text-yellow-800 border-yellow-200 focus:ring-yellow-300" 
-												: selectedTicket.status === "IN_PROGRESS" 
-												? "bg-blue-100 text-blue-800 border-blue-200 focus:ring-blue-300"
-												: "bg-green-100 text-green-800 border-green-200 focus:ring-green-300"
+											${selectedTicket.status === "NEW"
+												? "bg-yellow-100 text-yellow-800 border-yellow-200 focus:ring-yellow-300"
+												: selectedTicket.status === "IN_PROGRESS"
+													? "bg-blue-100 text-blue-800 border-blue-200 focus:ring-blue-300"
+													: "bg-green-100 text-green-800 border-green-200 focus:ring-green-300"
 											}`}
 									>
 										<option value="NEW">New</option>
