@@ -9,16 +9,37 @@ const DEFAULT_FAQS = [
 	{
 		id: 1,
 		category: "general",
-		question: "How do I create a new support ticket?",
+		question: "What is CS Support plugin?",
 		answer:
-			'Navigate to the "Create Ticket" page from the main menu. Fill in the required details including subject, description, and priority level.',
+			"CS Support is a WordPress plugin that provides a complete helpdesk and ticket management system for your website. It allows your users to submit support tickets directly from your site.",
 	},
 	{
 		id: 2,
-		category: "tickets",
-		question: "How can I check the status of my ticket?",
+		category: "setup",
+		question: "How do I install the CS Support plugin?",
 		answer:
-			'You can view all your tickets and their current status in the "Tickets" section. Each ticket will show its current status (New, In Progress, or Resolved).',
+			"Upload the plugin to your WordPress site, activate it from the Plugins menu, and configure the basic settings from the CS Support menu in your WordPress admin dashboard.",
+	},
+	{
+		id: 3,
+		category: "tickets",
+		question: "How do users create support tickets?",
+		answer:
+			"Users can create tickets through the support form on your website. They'll need to provide a subject, description of their issue, and can optionally set a priority level.",
+	},
+	{
+		id: 4,
+		category: "tickets",
+		question: "How do I manage incoming support tickets?",
+		answer:
+			"All tickets can be managed from the CS Support dashboard. You can view, assign, respond to, and update the status of tickets from this central location.",
+	},
+	{
+		id: 5,
+		category: "settings",
+		question: "Can I customize the support form?",
+		answer:
+			"Yes, you can customize the support form fields, required information, and appearance through the block editor page.",
 	},
 ];
 
@@ -114,8 +135,7 @@ export default function FAQ() {
 				<p className="text-gray-700 mb-4">Our support team is here to help.</p>
 				<button
 					onClick={() =>
-						(window.location.href =
-							"/wp-admin/admin.php?page=clientsync-support-helpdesk-create-ticket")
+						window.location.href = "mailto:support@cssupport.com"
 					}
 					className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-gray-800 hover:bg-gray-700 cursor-pointer"
 				>

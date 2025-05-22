@@ -46,41 +46,41 @@ const navigation = [
 		current: true,
 		disabled: false,
 	},
-	{
-		name: "Team",
-		href: "#",
-		icon: UserCircleIcon,
-		current: false,
-		disabled: true,
-	},
-	{
-		name: "Projects",
-		href: "#",
-		icon: FolderIcon,
-		current: false,
-		disabled: true,
-	},
-	{
-		name: "Calendar",
-		href: "#",
-		icon: CalendarIcon,
-		current: false,
-		disabled: true,
-	},
-	{
-		name: "Documents",
-		href: "#",
-		icon: DocumentDuplicateIcon,
-		current: false,
-		disabled: true,
-	},
-	{
-		name: "Reports",
-		href: "#",
-		icon: ChartPieIcon,
-		current: false,
-		disabled: true,
-	},
+	// {
+	// 	name: "Team",
+	// 	href: "#",
+	// 	icon: UserCircleIcon,
+	// 	current: false,
+	// 	disabled: true,
+	// },
+	// {
+	// 	name: "Projects",
+	// 	href: "#",
+	// 	icon: FolderIcon,
+	// 	current: false,
+	// 	disabled: true,
+	// },
+	// {
+	// 	name: "Calendar",
+	// 	href: "#",
+	// 	icon: CalendarIcon,
+	// 	current: false,
+	// 	disabled: true,
+	// },
+	// {
+	// 	name: "Documents",
+	// 	href: "#",
+	// 	icon: DocumentDuplicateIcon,
+	// 	current: false,
+	// 	disabled: true,
+	// },
+	// {
+	// 	name: "Reports",
+	// 	href: "#",
+	// 	icon: ChartPieIcon,
+	// 	current: false,
+	// 	disabled: true,
+	// },
 ];
 
 function classNames(...classes) {
@@ -102,47 +102,110 @@ function ProFeaturePopover({ children }) {
 	);
 }
 
-const recentActivity = [
-	{ id: 1, activity: "User JohnDoe created a new ticket", date: "2023-10-01" },
-	{ id: 2, activity: "Admin resolved ticket #2", date: "2023-09-28" },
-	{
-		id: 3,
-		activity: "User JaneDoe commented on ticket #3",
-		date: "2023-09-25",
-	},
-	{ id: 4, activity: "User JohnDoe updated ticket #1", date: "2023-09-20" },
-	{ id: 5, activity: "Admin closed ticket #3", date: "2023-09-18" },
-	{ id: 6, activity: "User JaneDoe reopened ticket #2", date: "2023-09-15" },
-	{ id: 7, activity: "User JohnDoe created a new ticket", date: "2023-09-10" },
-];
-
-const sortedActivity = [...recentActivity].sort((a, b) => b.id - a.id);
-
-const chartData = {
-	labels: ["January", "February", "March", "April", "May", "June", "July"],
-	datasets: [
-		{
-			label: "Support Tickets",
-			data: [12, 19, 3, 5, 2, 3, 7],
-			backgroundColor: "rgba(51, 160, 180, 0.2)",
-			borderColor: "rgba(75, 192, 192, 1)",
-			borderWidth: 1,
-		},
-	],
-};
-
 export default function Dashboard({ navigate }) {
 	const [sidebarOpen, setSidebarOpen] = useState(false);
 	const [selectedTicket, setSelectedTicket] = useState(null);
 	const [reply, setReply] = useState("");
 	const [supportTickets, setSupportTickets] = useState([]);
 	const [ticketReplies, setTicketReplies] = useState([]);
+	const [recentActivity, setRecentActivity] = useState([]);
+	const [chartData, setChartData] = useState({
+		labels: ["New", "In Progress", "Resolved"],
+		datasets: [{ data: [0, 0, 0], backgroundColor: ["rgba(244, 63, 94, 0.2)", "rgba(234, 179, 8, 0.2)", "rgba(16, 185, 129, 0.2)"], borderColor: ["rgba(244, 63, 94, 1)", "rgba(234, 179, 8, 1)", "rgba(16, 185, 129, 1)"], borderWidth: 1 }]
+	});
+
+// Function to generate chart data based on tickets
+const generateChartData = (tickets) => {
+	// Get counts by status
+	const newTickets = tickets.filter(ticket => ticket.status === 'NEW').length;
+	const inProgressTickets = tickets.filter(ticket => ticket.status === 'IN_PROGRESS').length;
+	const resolvedTickets = tickets.filter(ticket => ticket.status === 'RESOLVED').length;
+
+	return {
+		labels: ["New", "In Progress", "Resolved"],
+		datasets: [
+			{
+				label: "Support Tickets",
+				data: [newTickets, inProgressTickets, resolvedTickets],
+				backgroundColor: [
+					"rgba(244, 63, 94, 0.2)", // rose for new
+					"rgba(234, 179, 8, 0.2)",  // yellow for in progress
+					"rgba(16, 185, 129, 0.2)", // emerald for resolved
+				],
+				borderColor: [
+					"rgba(244, 63, 94, 1)",
+					"rgba(234, 179, 8, 1)",
+					"rgba(16, 185, 129, 1)",
+				],
+				borderWidth: 1,
+			},
+		],
+	};
+};
 
 	const notify = () =>
 		toast("Reply added", {
 			autoClose: 2000,
 			position: "bottom-right",
 		});
+
+	// Generate activity entries from tickets and replies
+	const generateActivityEntries = (tickets, allReplies = []) => {
+		const activities = [];
+		
+		// Add ticket creation activities
+		tickets.forEach(ticket => {
+			activities.push({
+				id: `ticket-${ticket.id}`,
+				activity: `New ticket: "${ticket.subject}"`,
+				date: ticket.created_at,
+				type: 'ticket_created',
+				ticketId: ticket.id
+			});
+			
+			// Add status change activities if status is not NEW
+			if (ticket.status === 'RESOLVED') {
+				activities.push({
+					id: `status-${ticket.id}`,
+					activity: `Ticket resolved: "${ticket.subject}"`,
+					date: ticket.updated_at || ticket.created_at, // Use updated_at if available
+					type: 'ticket_resolved',
+					ticketId: ticket.id
+				});
+			} else if (ticket.status === 'IN_PROGRESS') {
+				activities.push({
+					id: `status-${ticket.id}`,
+					activity: `Ticket in progress: "${ticket.subject}"`,
+					date: ticket.updated_at || ticket.created_at,
+					type: 'ticket_in_progress',
+					ticketId: ticket.id
+				});
+			}
+		});
+		
+		// Add reply activities
+		allReplies.forEach(reply => {
+			const ticket = tickets.find(t => t.id === reply.ticket_id);
+			if (ticket) {
+				// Check if it's a system note about status change
+				if (reply.is_system_note && reply.reply.includes('System: Ticket status changed to')) {
+					// Already handled by the ticket status logic above
+				} else {
+					activities.push({
+						id: `reply-${reply.id}`,
+						activity: reply.is_system_note ? reply.reply : `New reply to: "${ticket.subject}"`,
+						date: reply.created_at,
+						type: reply.is_system_note ? 'system_note' : 'reply_added',
+						ticketId: ticket.id,
+						replyId: reply.id
+					});
+				}
+			}
+		});
+		
+		// Sort by date (newest first)
+		return activities.sort((a, b) => new Date(b.date) - new Date(a.date));
+	};
 
 	const fetchReplies = async (ticketId) => {
 		try {
@@ -177,6 +240,32 @@ export default function Dashboard({ navigate }) {
 				});
 				const data = await response.json();
 				setSupportTickets(data);
+				
+				// Update chart data
+				setChartData(generateChartData(data));
+				
+				// Fetch all replies for activity generation
+				const allReplies = [];
+				for (const ticket of data) {
+					try {
+						const repliesResponse = await fetch(
+							`${CS_SUPPORT_HELPDESK_CONFIG.ticketsUrl}/${ticket.id}/replies`,
+							{
+								headers: {
+									"X-WP-Nonce": CS_SUPPORT_HELPDESK_CONFIG.nonce,
+								},
+							}
+						);
+						const repliesData = await repliesResponse.json();
+						allReplies.push(...repliesData);
+					} catch (error) {
+						console.log(`Error fetching replies for ticket ${ticket.id}:`, error);
+					}
+				}
+				
+				// Generate and set activity data
+				const activities = generateActivityEntries(data, allReplies);
+				setRecentActivity(activities);
 			} catch (error) {
 				console.log("There was an error fetching tickets.", error);
 			}
@@ -207,6 +296,19 @@ export default function Dashboard({ navigate }) {
 				setReply("");
 				// Fetch updated replies after successful submission
 				fetchReplies(selectedTicket.id);
+				
+				// Add new activity entry for the reply
+				const newActivity = {
+					id: `reply-${Date.now()}`, // Temporary ID until we get the actual reply ID
+					activity: `New reply to: "${selectedTicket.subject}"`,
+					date: new Date().toISOString(),
+					type: 'reply_added',
+					ticketId: selectedTicket.id
+				};
+				setRecentActivity(prev => [newActivity, ...prev]);
+				
+				// Update chart data when replies are added (may affect status counts)
+				setChartData(generateChartData(supportTickets));
 			} else {
 				console.log(data);
 			}
@@ -417,14 +519,15 @@ export default function Dashboard({ navigate }) {
 														.map((ticket) => (
 															<li
 																key={ticket.id}
-																className="py-2 border-b border-gray-100"
+																className="py-2 border-b border-gray-100 cursor-pointer hover:bg-gray-50"
+																onClick={() => {
+																	setSelectedTicket(ticket);
+																	fetchReplies(ticket.id);
+																}}
 															>
 																<div className="flex justify-between">
 																	<span
 																		className="font-medium text-md text-purple-950"
-																		onClick={() => {
-																			console.log("ticket", ticket);
-																		}}
 																	>
 																		{ticket.subject}
 																	</span>
@@ -454,9 +557,9 @@ export default function Dashboard({ navigate }) {
 																	</div>
 																	<p className="text-sm text-gray-500 inline-flex space-x-1">
 																		<UserCircleIcon className="h-5 w-5 text-gray-500" />
-																		<a href="#" className="text-green-500">
+																		<span className="text-green-500">
 																			John Doe
-																		</a>
+																		</span>
 																	</p>
 																</div>
 															</li>
@@ -471,57 +574,108 @@ export default function Dashboard({ navigate }) {
 									</div>
 									<div className="bg-white overflow-hidden shadow rounded-lg h-96">
 										<div className="p-5 h-full flex flex-col">
-											<h2 className="text-lg font-medium text-gray-900">
+											<h2 className="text-lg font-medium text-gray-900 mb-2">
 												Recent Activity
 											</h2>
-											<ul className="mt-2 overflow-y-auto flex-1">
-												{sortedActivity.map((activity) => (
-													<li key={activity.id} className="py-2">
-														<div className="flex justify-between">
-															<span className="font-medium">
-																{activity.activity}
-															</span>
-															<span className="text-sm text-gray-500">
-																{activity.date}
-															</span>
-														</div>
-													</li>
-												))}
-											</ul>
+											<div className="overflow-y-auto flex-1 pr-1 -mr-1">
+												{recentActivity.length > 0 ? (
+													<ul className="space-y-2">
+														{recentActivity.map((activity) => (
+															<li 
+																key={activity.id} 
+																className={`py-2 px-1 border-b border-gray-100 last:border-b-0 cursor-pointer hover:bg-gray-50 
+																	${activity.type === 'system_note' ? 'bg-gray-50' : ''}`}
+																onClick={() => {
+																	// Find and select the relevant ticket when clicking on activity
+																	if (activity.ticketId) {
+																		const ticket = supportTickets.find(t => t.id === activity.ticketId);
+																		if (ticket) {
+																			setSelectedTicket(ticket);
+																			fetchReplies(ticket.id);
+																		}
+																	}
+																}}
+															>
+																<div className="flex justify-between">
+																	<span className={`font-medium text-sm mr-2 
+																		${activity.type === 'system_note' 
+																			? 'text-gray-600 italic' 
+																			: 'text-gray-800'}`}>
+																		{activity.activity}
+																	</span>
+																	<span className="text-xs text-gray-500 whitespace-nowrap">
+																		{timeAgo(activity.date)}
+																	</span>
+																</div>
+															</li>
+														))}
+													</ul>
+												) : (
+													<div className="text-center text-gray-500 mt-4">
+														No activity available
+													</div>
+												)}
+											</div>
 										</div>
 									</div>
 									<div className="bg-white overflow-hidden shadow rounded-lg h-96">
 										<div className="p-5 h-full flex flex-col">
 											<h2 className="text-lg font-medium text-gray-900">
-												Tickets Overview
+												Tickets Overview (	Priority )
 											</h2>
 											<div className="flex-1">
-												<Bar data={chartData} className="h-full" />
+												<Bar 
+													data={chartData} 
+													className="h-full" 
+													options={{
+														responsive: true,
+														maintainAspectRatio: false,
+														plugins: {
+															legend: {
+																display: false
+															},
+															tooltip: {
+																callbacks: {
+																	label: function(context) {
+																		return `Count: ${context.raw}`;
+																	}
+																}
+															}
+														},
+														scales: {
+															y: {
+																beginAtZero: true,
+																ticks: {
+																	precision: 0
+																}
+															}
+														}
+													}}
+												/>
 											</div>
 											<div className="grid grid-cols-3 gap-1 mt-2">
 												<div className="bg-white overflow-hidden shadow rounded-lg p-1">
 													<h3 className="text-lg font-medium text-center text-gray-900">
-														Billing
+														High
 													</h3>
 													<p className="text-3xl text-center font-semibold text-gray-900">
-														12
+														{supportTickets.filter(ticket => ticket.priority === 'high').length}
 													</p>
 												</div>
 												<div className="bg-white overflow-hidden shadow rounded-lg p-1">
 													<h3 className="text-lg font-medium text-center text-gray-900">
-														Technical
+														Medium
 													</h3>
 													<p className="text-3xl text-center font-semibold text-gray-900">
-														19
+														{supportTickets.filter(ticket => ticket.priority === 'normal').length}
 													</p>
 												</div>
-
 												<div className="bg-white overflow-hidden shadow rounded-lg p-1">
 													<h3 className="text-lg font-medium text-center text-gray-900">
-														General
+														Low
 													</h3>
 													<p className="text-3xl text-center font-semibold text-gray-900">
-														5
+														{supportTickets.filter(ticket => ticket.priority === 'low').length}
 													</p>
 												</div>
 											</div>
@@ -600,7 +754,7 @@ export default function Dashboard({ navigate }) {
 										</div>
 									</div>
 									<div className="bg-white overflow-hidden shadow rounded-lg h-96">
-										<div className="p-5 h-full flex flex-col">
+										<div className="p-5 h-full flex flex-col overflow-y-scroll">
 											<h2 className="text-lg font-medium text-gray-900">
 												{selectedTicket
 													? `Replies for: ${selectedTicket.subject}`

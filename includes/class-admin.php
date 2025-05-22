@@ -250,14 +250,14 @@ class Admin
 			'3.2'
 		);
 
-		add_submenu_page(
-			'clientsync-support-helpdesk',
-			__('Create Ticket', 'clientsync-support-helpdesk'),
-			__('Create Ticket', 'clientsync-support-helpdesk'),
-			'manage_options',
-			'clientsync-support-helpdesk-create-ticket',
-			[$this, 'render_create_ticket_page']
-		);
+		// add_submenu_page(
+		// 	'clientsync-support-helpdesk',
+		// 	__('Create Ticket', 'clientsync-support-helpdesk'),
+		// 	__('Create Ticket', 'clientsync-support-helpdesk'),
+		// 	'manage_options',
+		// 	'clientsync-support-helpdesk-create-ticket',
+		// 	[$this, 'render_create_ticket_page']
+		// );
 
 		add_submenu_page(
 			'clientsync-support-helpdesk',

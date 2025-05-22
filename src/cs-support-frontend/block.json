@@ -1,0 +1,43 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "clientsync/cs-support-frontend",
+	"version": "0.1.0",
+	"title": "CS Support Frontend",
+	"category": "widgets",
+	"icon": "admin-comments",
+	"keywords": ["support", "ticket", "help"],
+	"description": "CS Support plugin frontend block showing support ticket created by the user.",
+	"example": {},
+	"supports": {
+		"html": false
+	},
+	"attributes": {
+		"title": {
+			"type": "string",
+			"default": "My Support Tickets"
+		},
+		"ticketsPerPage": {
+			"type": "number",
+			"default": 10
+		},
+		"backgroundColor": {
+			"type": "string",
+			"default": "#ffffff"
+		},
+		"textColor": {
+			"type": "string",
+			"default": "#000000"
+		},
+		"accentColor": {
+			"type": "string",
+			"default": "#2c3338"
+		}
+	},
+	"textdomain": "cs-support",
+	"editorScript": "file:./index.js",
+	"editorStyle": "file:./index.css",
+	"style": "file:./style-index.css",
+	"render": "file:./render.php",
+	"viewScript": "file:./view.js"
+}

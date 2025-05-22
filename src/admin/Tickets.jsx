@@ -15,6 +15,7 @@ export default function Tickets() {
 	const [newReply, setNewReply] = useState("");
 	const [loading, setLoading] = useState(true);
 	const [submitting, setSubmitting] = useState(false);
+	const [updatingStatus, setUpdatingStatus] = useState(false);
 
 	// Fetch tickets on mount
 	useEffect(() => {
@@ -44,8 +45,8 @@ export default function Tickets() {
 		}
 	};
 
-	const notify = () =>
-		toast("Added", {
+	const notify = (message = "Added") =>
+		toast(message, {
 			autoClose: 2000,
 			position: "bottom-right",
 		});
@@ -93,6 +94,86 @@ export default function Tickets() {
 			console.error("Error submitting reply:", error);
 		} finally {
 			setSubmitting(false);
+		}
+	};
+	
+	const handleStatusUpdate = async (newStatus) => {
+		if (!selectedTicket || newStatus === selectedTicket.status) return;
+		
+		setUpdatingStatus(true);
+		try {
+			const response = await fetch(
+				`/wp-json/cs-support/v1/tickets/${selectedTicket.id}`,
+				{
+					method: "PATCH",
+					headers: {
+						"Content-Type": "application/json",
+						"X-WP-Nonce": CS_SUPPORT_HELPDESK_TICKETS_CONFIG.nonce,
+					},
+					body: JSON.stringify({ status: newStatus }),
+				},
+			);
+			
+			if (response.ok) {
+				const updatedTicket = await response.json();
+				
+				// Update the selected ticket with the new status
+				setSelectedTicket(prevTicket => ({
+					...prevTicket,
+					status: newStatus
+				}));
+				
+				// Update the ticket in the tickets list
+				setTickets(prevTickets => 
+					prevTickets.map(ticket => 
+						ticket.id === selectedTicket.id 
+							? { ...ticket, status: newStatus }
+							: ticket
+					)
+				);
+				
+				// Add a system note about the status change
+				const statusMessage = `System: Ticket status changed to "${newStatus === 'NEW' ? 'New' : newStatus === 'IN_PROGRESS' ? 'In Progress' : 'Resolved'}"`;
+				
+				try {
+					// Add a system note as a reply
+					await fetch(
+						`/wp-json/cs-support/v1/tickets/${selectedTicket.id}/replies`,
+						{
+							method: "POST",
+							headers: {
+								"Content-Type": "application/json",
+								"X-WP-Nonce": CS_SUPPORT_HELPDESK_TICKETS_CONFIG.nonce,
+							},
+							body: JSON.stringify({ 
+								reply: statusMessage,
+								is_system_note: true
+							}),
+						}
+					);
+					
+					// Refresh replies to show the system note
+					fetchReplies(selectedTicket.id);
+				} catch (error) {
+					console.error("Error adding system note:", error);
+				}
+				
+				notify("Status updated");
+			} else {
+				console.error("Failed to update status");
+				toast.error("Failed to update status", {
+					autoClose: 2000,
+					position: "bottom-right",
+				});
+			}
+		} catch (error) {
+			console.error("Error updating status:", error);
+			toast.error("Error updating status", {
+				autoClose: 2000,
+				position: "bottom-right",
+			});
+		} finally {
+			setUpdatingStatus(false);
 		}
 	};
 
@@ -148,7 +229,11 @@ export default function Tickets() {
 													: "bg-green-100 text-green-800"
 											}`}
 											>
-												{ticket.status}
+												{ticket.status === "NEW" 
+													? "New" 
+													: ticket.status === "IN_PROGRESS" 
+													? "In Progress" 
+													: "Resolved"}
 											</span>
 										</td>
 										<td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
@@ -186,9 +271,37 @@ export default function Tickets() {
 				<div className="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center p-4">
 					<div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-hidden">
 						<div className="p-4 shadow shadow-gray-200 flex justify-between items-center">
-							<h2 className="text-xl font-semibold">
-								Ticket #{selectedTicket.id}
-							</h2>
+							<div className="flex items-center space-x-4">
+								<h2 className="text-xl font-semibold">
+									Ticket #{selectedTicket.id}
+								</h2>
+								<div className="relative">
+									<select
+										value={selectedTicket.status}
+										onChange={(e) => handleStatusUpdate(e.target.value)}
+										disabled={updatingStatus}
+										className={`text-sm font-medium py-1 px-3 rounded-full border focus:outline-none focus:ring-2 focus:ring-offset-1
+											${selectedTicket.status === "NEW" 
+												? "bg-yellow-100 text-yellow-800 border-yellow-200 focus:ring-yellow-300" 
+												: selectedTicket.status === "IN_PROGRESS" 
+												? "bg-blue-100 text-blue-800 border-blue-200 focus:ring-blue-300"
+												: "bg-green-100 text-green-800 border-green-200 focus:ring-green-300"
+											}`}
+									>
+										<option value="NEW">New</option>
+										<option value="IN_PROGRESS">In Progress</option>
+										<option value="RESOLVED">Resolved</option>
+									</select>
+									{updatingStatus && (
+										<div className="absolute -right-6 top-1/2 transform -translate-y-1/2">
+											<svg className="animate-spin h-4 w-4 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+												<circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+												<path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+											</svg>
+										</div>
+									)}
+								</div>
+							</div>
 							<button
 								onClick={() => setSelectedTicket(null)}
 								className="text-gray-500 hover:text-gray-700"
@@ -215,12 +328,16 @@ export default function Tickets() {
 								{replies.map((reply) => (
 									<div
 										key={reply.id}
-										className="mb-3 p-3 bg-gray-50 rounded-lg"
+										className={`mb-3 p-3 rounded-lg ${reply.is_system_note ? 'bg-gray-100 border border-gray-200' : 'bg-gray-50'}`}
 									>
 										<div className="flex items-start space-x-3">
-											<ChatBubbleLeftRightIcon className="h-5 w-5 text-gray-400" />
+											{reply.is_system_note ? (
+												<DocumentTextIcon className="h-5 w-5 text-gray-400" />
+											) : (
+												<ChatBubbleLeftRightIcon className="h-5 w-5 text-gray-400" />
+											)}
 											<div>
-												<p className="text-sm text-gray-900">{reply.reply}</p>
+												<p className={`text-sm ${reply.is_system_note ? 'text-gray-600 italic' : 'text-gray-900'}`}>{reply.reply}</p>
 												<p className="text-xs text-gray-500 mt-1">
 													{new Date(reply.created_at).toLocaleString()}
 												</p>

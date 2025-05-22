@@ -1,0 +1,21 @@
+/**
+ * The following styles get applied inside the editor only.
+ */
+
+.wp-block-clientsync-cs-support-frontend {
+    .cs-support-placeholder-text {
+        text-align: center;
+        padding: 1em;
+        font-style: italic;
+        color: #767676;
+        background-color: rgba(0, 0, 0, 0.02);
+        border-radius: 4px;
+    }
+
+    .cs-support-frontend-preview {
+        border: 1px dashed #ccc;
+        padding: 20px;
+    }
+}
+
+
