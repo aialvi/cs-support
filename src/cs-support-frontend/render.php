@@ -9,22 +9,36 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-$wrapper_attributes = get_block_wrapper_attributes([
-    'class' => 'cs-support-frontend-block'
-]);
-
 // Get block attributes
 $title = $attributes['title'] ?? 'My Support Tickets';
 $background_color = $attributes['backgroundColor'] ?? '#ffffff';
 $text_color = $attributes['textColor'] ?? '#000000';
 $accent_color = $attributes['accentColor'] ?? '#2c3338';
 $tickets_per_page = $attributes['ticketsPerPage'] ?? 10;
+$border_radius = $attributes['borderRadius'] ?? 8;
+$box_shadow = isset($attributes['boxShadow']) ? $attributes['boxShadow'] : true;
+$row_hover_effect = isset($attributes['rowHoverEffect']) ? $attributes['rowHoverEffect'] : true;
+$button_style = $attributes['buttonStyle'] ?? 'rounded';
+$card_style = $attributes['cardStyle'] ?? 'default';
+
+// Add class for card style
+$card_style_class = 'card-style-' . $card_style;
+
+// Add class for row hover effect
+$row_hover_class = $row_hover_effect ? 'row-hover-enabled' : 'row-hover-disabled';
+
+$wrapper_attributes = get_block_wrapper_attributes([
+    'class' => 'cs-support-frontend-block ' . $card_style_class . ' ' . $row_hover_class
+]);
 
 // Build inline styles
+$shadow_css = $box_shadow ? 'box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);' : '';
 $container_style = sprintf(
-    'background-color: %s; color: %s; padding: 20px; border-radius: 8px;',
+    'background-color: %s; color: %s; padding: 20px; border-radius: %spx; %s',
     esc_attr($background_color),
-    esc_attr($text_color)
+    esc_attr($text_color),
+    esc_attr($border_radius),
+    $shadow_css
 );
 
 $table_header_style = sprintf(
@@ -32,9 +46,24 @@ $table_header_style = sprintf(
     esc_attr($accent_color)
 );
 
-$button_style = sprintf(
-    'background-color: %s; color: #ffffff;',
-    esc_attr($accent_color)
+// Set button style based on selection
+$btn_border_radius = 4; // Default
+if ($button_style === 'rounded') {
+    $btn_border_radius = 4;
+} elseif ($button_style === 'square') {
+    $btn_border_radius = 0;
+} elseif ($button_style === 'pill') {
+    $btn_border_radius = 24;
+}
+
+$btn_style_css = $button_style === 'outlined' 
+    ? sprintf('background-color: transparent; color: %1$s; border: 1px solid %1$s;', esc_attr($accent_color))
+    : sprintf('background-color: %s; color: #ffffff;', esc_attr($accent_color));
+
+$button_style_attr = sprintf(
+    '%s border-radius: %spx;',
+    $btn_style_css,
+    $btn_border_radius
 );
 
 // Check if user is logged in
@@ -88,7 +117,7 @@ $is_logged_in = is_user_logged_in();
                         $support_page_url = admin_url('admin.php?page=clientsync-support-helpdesk-create-ticket');
                     }
                     ?>
-                    <a href="<?php echo esc_url($support_page_url); ?>" class="cs-support-create-ticket-link" style="<?php echo esc_attr($button_style); ?>">
+                    <a href="<?php echo esc_url($support_page_url); ?>" class="cs-support-create-ticket-link" style="<?php echo esc_attr($button_style_attr); ?>">
                         <?php esc_html_e('Create a Support Ticket', 'cs-support'); ?>
                     </a>
                 </div>
@@ -133,8 +162,14 @@ $is_logged_in = is_user_logged_in();
                 <div class="cs-support-reply-form">
                     <h3><?php esc_html_e('Add a Reply', 'cs-support'); ?></h3>
                     <form id="cs-support-reply-form">
-                        <textarea id="cs-reply-message" placeholder="<?php esc_attr_e('Type your reply here...', 'cs-support'); ?>"></textarea>
-                        <button type="submit" id="cs-submit-reply" style="<?php echo esc_attr($button_style); ?>">
+                        <label for="cs-reply-message" class="sr-only"><?php esc_html_e('Your reply', 'cs-support'); ?></label>
+                        <textarea 
+                            id="cs-reply-message" 
+                            placeholder="<?php esc_attr_e('Type your reply here...', 'cs-support'); ?>"
+                            aria-label="<?php esc_attr_e('Type your reply here', 'cs-support'); ?>"
+                            required
+                        ></textarea>
+                        <button type="submit" id="cs-submit-reply" style="<?php echo esc_attr($button_style_attr); ?>">
                             <?php esc_html_e('Send Reply', 'cs-support'); ?>
                         </button>
                     </form>

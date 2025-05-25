@@ -26,6 +26,26 @@ export default function Tickets() {
 	useEffect(() => {
 		if (selectedTicket) {
 			fetchReplies(selectedTicket.id);
+
+			// Add event listener for Escape key to close modal
+			const handleEscapeKey = (e) => {
+				if (e.key === "Escape") {
+					setSelectedTicket(null);
+				}
+			};
+
+			document.addEventListener("keydown", handleEscapeKey);
+
+			// Focus the modal heading for screen readers
+			const modalTitle = document.getElementById("ticket-modal-title");
+			if (modalTitle) {
+				modalTitle.focus();
+			}
+
+			// Clean up event listener
+			return () => {
+				document.removeEventListener("keydown", handleEscapeKey);
+			};
 		}
 	}, [selectedTicket]);
 
@@ -118,22 +138,28 @@ export default function Tickets() {
 				const updatedTicket = await response.json();
 
 				// Update the selected ticket with the new status
-				setSelectedTicket(prevTicket => ({
+				setSelectedTicket((prevTicket) => ({
 					...prevTicket,
-					status: newStatus
+					status: newStatus,
 				}));
 
 				// Update the ticket in the tickets list
-				setTickets(prevTickets =>
-					prevTickets.map(ticket =>
+				setTickets((prevTickets) =>
+					prevTickets.map((ticket) =>
 						ticket.id === selectedTicket.id
 							? { ...ticket, status: newStatus }
-							: ticket
-					)
+							: ticket,
+					),
 				);
 
 				// Add a system note about the status change
-				const statusMessage = `System: Ticket status changed to "${newStatus === 'NEW' ? 'New' : newStatus === 'IN_PROGRESS' ? 'In Progress' : 'Resolved'}"`;
+				const statusMessage = `System: Ticket status changed to "${
+					newStatus === "NEW"
+						? "New"
+						: newStatus === "IN_PROGRESS"
+						? "In Progress"
+						: "Resolved"
+				}"`;
 
 				try {
 					// Add a system note as a reply
@@ -147,9 +173,9 @@ export default function Tickets() {
 							},
 							body: JSON.stringify({
 								reply: statusMessage,
-								is_system_note: true
+								is_system_note: true,
 							}),
-						}
+						},
 					);
 
 					// Refresh replies to show the system note
@@ -179,13 +205,20 @@ export default function Tickets() {
 
 	return (
 		<div className="container mx-auto p-4">
-			<h1 className="text-2xl font-bold my-4">Support Tickets</h1>
+			<h1 className="text-2xl font-bold my-4" tabIndex="-1">
+				Support Tickets
+			</h1>
 
 			{loading ? (
-				<div>Loading tickets...</div>
+				<div aria-live="polite" role="status">
+					Loading tickets...
+				</div>
 			) : (
 				<div className="bg-white shadow-md rounded-lg overflow-hidden mt-2">
-					<table className="min-w-full divide-y divide-gray-200">
+					<table
+						className="min-w-full divide-y divide-gray-200"
+						aria-label="Support tickets"
+					>
 						<thead className="bg-gray-50">
 							<tr>
 								<th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -215,24 +248,37 @@ export default function Tickets() {
 										<td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
 											#{ticket.id}
 										</td>
-										<td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+										<td
+											className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 cursor-pointer hover:underline"
+											onClick={() => setSelectedTicket(ticket)}
+											tabIndex="0"
+											role="button"
+											aria-label={`View ticket: ${ticket.subject}`}
+											onKeyDown={(e) => {
+												if (e.key === "Enter" || e.key === " ") {
+													e.preventDefault();
+													setSelectedTicket(ticket);
+												}
+											}}
+										>
 											{ticket.subject}
 										</td>
 										<td className="px-6 py-4 whitespace-nowrap">
 											<span
-												className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
-                      ${ticket.status === "NEW"
-														? "bg-yellow-100 text-yellow-800"
-														: ticket.status === "IN_PROGRESS"
-															? "bg-blue-100 text-blue-800"
-															: "bg-green-100 text-green-800"
-													}`}
+												className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full
+                      ${
+												ticket.status === "NEW"
+													? "bg-yellow-100 text-yellow-800"
+													: ticket.status === "IN_PROGRESS"
+													? "bg-blue-100 text-blue-800"
+													: "bg-green-100 text-green-800"
+											}`}
 											>
 												{ticket.status === "NEW"
 													? "New"
 													: ticket.status === "IN_PROGRESS"
-														? "In Progress"
-														: "Resolved"}
+													? "In Progress"
+													: "Resolved"}
 											</span>
 										</td>
 										<td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
@@ -244,9 +290,11 @@ export default function Tickets() {
 										<td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
 											<button
 												onClick={() => setSelectedTicket(ticket)}
-												className="text-emerald-600 hover:text-emerald-900"
+												className="text-emerald-600 hover:text-emerald-900 p-1 rounded focus:outline-none focus:ring-2 focus:ring-emerald-500"
+												aria-label={`View details of ticket: ${ticket.subject}`}
+												title="View ticket details"
 											>
-												<EyeIcon className="h-5 w-5" />
+												<EyeIcon className="h-5 w-5" aria-hidden="true" />
 											</button>
 										</td>
 									</tr>
@@ -267,11 +315,22 @@ export default function Tickets() {
 
 			{/* Reply Modal */}
 			{selectedTicket && (
-				<div className="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center p-4">
+				<div
+					className="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center p-4"
+					role="dialog"
+					aria-modal="true"
+					aria-labelledby="ticket-modal-title"
+					onClick={(e) => {
+						// Close modal when clicking outside the modal content
+						if (e.target === e.currentTarget) {
+							setSelectedTicket(null);
+						}
+					}}
+				>
 					<div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-hidden">
 						<div className="p-4 shadow shadow-gray-200 flex justify-between items-center">
 							<div className="flex items-center space-x-4">
-								<h2 className="text-xl font-semibold">
+								<h2 className="text-xl font-semibold" id="ticket-modal-title">
 									Ticket #{selectedTicket.id}
 								</h2>
 								<div className="relative">
@@ -279,10 +338,12 @@ export default function Tickets() {
 										value={selectedTicket.status}
 										onChange={(e) => handleStatusUpdate(e.target.value)}
 										disabled={updatingStatus}
+										aria-label="Change ticket status"
 										className={`text-sm font-medium py-1 px-3 rounded-full border focus:outline-none focus:ring-2 focus:ring-offset-1
-											${selectedTicket.status === "NEW"
-												? "bg-yellow-100 text-yellow-800 border-yellow-200 focus:ring-yellow-300"
-												: selectedTicket.status === "IN_PROGRESS"
+											${
+												selectedTicket.status === "NEW"
+													? "bg-yellow-100 text-yellow-800 border-yellow-200 focus:ring-yellow-300"
+													: selectedTicket.status === "IN_PROGRESS"
 													? "bg-blue-100 text-blue-800 border-blue-200 focus:ring-blue-300"
 													: "bg-green-100 text-green-800 border-green-200 focus:ring-green-300"
 											}`}
@@ -293,9 +354,25 @@ export default function Tickets() {
 									</select>
 									{updatingStatus && (
 										<div className="absolute -right-6 top-1/2 transform -translate-y-1/2">
-											<svg className="animate-spin h-4 w-4 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-												<circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-												<path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+											<svg
+												className="animate-spin h-4 w-4 text-gray-500"
+												xmlns="http://www.w3.org/2000/svg"
+												fill="none"
+												viewBox="0 0 24 24"
+											>
+												<circle
+													className="opacity-25"
+													cx="12"
+													cy="12"
+													r="10"
+													stroke="currentColor"
+													strokeWidth="4"
+												></circle>
+												<path
+													className="opacity-75"
+													fill="currentColor"
+													d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+												></path>
 											</svg>
 										</div>
 									)}
@@ -303,9 +380,11 @@ export default function Tickets() {
 							</div>
 							<button
 								onClick={() => setSelectedTicket(null)}
-								className="text-gray-500 hover:text-gray-700"
+								className="text-gray-500 hover:text-gray-700 p-1 rounded focus:outline-none focus:ring-2 focus:ring-gray-300"
+								aria-label="Close ticket details"
+								title="Close"
 							>
-								<XMarkIcon className="h-6 w-6" />
+								<XMarkIcon className="h-6 w-6" aria-hidden="true" />
 							</button>
 						</div>
 
@@ -327,7 +406,11 @@ export default function Tickets() {
 								{replies.map((reply) => (
 									<div
 										key={reply.id}
-										className={`mb-3 p-3 rounded-lg ${reply.is_system_note ? 'bg-gray-100 border border-gray-200' : 'bg-gray-50'}`}
+										className={`mb-3 p-3 rounded-lg ${
+											reply.is_system_note
+												? "bg-gray-100 border border-gray-200"
+												: "bg-gray-50"
+										}`}
 									>
 										<div className="flex items-start space-x-3">
 											{reply.is_system_note ? (
@@ -336,7 +419,15 @@ export default function Tickets() {
 												<ChatBubbleLeftRightIcon className="h-5 w-5 text-gray-400" />
 											)}
 											<div>
-												<p className={`text-sm ${reply.is_system_note ? 'text-gray-600 italic' : 'text-gray-900'}`}>{reply.reply}</p>
+												<p
+													className={`text-sm ${
+														reply.is_system_note
+															? "text-gray-600 italic"
+															: "text-gray-900"
+													}`}
+												>
+													{reply.reply}
+												</p>
 												<p className="text-xs text-gray-500 mt-1">
 													{new Date(reply.created_at).toLocaleString()}
 												</p>
@@ -349,18 +440,24 @@ export default function Tickets() {
 
 						<div className="p-4 shadow shadow-gray-600">
 							<form onSubmit={handleSubmitReply}>
+								<label htmlFor="reply-textarea" className="sr-only">
+									Type your reply
+								</label>
 								<textarea
+									id="reply-textarea"
 									value={newReply}
 									onChange={(e) => setNewReply(e.target.value)}
 									className="w-full p-2 border rounded-md"
 									rows="3"
 									placeholder="Type your reply..."
 									required
+									aria-label="Reply to support ticket"
 								/>
 								<button
 									type="submit"
 									disabled={submitting}
-									className="w-full mt-2 shadow shadow-blue-500/100 px-4 py-2 rounded-md disabled:opacity-50 text-center hover:shadow-blue-600/100"
+									aria-busy={submitting}
+									className="w-full mt-2 shadow shadow-blue-500/100 px-4 py-2 rounded-md disabled:opacity-50 text-center hover:shadow-blue-600/100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
 								>
 									{submitting ? "Sending..." : "Reply"}
 								</button>
