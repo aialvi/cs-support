@@ -55,7 +55,8 @@ class Admin
 			'cs-support_page_clientsync-support-helpdesk-create-ticket',
 			'cs-support_page_clientsync-support-helpdesk-tickets',
 			'cs-support_page_clientsync-support-helpdesk-settings',
-			'cs-support_page_clientsync-support-helpdesk-help'
+			'cs-support_page_clientsync-support-helpdesk-help',
+			'cs-support_page_clientsync-support-helpdesk-shortcodes'
 		])) {
 			return;
 		}
@@ -285,6 +286,15 @@ class Admin
 			'clientsync-support-helpdesk-help',
 			[$this, 'render_faq_page']
 		);
+
+		add_submenu_page(
+			'clientsync-support-helpdesk',
+			__('Shortcodes', 'clientsync-support-helpdesk'),
+			__('Shortcodes', 'clientsync-support-helpdesk'),
+			'manage_options',
+			'clientsync-support-helpdesk-shortcodes',
+			[$this, 'render_shortcodes_page']
+		);
 	}
 
 	/**
@@ -343,6 +353,125 @@ class Admin
 	?>
 		<div class="wrap">
 			<div id="cs-faq"></div>
-<?php
+		</div>
+	<?php
+	}
+
+	/**
+	 * Render the shortcodes page
+	 */
+	public function render_shortcodes_page(): void
+	{
+		?>
+		<div class="wrap">
+			<h1><?php _e('CS Support Shortcodes', 'clientsync-support-helpdesk'); ?></h1>
+			
+			<div class="cs-support-shortcodes-help">
+				<p><?php _e('Use these shortcodes to add CS Support forms and ticket displays to any page, post, or widget area.', 'clientsync-support-helpdesk'); ?></p>
+				
+				<div class="postbox">
+					<h2 class="hndle"><?php _e('Support Form Shortcode', 'clientsync-support-helpdesk'); ?></h2>
+					<div class="inside">
+						<p><?php _e('Display a support ticket creation form:', 'clientsync-support-helpdesk'); ?></p>
+						<code class="shortcode-example">[cs_support]</code>
+						
+						<h4><?php _e('With Custom Attributes:', 'clientsync-support-helpdesk'); ?></h4>
+						<code class="shortcode-example">[cs_support title="Contact Us" submit_button_text="Send Message" background_color="#f8f9fa"]</code>
+						
+						<h4><?php _e('Available Attributes:', 'clientsync-support-helpdesk'); ?></h4>
+						<ul class="shortcode-attributes">
+							<li><strong>title</strong> - Form title (default: "Create a new support ticket")</li>
+							<li><strong>show_title</strong> - Show/hide title: "true" or "false" (default: "true")</li>
+							<li><strong>submit_button_text</strong> - Button text (default: "Create Ticket")</li>
+							<li><strong>background_color</strong> - Form background color (default: "#ffffff")</li>
+							<li><strong>text_color</strong> - Text color (default: "#000000")</li>
+							<li><strong>button_color</strong> - Button background color (default: "#2c3338")</li>
+							<li><strong>button_text_color</strong> - Button text color (default: "#ffffff")</li>
+							<li><strong>max_width</strong> - Maximum form width (default: "600px")</li>
+							<li><strong>border_radius</strong> - Border radius (default: "8px")</li>
+							<li><strong>box_shadow</strong> - Enable box shadow: "true" or "false" (default: "false")</li>
+							<li><strong>button_align</strong> - Button alignment: "left", "center", or "right" (default: "left")</li>
+							<li><strong>button_full_width</strong> - Full width button: "true" or "false" (default: "false")</li>
+						</ul>
+					</div>
+				</div>
+				
+				<div class="postbox">
+					<h2 class="hndle"><?php _e('Tickets List Shortcode', 'clientsync-support-helpdesk'); ?></h2>
+					<div class="inside">
+						<p><?php _e('Display the current user\'s support tickets:', 'clientsync-support-helpdesk'); ?></p>
+						<code class="shortcode-example">[cs_support_tickets]</code>
+						
+						<h4><?php _e('With Custom Attributes:', 'clientsync-support-helpdesk'); ?></h4>
+						<code class="shortcode-example">[cs_support_tickets title="Your Tickets" tickets_per_page="5" accent_color="#007cba"]</code>
+						
+						<h4><?php _e('Available Attributes:', 'clientsync-support-helpdesk'); ?></h4>
+						<ul class="shortcode-attributes">
+							<li><strong>title</strong> - List title (default: "My Support Tickets")</li>
+							<li><strong>tickets_per_page</strong> - Number of tickets per page (default: "10")</li>
+							<li><strong>background_color</strong> - Background color (default: "#ffffff")</li>
+							<li><strong>text_color</strong> - Text color (default: "#000000")</li>
+							<li><strong>accent_color</strong> - Accent color for buttons and status (default: "#2c3338")</li>
+							<li><strong>border_radius</strong> - Border radius (default: "8")</li>
+							<li><strong>box_shadow</strong> - Enable box shadow: "true" or "false" (default: "true")</li>
+							<li><strong>row_hover_effect</strong> - Enable row hover effect: "true" or "false" (default: "true")</li>
+						</ul>
+					</div>
+				</div>
+				
+				<div class="postbox">
+					<h2 class="hndle"><?php _e('Usage Examples', 'clientsync-support-helpdesk'); ?></h2>
+					<div class="inside">
+						<h4><?php _e('Contact Page:', 'clientsync-support-helpdesk'); ?></h4>
+						<code class="shortcode-example">[cs_support title="Contact Us" submit_button_text="Send Message" background_color="#f8f9fa" button_color="#007cba"]</code>
+						
+						<h4><?php _e('User Dashboard:', 'clientsync-support-helpdesk'); ?></h4>
+						<code class="shortcode-example">[cs_support_tickets title="My Tickets" tickets_per_page="5"]</code>
+						
+						<h4><?php _e('Widget Area (Sidebar):', 'clientsync-support-helpdesk'); ?></h4>
+						<code class="shortcode-example">[cs_support show_title="false" max_width="100%" submit_button_text="Get Help"]</code>
+					</div>
+				</div>
+				
+				<div class="postbox">
+					<h2 class="hndle"><?php _e('Notes', 'clientsync-support-helpdesk'); ?></h2>
+					<div class="inside">
+						<ul>
+							<li><?php _e('Shortcodes work in any editor: Classic Editor, Gutenberg, page builders, and widget areas.', 'clientsync-support-helpdesk'); ?></li>
+							<li><?php _e('The ticket list shortcode only shows tickets for the currently logged-in user.', 'clientsync-support-helpdesk'); ?></li>
+							<li><?php _e('Colors can be specified using hex values (#ffffff) or CSS color names (white).', 'clientsync-support-helpdesk'); ?></li>
+							<li><?php _e('All forms are responsive and include accessibility features.', 'clientsync-support-helpdesk'); ?></li>
+						</ul>
+					</div>
+				</div>
+			</div>
+			
+			<style>
+			.cs-support-shortcodes-help .postbox {
+				margin-bottom: 20px;
+				padding: 20px;
+			}
+			.shortcode-example {
+				display: block;
+				background: #f1f1f1;
+				padding: 10px;
+				margin: 10px 0;
+				border-left: 4px solid #0073aa;
+				font-family: monospace;
+				overflow-x: auto;
+				white-space: nowrap;
+			}
+			.shortcode-attributes {
+				margin-left: 20px;
+			}
+			.shortcode-attributes li {
+				margin-bottom: 5px;
+			}
+			.shortcode-attributes strong {
+				color: #0073aa;
+			}
+			</style>
+		</div>
+		<?php
 	}
 }

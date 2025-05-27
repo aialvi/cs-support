@@ -9,6 +9,9 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
+// Check if we're in a block context or shortcode context
+$is_shortcode = !isset($block);
+
 // Get block attributes
 $title = $attributes['title'] ?? 'My Support Tickets';
 $background_color = $attributes['backgroundColor'] ?? '#ffffff';
@@ -27,9 +30,11 @@ $card_style_class = 'card-style-' . $card_style;
 // Add class for row hover effect
 $row_hover_class = $row_hover_effect ? 'row-hover-enabled' : 'row-hover-disabled';
 
-$wrapper_attributes = get_block_wrapper_attributes([
-    'class' => 'cs-support-frontend-block ' . $card_style_class . ' ' . $row_hover_class
-]);
+$wrapper_attributes = $is_shortcode ?
+    'class="wp-block-clientsync-cs-support-frontend cs-support-shortcode ' . $card_style_class . ' ' . $row_hover_class . '"' :
+    get_block_wrapper_attributes([
+        'class' => 'cs-support-frontend-block ' . $card_style_class . ' ' . $row_hover_class
+    ]);
 
 // Build inline styles
 $shadow_css = $box_shadow ? 'box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);' : '';

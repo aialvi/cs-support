@@ -11,9 +11,14 @@ if (!defined('ABSPATH')) {
 	exit;
 }
 
-$wrapper_attributes = get_block_wrapper_attributes([
-	'class' => 'cs-support-block'
-]);
+// Check if we're in a block context or shortcode context
+$is_shortcode = !isset($block);
+
+$wrapper_attributes = $is_shortcode ? 
+	'class="wp-block-clientsync-cs-support cs-support-shortcode"' : 
+	get_block_wrapper_attributes([
+		'class' => 'cs-support-block'
+	]);
 
 // Get block attributes
 $title = $attributes['title'] ?? 'Create a new support ticket';
@@ -37,6 +42,8 @@ $input_border_color = $attributes['inputBorderColor'] ?? '#dddddd';
 $input_border_radius = $attributes['inputBorderRadius'] ?? '4px';
 $button_border_radius = $attributes['buttonBorderRadius'] ?? '4px';
 $button_padding = $attributes['buttonPadding'] ?? '10px 15px';
+$button_align = $attributes['buttonAlign'] ?? 'left';
+$button_full_width = $attributes['buttonFullWidth'] ?? false;
 
 // Build inline styles
 $form_style = sprintf(
@@ -64,9 +71,9 @@ $button_style = sprintf(
 	esc_attr($button_text_color),
 	esc_attr($button_border_radius),
 	esc_attr($button_padding),
-	$attributes['buttonFullWidth'] ? '100%' : 'auto',
-	$attributes['buttonAlign'] === 'center' ? 'auto' : ($attributes['buttonAlign'] === 'right' ? 'auto' : '0'),
-	$attributes['buttonAlign'] === 'center' ? 'auto' : ($attributes['buttonAlign'] === 'left' ? 'auto' : '0')
+	$button_full_width ? '100%' : 'auto',
+	$button_align === 'center' ? 'auto' : ($button_align === 'right' ? 'auto' : '0'),
+	$button_align === 'center' ? 'auto' : ($button_align === 'left' ? 'auto' : '0')
 );
 
 // Check if user is logged in
