@@ -32,6 +32,26 @@
 		"accentColor": {
 			"type": "string",
 			"default": "#2c3338"
+		},
+		"borderRadius": {
+			"type": "number",
+			"default": 8
+		},
+		"boxShadow": {
+			"type": "boolean",
+			"default": true
+		},
+		"rowHoverEffect": {
+			"type": "boolean",
+			"default": true
+		},
+		"buttonStyle": {
+			"type": "string",
+			"default": "rounded"
+		},
+		"cardStyle": {
+			"type": "string",
+			"default": "default"
 		}
 	},
 	"textdomain": "cs-support",

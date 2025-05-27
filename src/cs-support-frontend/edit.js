@@ -21,6 +21,9 @@ import {
 import {
 	PanelBody,
 	RangeControl,
+	SelectControl,
+	ToggleControl,
+	__experimentalDivider as Divider,
 } from "@wordpress/components";
 
 /**
@@ -46,6 +49,11 @@ export default function Edit({ attributes, setAttributes }) {
 		backgroundColor,
 		textColor,
 		accentColor,
+		borderRadius,
+		boxShadow,
+		rowHoverEffect,
+		buttonStyle,
+		cardStyle,
 	} = attributes;
 
 	const blockProps = useBlockProps();
@@ -55,7 +63,9 @@ export default function Edit({ attributes, setAttributes }) {
 		backgroundColor,
 		color: textColor,
 		padding: "20px",
-		borderRadius: "8px",
+		borderRadius: `${borderRadius}px`,
+		boxShadow: boxShadow ? '0 2px 8px rgba(0, 0, 0, 0.08)' : 'none',
+		transition: 'all 0.2s ease',
 	};
 	
 	const tableHeaderStyle = {
@@ -73,6 +83,52 @@ export default function Edit({ attributes, setAttributes }) {
 						onChange={(value) => setAttributes({ ticketsPerPage: value })}
 						min={1}
 						max={50}
+					/>
+					<SelectControl
+						label={__("Card Style", "cs-support")}
+						value={cardStyle}
+						options={[
+							{ label: __("Default", "cs-support"), value: "default" },
+							{ label: __("Modern", "cs-support"), value: "modern" },
+							{ label: __("Minimal", "cs-support"), value: "minimal" },
+						]}
+						onChange={(value) => setAttributes({ cardStyle: value })}
+					/>
+				</PanelBody>
+
+				<PanelBody title={__("Appearance", "cs-support")} initialOpen={false}>
+					<RangeControl
+						label={__("Border Radius", "cs-support")}
+						value={borderRadius}
+						onChange={(value) => setAttributes({ borderRadius: value })}
+						min={0}
+						max={24}
+					/>
+
+					<ToggleControl
+						label={__("Enable Box Shadow", "cs-support")}
+						checked={boxShadow}
+						onChange={(value) => setAttributes({ boxShadow: value })}
+					/>
+
+					<ToggleControl
+						label={__("Row Hover Effect", "cs-support")}
+						checked={rowHoverEffect}
+						onChange={(value) => setAttributes({ rowHoverEffect: value })}
+					/>
+
+					<Divider />
+
+					<SelectControl
+						label={__("Button Style", "cs-support")}
+						value={buttonStyle}
+						options={[
+							{ label: __("Rounded", "cs-support"), value: "rounded" },
+							{ label: __("Square", "cs-support"), value: "square" },
+							{ label: __("Pill", "cs-support"), value: "pill" },
+							{ label: __("Outlined", "cs-support"), value: "outlined" },
+						]}
+						onChange={(value) => setAttributes({ buttonStyle: value })}
 					/>
 				</PanelBody>
 
