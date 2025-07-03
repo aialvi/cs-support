@@ -429,7 +429,7 @@ export default function Dashboard({ navigate }) {
 	};
 
 	return (
-		<div className="h-screen flex overflow-hidden bg-gray-100">
+		<div className="h-screen flex overflow-hidden bg-gradient-to-br from-gray-50 to-gray-100">
 			{/* Sidebar for mobile */}
 			<Dialog as="div" open={sidebarOpen} onClose={setSidebarOpen}>
 				<DialogBackdrop className="fixed inset-0 bg-black bg-opacity-50" />
@@ -497,15 +497,16 @@ export default function Dashboard({ navigate }) {
 
 							{/* Pro Features Promotional Section - Mobile */}
 							<div className="px-2 pb-4">
-								<div className="bg-gradient-to-r from-purple-600 to-blue-600 rounded-lg p-4 text-center">
-									<div className="flex flex-col items-center space-y-2">
-										<LockClosedIcon className="h-8 w-8" aria-hidden="true" />
-										<div className="text-white">
-											<p className="text-sm font-medium">More sections and</p>
-											<p className="text-sm font-medium">reports available</p>
-											<p className="text-sm font-medium">on Pro</p>
+								<div className="bg-gradient-to-br from-purple-600 to-blue-600 rounded-xl p-4 text-center shadow-lg">
+									<div className="flex flex-col items-center space-y-3">
+										<div className="bg-white bg-opacity-20 rounded-full p-2">
+											<LockClosedIcon className="h-6 w-6 text-white" />
 										</div>
-										<button className="mt-2 bg-white bg-opacity-20 hover:bg-opacity-30 text-xs font-medium py-1 px-3 rounded-md transition-all duration-200">
+										<div className="text-white">
+											<p className="text-sm font-semibold mb-1">Premium Features</p>
+											<p className="text-xs opacity-90">More sections and reports available</p>
+										</div>
+										<button className="mt-2 bg-white bg-opacity-20 hover:bg-opacity-30 text-white text-xs font-medium py-2 px-4 rounded-lg transition-all duration-200 transform hover:-translate-y-0.5">
 											Upgrade Now
 										</button>
 									</div>
@@ -572,19 +573,20 @@ export default function Dashboard({ navigate }) {
 
 							{/* Pro Features Promotional Section - Desktop */}
 							<div className="mx-1 px-2 pb-4 mt-[100%]">
-								<div className="bg-gradient-to-r from-orange-50 to-red-50 rounded-lg p-4 text-center shadow-sm border border-gray-200">
-									<div className="flex flex-col items-center space-y-2">
-										<LockClosedIcon className="h-8 w-8" aria-hidden="true" />
+								<div className="bg-gradient-to-br from-orange-50 to-red-50 rounded-xl p-4 text-center shadow-lg border border-orange-200">
+									<div className="flex flex-col items-center space-y-3">
+										<div className="bg-gradient-to-r from-orange-500 to-red-500 rounded-full p-2">
+											<LockClosedIcon className="h-6 w-6 text-white" />
+										</div>
 										<div>
-											<p className="text-sm font-medium">
+											<p className="text-sm font-semibold text-orange-900 mb-1">
 												Unlock Premium Features
 											</p>
-											<p className="text-sm font-medium">Advanced reporting</p>
-											<p className="text-sm font-medium">
-												Team collaboration tools
+											<p className="text-xs text-orange-700 leading-relaxed">
+												Advanced reporting, team collaboration tools, and priority support
 											</p>
 										</div>
-										<button className="mt-2 bg-white hover:bg-gray-100 text-orange-700 text-xs font-semibold py-1.5 px-4 rounded-md transition-all duration-200 shadow-sm">
+										<button className="mt-2 bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white text-xs font-semibold py-2 px-4 rounded-lg transition-all duration-200 shadow-md hover:shadow-lg transform hover:-translate-y-0.5">
 											Upgrade to Pro
 										</button>
 									</div>
@@ -597,49 +599,85 @@ export default function Dashboard({ navigate }) {
 			{/* Main content */}
 			<div className="flex flex-col w-0 flex-1 overflow-hidden">
 				<main className="flex-1 relative z-0 overflow-y-auto focus:outline-none">
-					<div className="py-6">
+					<div className="py-4">
 						<div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
-							<div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-								<div className="bg-white overflow-hidden shadow shadow-rose-300/50 rounded-lg">
-									<div className="p-5">
-										<h2 className="text-lg font-medium text-gray-900">
-											Tickets in Queue
-										</h2>
-										<p className="mt-1 text-3xl font-semibold text-gray-900">
-											{
-												supportTickets.filter(
-													(ticket) => ticket.status === "NEW",
-												).length
-											}
-										</p>
+							{/* Dashboard Header */}
+							{/* <div className="mb-8">
+								<h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
+								<p className="mt-2 text-gray-600">Welcome back! Here's what's happening with your support tickets today.</p>
+							</div> */}
+
+							{/* Stats Cards */}
+							<div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 mb-8">
+								<div className="bg-white overflow-hidden shadow-lg shadow-rose-100 rounded-xl border border-rose-100 hover:shadow-xl transition-shadow duration-300">
+									<div className="p-6">
+										<div className="flex items-center">
+											<div className="flex-shrink-0">
+												<div className="bg-rose-500 rounded-lg p-3">
+													<ExclamationTriangleIcon className="h-6 w-6 text-white" />
+												</div>
+											</div>
+											<div className="ml-4 w-0 flex-1">
+												<h2 className="text-sm font-medium text-gray-500 uppercase tracking-wide">
+													Tickets in Queue
+												</h2>
+												<p className="text-3xl font-bold text-gray-900">
+													{
+														supportTickets.filter(
+															(ticket) => ticket.status === "NEW",
+														).length
+													}
+												</p>
+											</div>
+										</div>
 									</div>
 								</div>
-								<div className="bg-white overflow-hidden shadow shadow-emerald-300/50 rounded-lg">
-									<div className="p-5">
-										<h2 className="text-lg font-medium text-gray-900">
-											Resolved Tickets
-										</h2>
-										<p className="mt-1 text-3xl font-semibold text-gray-900">
-											{
-												supportTickets.filter(
-													(ticket) => ticket.status === "RESOLVED",
-												).length
-											}
-										</p>
+								
+								<div className="bg-white overflow-hidden shadow-lg shadow-emerald-100 rounded-xl border border-emerald-100 hover:shadow-xl transition-shadow duration-300">
+									<div className="p-6">
+										<div className="flex items-center">
+											<div className="flex-shrink-0">
+												<div className="bg-emerald-500 rounded-lg p-3">
+													<CheckIcon className="h-6 w-6 text-white" />
+												</div>
+											</div>
+											<div className="ml-4 w-0 flex-1">
+												<h2 className="text-sm font-medium text-gray-500 uppercase tracking-wide">
+													Resolved Tickets
+												</h2>
+												<p className="text-3xl font-bold text-gray-900">
+													{
+														supportTickets.filter(
+															(ticket) => ticket.status === "RESOLVED",
+														).length
+													}
+												</p>
+											</div>
+										</div>
 									</div>
 								</div>
-								<div className="bg-white overflow-hidden shadow shadow-blue-300/50 rounded-lg">
-									<div className="p-5">
-										<h2 className="text-lg font-medium text-gray-900">
-											In Progress
-										</h2>
-										<p className="mt-1 text-3xl font-semibold text-gray-900">
-											{
-												supportTickets.filter(
-													(ticket) => ticket.status === "IN_PROGRESS",
-												).length
-											}
-										</p>
+								
+								<div className="bg-white overflow-hidden shadow-lg shadow-blue-100 rounded-xl border border-blue-100 hover:shadow-xl transition-shadow duration-300">
+									<div className="p-6">
+										<div className="flex items-center">
+											<div className="flex-shrink-0">
+												<div className="bg-blue-500 rounded-lg p-3">
+													<SparklesIcon className="h-6 w-6 text-white" />
+												</div>
+											</div>
+											<div className="ml-4 w-0 flex-1">
+												<h2 className="text-sm font-medium text-gray-500 uppercase tracking-wide">
+													In Progress
+												</h2>
+												<p className="text-3xl font-bold text-gray-900">
+													{
+														supportTickets.filter(
+															(ticket) => ticket.status === "IN_PROGRESS",
+														).length
+													}
+												</p>
+											</div>
+										</div>
 									</div>
 								</div>
 								{/* <div className='bg-white overflow-hidden shadow shadow-blue-300/50 rounded-lg'>
@@ -653,378 +691,413 @@ export default function Dashboard({ navigate }) {
                   </div>
                 </div> */}
 							</div>
-							<div className="py-4">
-								<div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-									<div className="bg-white overflow-hidden shadow rounded-lg h-96">
-										<div className="p-5 h-full flex flex-col">
-											<h2 className="text-lg font-medium text-gray-900">
-												Support Tickets
-											</h2>
-											{supportTickets.length ? (
-												<ul className="mt-2 overflow-y-auto flex-1">
-													{supportTickets
-														.sort((a, b) => b.id - a.id)
-														.map((ticket) => (
-															<li
-																key={ticket.id}
-																className="py-2 border-b border-gray-100 cursor-pointer hover:bg-gray-50"
-																onClick={() => {
-																	setSelectedTicket(ticket);
-																	fetchReplies(ticket.id);
-																}}
-															>
-																<div className="flex justify-between">
-																	<span className="font-medium text-md text-purple-950">
-																		{ticket.subject}
-																	</span>
-																	<span className="text-sm text-gray-500">
+							{/* Main Content Grid */}
+							<div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
+								{/* Support Tickets */}
+								<div className="bg-white overflow-hidden shadow-lg rounded-xl border border-gray-200">
+									<div className="px-6 py-4 bg-gradient-to-r from-purple-50 to-blue-50 border-b border-gray-200">
+										<h2 className="text-lg font-semibold text-gray-900 flex items-center">
+											<FolderIcon className="h-5 w-5 mr-2 text-purple-600" />
+											Support Tickets
+										</h2>
+									</div>
+									<div className="p-6 h-96 flex flex-col">
+										{supportTickets.length ? (
+											<ul className="overflow-y-auto flex-1 space-y-3">
+												{supportTickets
+													.sort((a, b) => b.id - a.id)
+													.map((ticket) => (
+														<li
+															key={ticket.id}
+															className="p-4 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50 hover:shadow-md transition-all duration-200"
+															onClick={() => {
+																setSelectedTicket(ticket);
+																fetchReplies(ticket.id);
+															}}
+														>
+															<div className="flex justify-between items-start">
+																<span className="font-semibold text-sm text-gray-900 flex-1 mr-2">
+																	{ticket.subject}
+																</span>
+																<div className="flex flex-col items-end space-y-1">
+																	<span className={classNames(
+																		"text-xs px-2 py-1 rounded-full font-medium",
+																		ticket.priority === "high" ? "bg-red-100 text-red-800" :
+																		ticket.priority === "normal" ? "bg-yellow-100 text-yellow-800" :
+																		"bg-gray-100 text-gray-800"
+																	)}>
 																		{ticket.priority}
 																	</span>
 																</div>
-																<div className="mt-1 flex items-center justify-between">
-																	<div
-																		className={classNames(
-																			"text-sm px-2 py-1 rounded-md w-fit",
-																			ticket.status === "NEW"
-																				? "shadow shadow-rose-300/50 bg-rose-50 text-rose-900"
-																				: ticket.status === "IN_PROGRESS"
-																				? "shadow shadow-yellow-300/50 bg-yellow-50 text-yellow-900"
-																				: "shadow shadow-emerald-300/50 bg-emerald-50 text-emerald-900",
-																		)}
-																	>
-																		{ticket.status === "NEW"
-																			? "New"
+															</div>
+															<div className="mt-3 flex items-center justify-between">
+																<div
+																	className={classNames(
+																		"text-xs px-3 py-1 rounded-full font-medium",
+																		ticket.status === "NEW"
+																			? "bg-rose-100 text-rose-800"
 																			: ticket.status === "IN_PROGRESS"
-																			? "In Progress"
-																			: "Resolved"}
-																	</div>
-																	<div className="text-sm text-gray-600 font-medium rounded-xl px-2 py-1 inline-flex">
-																		{timeAgo(ticket.created_at)}
-																	</div>
-																	<p className="text-sm text-gray-500 inline-flex space-x-1">
-																		<UserCircleIcon className="h-5 w-5 text-gray-500" />
-																		<span className="text-green-500">
-																			John Doe
-																		</span>
-																	</p>
+																			? "bg-yellow-100 text-yellow-800"
+																			: "bg-emerald-100 text-emerald-800",
+																	)}
+																>
+																	{ticket.status === "NEW"
+																		? "New"
+																		: ticket.status === "IN_PROGRESS"
+																		? "In Progress"
+																		: "Resolved"}
 																</div>
-															</li>
-														))}
+																<div className="flex items-center space-x-2 text-xs text-gray-500">
+																	<span>{timeAgo(ticket.created_at)}</span>
+																	<div className="flex items-center">
+																		<UserCircleIcon className="h-4 w-4 mr-1" />
+																		<span className="text-green-600 font-medium">John Doe</span>
+																	</div>
+																</div>
+															</div>
+														</li>
+													))}
+											</ul>
+										) : (
+											<div className="flex items-center justify-center h-full text-gray-500">
+												<div className="text-center">
+													<FolderIcon className="h-12 w-12 mx-auto text-gray-300 mb-4" />
+													<p>No tickets available</p>
+												</div>
+											</div>
+										)}
+									</div>
+								</div>
+
+								{/* Recent Activity */}
+								<div className="bg-white overflow-hidden shadow-lg rounded-xl border border-gray-200">
+									<div className="px-6 py-4 bg-gradient-to-r from-green-50 to-emerald-50 border-b border-gray-200">
+										<h2 className="text-lg font-semibold text-gray-900 flex items-center">
+											<CalendarIcon className="h-5 w-5 mr-2 text-green-600" />
+											Recent Activity
+										</h2>
+									</div>
+									<div className="p-6 h-96 flex flex-col">
+										<div className="overflow-y-auto flex-1">
+											{recentActivity.length > 0 ? (
+												<ul className="space-y-3">
+													{recentActivity.map((activity) => (
+														<li
+															key={activity.id}
+															className={`p-3 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50 transition-all duration-200
+																${activity.type === "system_note" ? "bg-gray-50 border-gray-300" : ""}`}
+															onClick={() => {
+																if (activity.ticketId) {
+																	const ticket = supportTickets.find(
+																		(t) => t.id === activity.ticketId,
+																	);
+																	if (ticket) {
+																		setSelectedTicket(ticket);
+																		fetchReplies(ticket.id);
+																	}
+																}
+															}}
+														>
+															<div className="flex justify-between items-start">
+																<span
+																	className={`text-sm font-medium mr-2 
+																	${activity.type === "system_note" ? "text-gray-600 italic" : "text-gray-800"}`}
+																>
+																	{activity.activity}
+																</span>
+																<span className="text-xs text-gray-500 whitespace-nowrap">
+																	{timeAgo(activity.date)}
+																</span>
+															</div>
+														</li>
+													))}
 												</ul>
 											) : (
-												<div className="text-gray-500 mt-4">
-													No tickets available
+												<div className="flex items-center justify-center h-full text-gray-500">
+													<div className="text-center">
+														<CalendarIcon className="h-12 w-12 mx-auto text-gray-300 mb-4" />
+														<p>No activity available</p>
+													</div>
 												</div>
 											)}
 										</div>
 									</div>
-									<div className="bg-white overflow-hidden shadow rounded-lg h-96">
-										<div className="p-5 h-full flex flex-col">
-											<h2 className="text-lg font-medium text-gray-900 mb-2">
-												Recent Activity
-											</h2>
-											<div className="overflow-y-auto flex-1 pr-1 -mr-1">
-												{recentActivity.length > 0 ? (
-													<ul className="space-y-2">
-														{recentActivity.map((activity) => (
-															<li
-																key={activity.id}
-																className={`py-2 px-1 border-b border-gray-100 last:border-b-0 cursor-pointer hover:bg-gray-50 
-																	${activity.type === "system_note" ? "bg-gray-50" : ""}`}
-																onClick={() => {
-																	// Find and select the relevant ticket when clicking on activity
-																	if (activity.ticketId) {
-																		const ticket = supportTickets.find(
-																			(t) => t.id === activity.ticketId,
-																		);
-																		if (ticket) {
-																			setSelectedTicket(ticket);
-																			fetchReplies(ticket.id);
-																		}
-																	}
-																}}
-															>
-																<div className="flex justify-between">
-																	<span
-																		className={`font-medium text-sm mr-2 
-																		${activity.type === "system_note" ? "text-gray-600 italic" : "text-gray-800"}`}
-																	>
-																		{activity.activity}
-																	</span>
-																	<span className="text-xs text-gray-500 whitespace-nowrap">
-																		{timeAgo(activity.date)}
-																	</span>
-																</div>
-															</li>
-														))}
-													</ul>
-												) : (
-													<div className="text-center text-gray-500 mt-4">
-														No activity available
-													</div>
-												)}
-											</div>
-										</div>
+								</div>
+
+								{/* Charts and Priority Overview */}
+								<div className="bg-white overflow-hidden shadow-lg rounded-xl border border-gray-200">
+									<div className="px-6 py-4 bg-gradient-to-r from-blue-50 to-purple-50 border-b border-gray-200">
+										<h2 className="text-lg font-semibold text-gray-900 flex items-center">
+											<ChartPieIcon className="h-5 w-5 mr-2 text-blue-600" />
+											Tickets Overview
+										</h2>
 									</div>
-									<div className="bg-white overflow-hidden shadow rounded-lg h-96">
-										<div className="p-5 h-full flex flex-col">
-											<h2 className="text-lg font-medium text-gray-900">
-												Tickets Overview ( Priority )
-											</h2>
-											<div className="flex-1">
-												<Bar
-													data={chartData}
-													className="h-full"
-													options={{
-														responsive: true,
-														maintainAspectRatio: false,
-														plugins: {
-															legend: {
-																display: false,
-															},
-															tooltip: {
-																callbacks: {
-																	label: function (context) {
-																		return `Count: ${context.raw}`;
-																	},
+									<div className="p-6 h-96 flex flex-col">
+										<div className="flex-1 mb-4">
+											<Bar
+												data={chartData}
+												className="h-full"
+												options={{
+													responsive: true,
+													maintainAspectRatio: false,
+													plugins: {
+														legend: {
+															display: false,
+														},
+														tooltip: {
+															callbacks: {
+																label: function (context) {
+																	return `Count: ${context.raw}`;
 																},
 															},
 														},
-														scales: {
-															y: {
-																beginAtZero: true,
-																ticks: {
-																	precision: 0,
-																},
+													},
+													scales: {
+														y: {
+															beginAtZero: true,
+															ticks: {
+																precision: 0,
 															},
 														},
-													}}
-												/>
+													},
+												}}
+											/>
+										</div>
+										<div className="grid grid-cols-3 gap-3">
+											<div className="bg-gradient-to-br from-red-50 to-red-100 border border-red-200 rounded-lg p-3 text-center">
+												<h3 className="text-sm font-semibold text-red-800">High</h3>
+												<p className="text-2xl font-bold text-red-900">
+													{
+														supportTickets.filter(
+															(ticket) => ticket.priority === "high",
+														).length
+													}
+												</p>
 											</div>
-											<div className="grid grid-cols-3 gap-1 mt-2">
-												<div className="bg-white overflow-hidden shadow rounded-lg p-1">
-													<h3 className="text-lg font-medium text-center text-gray-900">
-														High
-													</h3>
-													<p className="text-3xl text-center font-semibold text-gray-900">
-														{
-															supportTickets.filter(
-																(ticket) => ticket.priority === "high",
-															).length
-														}
-													</p>
-												</div>
-												<div className="bg-white overflow-hidden shadow rounded-lg p-1">
-													<h3 className="text-lg font-medium text-center text-gray-900">
-														Medium
-													</h3>
-													<p className="text-3xl text-center font-semibold text-gray-900">
-														{
-															supportTickets.filter(
-																(ticket) => ticket.priority === "normal",
-															).length
-														}
-													</p>
-												</div>
-												<div className="bg-white overflow-hidden shadow rounded-lg p-1">
-													<h3 className="text-lg font-medium text-center text-gray-900">
-														Low
-													</h3>
-													<p className="text-3xl text-center font-semibold text-gray-900">
-														{
-															supportTickets.filter(
-																(ticket) => ticket.priority === "low",
-															).length
-														}
-													</p>
-												</div>
+											<div className="bg-gradient-to-br from-yellow-50 to-yellow-100 border border-yellow-200 rounded-lg p-3 text-center">
+												<h3 className="text-sm font-semibold text-yellow-800">Medium</h3>
+												<p className="text-2xl font-bold text-yellow-900">
+													{
+														supportTickets.filter(
+															(ticket) => ticket.priority === "normal",
+														).length
+													}
+												</p>
+											</div>
+											<div className="bg-gradient-to-br from-gray-50 to-gray-100 border border-gray-200 rounded-lg p-3 text-center">
+												<h3 className="text-sm font-semibold text-gray-800">Low</h3>
+												<p className="text-2xl font-bold text-gray-900">
+													{
+														supportTickets.filter(
+															(ticket) => ticket.priority === "low",
+														).length
+													}
+												</p>
 											</div>
 										</div>
 									</div>
 								</div>
 							</div>
-							<div className="bg-white overflow-hidden shadow rounded-lg mt-2 p-5">
-								<div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-2">
-									<div className="bg-white overflow-hidden shadow rounded-lg h-96">
-										<div className="p-5 h-full flex flex-col">
-											<h2 className="text-lg font-medium text-gray-900">
-												Quick Reply
-											</h2>
-											<form
-												className="flex-1"
-												onSubmit={(e) =>
-													handleReplySubmit(e, selectedTicket.id)
-												}
-											>
-												<div className="mt-2">
+
+							{/* Bottom Section - Quick Reply and Conversation */}
+							<div className="mt-8 grid grid-cols-1 gap-8 lg:grid-cols-2">
+								{/* Quick Reply */}
+								<div className="bg-white overflow-hidden shadow-lg rounded-xl border border-gray-200">
+									<div className="px-6 py-4 bg-gradient-to-r from-indigo-50 to-purple-50 border-b border-gray-200">
+										<h2 className="text-lg font-semibold text-gray-900 flex items-center">
+											<DocumentDuplicateIcon className="h-5 w-5 mr-2 text-indigo-600" />
+											Quick Reply
+										</h2>
+									</div>
+									<div className="p-6">
+										<form
+											className="space-y-4"
+											onSubmit={(e) =>
+												handleReplySubmit(e, selectedTicket.id)
+											}
+										>
+											<div>
+												<label
+													htmlFor="ticket-select"
+													className="block text-sm font-medium text-gray-700 mb-2"
+												>
+													Select Ticket
+												</label>
+												<select
+													id="ticket-select"
+													name="ticket-select"
+													className="block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+													value={selectedTicket?.id || ""}
+													onChange={(e) =>
+														setSelectedTicket(
+															supportTickets.find(
+																(ticket) => ticket.id === e.target.value,
+															),
+														)
+													}
+												>
+													<option value="">Select a ticket</option>
+													{supportTickets.map((ticket) => (
+														<option key={ticket.id} value={ticket.id}>
+															{ticket?.subject}
+														</option>
+													))}
+												</select>
+											</div>
+											
+											<div>
+												<div className="flex items-center justify-between mb-2">
 													<label
-														htmlFor="ticket-select"
-														className="block text-sm font-medium text-gray-700 mt-1"
-													>
-														Select Ticket
-													</label>
-													<select
-														id="ticket-select"
-														name="ticket-select"
-														className="mt-1 block min-w-full h-10 pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-gray-500 focus:border-gray-500 sm:text-sm rounded-md"
-														value={selectedTicket?.id || ""}
-														onChange={(e) =>
-															setSelectedTicket(
-																supportTickets.find(
-																	(ticket) => ticket.id === e.target.value,
-																),
-															)
-														}
-													>
-														<option value="">Select a ticket</option>
-														{supportTickets.map((ticket) => (
-															<option key={ticket.id} value={ticket.id}>
-																{ticket?.subject}
-															</option>
-														))}
-													</select>
-												</div>
-												<div className="mt-3">
-													<div className="flex items-center justify-between">
-														<label
-															htmlFor="reply"
-															className="block text-sm font-medium text-gray-700"
-														>
-															Reply
-														</label>
-														{aiEnabled && (
-															<button
-																type="button"
-																onClick={generateAIReply}
-																disabled={isGeneratingAIReply || !selectedTicket}
-																className="inline-flex items-center px-2 py-1 text-xs font-medium rounded text-gray-700 bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 disabled:opacity-50"
-															>
-																<SparklesIcon className="h-3 w-3 mr-1" />
-																{isGeneratingAIReply ? "Generating..." : "AI Suggestion"}
-															</button>
-														)}
-													</div>
-													
-													{showAiReply && (
-														<div className="mt-2 p-3 bg-gray-50 border border-gray-200 rounded-md">
-															<div className="flex items-center justify-between mb-2">
-																<span className="text-xs font-medium text-gray-500 flex items-center">
-																	<SparklesIcon className="h-3 w-3 mr-1" />
-																	AI Suggestion
-																</span>
-																<div className="flex space-x-2">
-																	<button
-																		type="button"
-																		onClick={acceptAIReply}
-																		className="inline-flex items-center p-1 text-xs font-medium rounded-full text-green-700 bg-green-100 hover:bg-green-200"
-																		title="Accept suggestion"
-																	>
-																		<CheckIcon className="h-4 w-4" />
-																	</button>
-																	<button
-																		type="button"
-																		onClick={rejectAIReply}
-																		className="inline-flex items-center p-1 text-xs font-medium rounded-full text-red-700 bg-red-100 hover:bg-red-200"
-																		title="Reject suggestion"
-																	>
-																		<XCircleIcon className="h-4 w-4" />
-																	</button>
-																</div>
-															</div>
-															<div className="text-sm text-gray-700 p-2 bg-white border border-gray-100 rounded">
-																{aiReply}
-															</div>
-														</div>
-													)}
-													
-													<textarea
-														id="reply"
-														name="reply"
-														rows="4"
-														onChange={(e) => setReply(e.target.value)}
-														className="mt-2 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-														value={reply}
-														required
-													/>
-												</div>
-												<div className="mt-5">
-													<button
-														type="button"
-														className="w-full flex justify-center items-center px-4 py-3 border border-transparent text-sm font-medium rounded-md shadow-sm shadow-emerald-800/100 text-black hover:shadow-amber-500/100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 cursor-pointer"
-														onClick={handleReplySubmit}
+														htmlFor="reply"
+														className="block text-sm font-medium text-gray-700"
 													>
 														Reply
-													</button>
+													</label>
+													{aiEnabled && (
+														<button
+															type="button"
+															onClick={generateAIReply}
+															disabled={isGeneratingAIReply || !selectedTicket}
+															className="inline-flex items-center px-3 py-1 text-xs font-medium rounded-full text-indigo-700 bg-indigo-100 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 transition-colors duration-200"
+														>
+															<SparklesIcon className="h-3 w-3 mr-1" />
+															{isGeneratingAIReply ? "Generating..." : "AI Suggestion"}
+														</button>
+													)}
 												</div>
-											</form>
-										</div>
-									</div>
-									<div className="bg-white overflow-hidden shadow rounded-lg h-96">
-										<div className="p-5 h-full flex flex-col overflow-y-scroll">
-											<h2 className="text-lg font-medium text-gray-900">
-												{selectedTicket
-													? `Replies for: ${selectedTicket.subject}`
-													: "Select a ticket to view replies"}
-											</h2>
-											<div className="flex-1 mt-4">
-												{selectedTicket ? (
-													<div className="space-y-4 overflow-y-auto h-full">
-														{/* Original ticket message */}
-														<div className="bg-gray-50 p-4 rounded-lg">
-															<div className="flex items-center justify-between mb-2">
-																<span className="font-medium text-gray-900">
-																	Original Ticket
-																</span>
-																<span className="text-sm text-gray-500">
-																	{timeAgo(selectedTicket.created_at)}
-																</span>
-															</div>
-															<p className="text-gray-700">
-																{selectedTicket.description}
-															</p>
-														</div>
-
-														{/* Replies */}
-														{ticketReplies.length > 0 ? (
-															ticketReplies.map((reply) => (
-																<div
-																	key={reply.id}
-																	className="bg-white border border-gray-200 p-4 rounded-lg"
+												
+												{showAiReply && (
+													<div className="mb-4 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-lg">
+														<div className="flex items-center justify-between mb-3">
+															<span className="text-sm font-medium text-blue-700 flex items-center">
+																<SparklesIcon className="h-4 w-4 mr-1" />
+																AI Suggestion
+															</span>
+															<div className="flex space-x-2">
+																<button
+																	type="button"
+																	onClick={acceptAIReply}
+																	className="inline-flex items-center p-1.5 text-sm font-medium rounded-full text-green-700 bg-green-100 hover:bg-green-200 transition-colors duration-200"
+																	title="Accept suggestion"
 																>
-																	<div className="flex items-center justify-between mb-2">
-																		<div className="flex items-center space-x-2">
-																			<UserCircleIcon className="h-5 w-5 text-gray-500" />
-																			<span className="font-medium text-gray-900">
-																				{reply.user_id ===
-																				selectedTicket.user_id
-																					? "Customer"
-																					: "Support Agent"}
-																			</span>
-																		</div>
-																		<span className="text-sm text-gray-500">
-																			{timeAgo(reply.created_at)}
-																		</span>
-																	</div>
-																	<p className="text-gray-700">{reply.reply}</p>
-																</div>
-															))
-														) : (
-															<div className="text-center text-gray-500 mt-4">
-																No replies yet
+																	<CheckIcon className="h-4 w-4" />
+																</button>
+																<button
+																	type="button"
+																	onClick={rejectAIReply}
+																	className="inline-flex items-center p-1.5 text-sm font-medium rounded-full text-red-700 bg-red-100 hover:bg-red-200 transition-colors duration-200"
+																	title="Reject suggestion"
+																>
+																	<XCircleIcon className="h-4 w-4" />
+																</button>
 															</div>
-														)}
-													</div>
-												) : (
-													<div className="flex items-center justify-center h-full text-gray-500">
-														<div className="text-center">
-															<span className="block mb-2">👈</span>
-															Select a ticket from the quick reply form to view
-															the conversation
+														</div>
+														<div className="text-sm text-gray-700 p-3 bg-white border border-blue-100 rounded-lg">
+															{aiReply}
 														</div>
 													</div>
 												)}
+												
+												<textarea
+													id="reply"
+													name="reply"
+													rows="4"
+													onChange={(e) => setReply(e.target.value)}
+													className="block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+													value={reply}
+													placeholder="Type your reply here..."
+													required
+												/>
 											</div>
-										</div>
+											
+											<button
+												type="button"
+												className="w-full flex justify-center items-center px-4 py-3 border border-transparent text-sm font-medium rounded-lg text-white bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all duration-200 shadow-lg hover:shadow-xl"
+												onClick={handleReplySubmit}
+											>
+												Send Reply
+											</button>
+										</form>
+									</div>
+								</div>
+
+								{/* Conversation View */}
+								<div className="bg-white overflow-hidden shadow-lg rounded-xl border border-gray-200">
+									<div className="px-6 py-4 bg-gradient-to-r from-gray-50 to-gray-100 border-b border-gray-200">
+										<h2 className="text-lg font-semibold text-gray-900 flex items-center">
+											<UserCircleIcon className="h-5 w-5 mr-2 text-gray-600" />
+											{selectedTicket
+												? `Conversation: ${selectedTicket.subject}`
+												: "Select a ticket to view conversation"}
+										</h2>
+									</div>
+									<div className="p-6 h-96 overflow-y-auto">
+										{selectedTicket ? (
+											<div className="space-y-4">
+												{/* Original ticket message */}
+												<div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 p-4 rounded-lg">
+													<div className="flex items-center justify-between mb-3">
+														<div className="flex items-center space-x-2">
+															<div className="bg-blue-500 rounded-full p-1">
+																<UserCircleIcon className="h-4 w-4 text-white" />
+															</div>
+															<span className="font-medium text-blue-900">Original Ticket</span>
+														</div>
+														<span className="text-sm text-blue-700">
+															{timeAgo(selectedTicket.created_at)}
+														</span>
+													</div>
+													<p className="text-gray-700 leading-relaxed">
+														{selectedTicket.description}
+													</p>
+												</div>
+
+												{/* Replies */}
+												{ticketReplies.length > 0 ? (
+													ticketReplies.map((reply) => (
+														<div
+															key={reply.id}
+															className="bg-white border border-gray-200 p-4 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200"
+														>
+															<div className="flex items-center justify-between mb-3">
+																<div className="flex items-center space-x-2">
+																	<div className={classNames(
+																		"rounded-full p-1",
+																		reply.user_id === selectedTicket.user_id 
+																			? "bg-green-500" 
+																			: "bg-purple-500"
+																	)}>
+																		<UserCircleIcon className="h-4 w-4 text-white" />
+																	</div>
+																	<span className="font-medium text-gray-900">
+																		{reply.user_id === selectedTicket.user_id
+																			? "Customer"
+																			: "Support Agent"}
+																	</span>
+																</div>
+																<span className="text-sm text-gray-500">
+																	{timeAgo(reply.created_at)}
+																</span>
+															</div>
+															<p className="text-gray-700 leading-relaxed">{reply.reply}</p>
+														</div>
+													))
+												) : (
+													<div className="text-center text-gray-500 py-8">
+														<DocumentDuplicateIcon className="h-12 w-12 mx-auto text-gray-300 mb-4" />
+														<p>No replies yet</p>
+													</div>
+												)}
+											</div>
+										) : (
+											<div className="flex items-center justify-center h-full text-gray-500">
+												<div className="text-center">
+													<UserCircleIcon className="h-16 w-16 mx-auto text-gray-300 mb-4" />
+													<p className="text-lg font-medium mb-2">Select a ticket</p>
+													<p className="text-sm">Choose a ticket from the list or quick reply form to view the conversation</p>
+												</div>
+											</div>
+										)}
 									</div>
 								</div>
 							</div>
