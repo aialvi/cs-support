@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { timeAgo } from "./utils/TimeAgo";
 import { ToastContainer, toast } from "react-toastify";
 import {
@@ -18,6 +18,9 @@ import {
 	UserCircleIcon,
 	ExclamationTriangleIcon,
 	LockClosedIcon,
+	SparklesIcon,
+	CheckIcon,
+	XCircleIcon,
 } from "@heroicons/react/24/outline";
 import { Bar } from "react-chartjs-2";
 import {
@@ -110,6 +113,10 @@ export default function Dashboard({ navigate }) {
 	const [supportTickets, setSupportTickets] = useState([]);
 	const [ticketReplies, setTicketReplies] = useState([]);
 	const [recentActivity, setRecentActivity] = useState([]);
+	const [isGeneratingAIReply, setIsGeneratingAIReply] = useState(false);
+	const [aiReply, setAiReply] = useState("");
+	const [showAiReply, setShowAiReply] = useState(false);
+	const [aiEnabled, setAiEnabled] = useState(false);
 	const [chartData, setChartData] = useState({
 		labels: ["New", "In Progress", "Resolved"],
 		datasets: [
@@ -257,6 +264,79 @@ export default function Dashboard({ navigate }) {
 		}
 	}, [selectedTicket]);
 
+	useEffect(() => {
+		// Check if AI is enabled
+		const checkAISettings = async () => {
+			try {
+				const response = await fetch(CS_SUPPORT_HELPDESK_CONFIG.apiUrl + '/settings', {
+					method: 'GET',
+					headers: {
+						'Content-Type': 'application/json',
+						'X-WP-Nonce': CS_SUPPORT_HELPDESK_CONFIG.nonce,
+					},
+				});
+				
+				if (response.ok) {
+					const data = await response.json();
+					setAiEnabled(data?.ai?.enabled && data?.ai?.apiKey);
+				}
+			} catch (error) {
+				console.error('Failed to check AI settings:', error);
+			}
+		};
+		
+		checkAISettings();
+	}, []);
+	
+	const generateAIReply = async () => {
+		if (!selectedTicket) {
+			toast.error('Please select a ticket first');
+			return;
+		}
+		
+		setIsGeneratingAIReply(true);
+		setShowAiReply(false);
+		setAiReply('');
+		
+		try {
+			const response = await fetch(CS_SUPPORT_HELPDESK_CONFIG.apiUrl + '/ai/generate-reply', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+					'X-WP-Nonce': CS_SUPPORT_HELPDESK_CONFIG.nonce,
+				},
+				body: JSON.stringify({
+					ticket_id: selectedTicket.id,
+				}),
+			});
+			
+			const data = await response.json();
+			
+			if (data.success) {
+				setAiReply(data.reply);
+				setShowAiReply(true);
+			} else {
+				toast.error(data.message || 'Failed to generate AI reply');
+			}
+		} catch (error) {
+			toast.error('Error generating AI reply: ' + error.message);
+			console.error('AI reply error:', error);
+		} finally {
+			setIsGeneratingAIReply(false);
+		}
+	};
+	
+	const acceptAIReply = () => {
+		setReply(aiReply);
+		setShowAiReply(false);
+		setAiReply('');
+	};
+	
+	const rejectAIReply = () => {
+		setShowAiReply(false);
+		setAiReply('');
+	};
+	
 	useEffect(() => {
 		const fetchTickets = async () => {
 			try {
@@ -805,18 +885,64 @@ export default function Dashboard({ navigate }) {
 													</select>
 												</div>
 												<div className="mt-3">
-													<label
-														htmlFor="reply"
-														className="block text-sm font-medium text-gray-700"
-													>
-														Reply
-													</label>
+													<div className="flex items-center justify-between">
+														<label
+															htmlFor="reply"
+															className="block text-sm font-medium text-gray-700"
+														>
+															Reply
+														</label>
+														{aiEnabled && (
+															<button
+																type="button"
+																onClick={generateAIReply}
+																disabled={isGeneratingAIReply || !selectedTicket}
+																className="inline-flex items-center px-2 py-1 text-xs font-medium rounded text-gray-700 bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 disabled:opacity-50"
+															>
+																<SparklesIcon className="h-3 w-3 mr-1" />
+																{isGeneratingAIReply ? "Generating..." : "AI Suggestion"}
+															</button>
+														)}
+													</div>
+													
+													{showAiReply && (
+														<div className="mt-2 p-3 bg-gray-50 border border-gray-200 rounded-md">
+															<div className="flex items-center justify-between mb-2">
+																<span className="text-xs font-medium text-gray-500 flex items-center">
+																	<SparklesIcon className="h-3 w-3 mr-1" />
+																	AI Suggestion
+																</span>
+																<div className="flex space-x-2">
+																	<button
+																		type="button"
+																		onClick={acceptAIReply}
+																		className="inline-flex items-center p-1 text-xs font-medium rounded-full text-green-700 bg-green-100 hover:bg-green-200"
+																		title="Accept suggestion"
+																	>
+																		<CheckIcon className="h-4 w-4" />
+																	</button>
+																	<button
+																		type="button"
+																		onClick={rejectAIReply}
+																		className="inline-flex items-center p-1 text-xs font-medium rounded-full text-red-700 bg-red-100 hover:bg-red-200"
+																		title="Reject suggestion"
+																	>
+																		<XCircleIcon className="h-4 w-4" />
+																	</button>
+																</div>
+															</div>
+															<div className="text-sm text-gray-700 p-2 bg-white border border-gray-100 rounded">
+																{aiReply}
+															</div>
+														</div>
+													)}
+													
 													<textarea
 														id="reply"
 														name="reply"
 														rows="4"
 														onChange={(e) => setReply(e.target.value)}
-														className="mt-1 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+														className="mt-2 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
 														value={reply}
 														required
 													/>

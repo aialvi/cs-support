@@ -8,6 +8,9 @@ import {
 	ChatBubbleLeftRightIcon,
 	DocumentTextIcon,
 	UserIcon,
+	SparklesIcon,
+	CheckIcon,
+	XCircleIcon,
 } from "@heroicons/react/24/outline";
 
 export default function Tickets() {
@@ -18,10 +21,38 @@ export default function Tickets() {
 	const [loading, setLoading] = useState(true);
 	const [submitting, setSubmitting] = useState(false);
 	const [updatingStatus, setUpdatingStatus] = useState(false);
+	const [isGeneratingAIReply, setIsGeneratingAIReply] = useState(false);
+	const [aiReply, setAiReply] = useState("");
+	const [showAiReply, setShowAiReply] = useState(false);
+	const [aiEnabled, setAiEnabled] = useState(false);
 
 	// Fetch tickets on mount
 	useEffect(() => {
 		fetchTickets();
+	}, []);
+
+	// Check if AI is enabled
+	useEffect(() => {
+		const checkAISettings = async () => {
+			try {
+				const response = await fetch('/wp-json/cs-support/v1/settings', {
+					method: 'GET',
+					headers: {
+						'Content-Type': 'application/json',
+						'X-WP-Nonce': CS_SUPPORT_HELPDESK_TICKETS_CONFIG.nonce,
+					},
+				});
+				
+				if (response.ok) {
+					const data = await response.json();
+					setAiEnabled(data?.ai?.enabled && data?.ai?.apiKey);
+				}
+			} catch (error) {
+				console.error('Failed to check AI settings:', error);
+			}
+		};
+		
+		checkAISettings();
 	}, []);
 
 	// Handle ticket_id URL parameter on initial load
@@ -293,6 +324,71 @@ export default function Tickets() {
 		}
 	};
 
+	// AI reply generation functions
+	const generateAIReply = async () => {
+		if (!selectedTicket || isGeneratingAIReply) return;
+
+		setIsGeneratingAIReply(true);
+		setShowAiReply(false);
+
+		try {
+			const response = await fetch('/wp-json/cs-support/v1/ai/generate-reply', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+					'X-WP-Nonce': CS_SUPPORT_HELPDESK_TICKETS_CONFIG.nonce,
+				},
+				body: JSON.stringify({
+					ticket_id: selectedTicket.id,
+				}),
+			});
+
+			if (response.ok) {
+				const data = await response.json();
+				setAiReply(data.reply || '');
+				setShowAiReply(true);
+			} else {
+				const errorData = await response.json();
+				throw new Error(errorData.message || 'Failed to generate AI reply');
+			}
+		} catch (error) {
+			console.error('Failed to generate AI reply:', error);
+			toast.error(error.message || 'Failed to generate AI reply', {
+				autoClose: 3000,
+				position: "bottom-right",
+			});
+		} finally {
+			setIsGeneratingAIReply(false);
+		}
+	};
+
+	const acceptAIReply = () => {
+		setNewReply(aiReply);
+		setShowAiReply(false);
+		setAiReply('');
+		
+		// Focus the textarea
+		const textarea = document.getElementById('reply-textarea');
+		if (textarea) {
+			textarea.focus();
+		}
+		
+		toast.success('AI reply accepted', {
+			autoClose: 2000,
+			position: "bottom-right",
+		});
+	};
+
+	const rejectAIReply = () => {
+		setShowAiReply(false);
+		setAiReply('');
+		
+		toast.info('AI reply rejected', {
+			autoClose: 2000,
+			position: "bottom-right",
+		});
+	};
+
 	return (
 		<div className="container mx-auto p-4">
 			<h1 className="text-2xl font-bold my-4" tabIndex="-1">
@@ -551,28 +647,138 @@ export default function Tickets() {
 						</div>
 
 						<div className="p-4 shadow shadow-gray-600">
+							{/* AI Suggestion Display */}
+							{showAiReply && (
+								<div className="mb-4 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-lg">
+									<div className="flex items-center gap-2 mb-3">
+										<SparklesIcon className="h-5 w-5 text-blue-600" />
+										<h4 className="text-sm font-medium text-blue-900">AI Suggestion</h4>
+									</div>
+									<div className="text-sm text-gray-800 whitespace-pre-wrap mb-3 p-3 bg-white rounded border">
+										{aiReply}
+									</div>
+									<div className="flex justify-end gap-2">
+										<button
+											onClick={acceptAIReply}
+											className="inline-flex items-center gap-1 px-3 py-1.5 bg-green-600 text-white text-sm rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
+											aria-label="Accept AI reply"
+										>
+											<CheckIcon className="h-4 w-4" />
+											Accept
+										</button>
+										<button
+											onClick={rejectAIReply}
+											className="inline-flex items-center gap-1 px-3 py-1.5 bg-gray-500 text-white text-sm rounded-md hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
+											aria-label="Reject AI reply"
+										>
+											<XCircleIcon className="h-4 w-4" />
+											Reject
+										</button>
+									</div>
+								</div>
+							)}
+
 							<form onSubmit={handleSubmitReply}>
-								<label htmlFor="reply-textarea" className="sr-only">
-									Type your reply
-								</label>
-								<textarea
-									id="reply-textarea"
-									value={newReply}
-									onChange={(e) => setNewReply(e.target.value)}
-									className="w-full p-2 border rounded-md"
-									rows="3"
-									placeholder="Type your reply..."
-									required
-									aria-label="Reply to support ticket"
-								/>
-								<button
-									type="submit"
-									disabled={submitting}
-									aria-busy={submitting}
-									className="w-full mt-2 shadow shadow-blue-500/100 px-4 py-2 rounded-md disabled:opacity-50 text-center hover:shadow-blue-600/100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-								>
-									{submitting ? "Sending..." : "Reply"}
-								</button>
+								<div className="relative">
+									<label htmlFor="reply-textarea" className="sr-only">
+										Type your reply
+									</label>
+									<textarea
+										id="reply-textarea"
+										value={newReply}
+										onChange={(e) => setNewReply(e.target.value)}
+										className="w-full p-3 border rounded-md resize-none"
+										rows="4"
+										placeholder="Type your reply..."
+										required
+										aria-label="Reply to support ticket"
+									/>
+									{aiEnabled && (
+										<button
+											type="button"
+											onClick={generateAIReply}
+											disabled={isGeneratingAIReply}
+											className="absolute top-2 right-2 p-2 text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+											title="Generate AI suggestion"
+											aria-label="Generate AI reply suggestion"
+										>
+											{isGeneratingAIReply ? (
+												<svg
+													className="animate-spin h-5 w-5"
+													xmlns="http://www.w3.org/2000/svg"
+													fill="none"
+													viewBox="0 0 24 24"
+												>
+													<circle
+														className="opacity-25"
+														cx="12"
+														cy="12"
+														r="10"
+														stroke="currentColor"
+														strokeWidth="4"
+													></circle>
+													<path
+														className="opacity-75"
+														fill="currentColor"
+														d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+													></path>
+												</svg>
+											) : (
+												<SparklesIcon className="h-5 w-5" />
+											)}
+										</button>
+									)}
+								</div>
+								<div className="flex gap-2 mt-3">
+									<button
+										type="submit"
+										disabled={submitting}
+										aria-busy={submitting}
+										className="flex-1 shadow shadow-blue-500/100 px-4 py-2 rounded-md disabled:opacity-50 text-center hover:shadow-blue-600/100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+									>
+										{submitting ? "Sending..." : "Reply"}
+									</button>
+									{aiEnabled && !showAiReply && (
+										<button
+											type="button"
+											onClick={generateAIReply}
+											disabled={isGeneratingAIReply}
+											className="px-4 py-2 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-md shadow hover:from-blue-600 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+											aria-label="Generate AI reply"
+										>
+											{isGeneratingAIReply ? (
+												<>
+													<svg
+														className="animate-spin h-4 w-4 inline-block mr-2"
+														xmlns="http://www.w3.org/2000/svg"
+														fill="none"
+														viewBox="0 0 24 24"
+													>
+														<circle
+															className="opacity-25"
+															cx="12"
+															cy="12"
+															r="10"
+															stroke="currentColor"
+															strokeWidth="4"
+														></circle>
+														<path
+															className="opacity-75"
+															fill="currentColor"
+															d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+														></path>
+													</svg>
+													Generating...
+												</>
+											) : (
+												<>
+													<SparklesIcon className="h-4 w-4 inline-block mr-2" />
+													AI Assist
+												</>
+											)}
+										</button>
+									)}
+								</div>
 							</form>
 						</div>
 					</div>

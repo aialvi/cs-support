@@ -38,6 +38,7 @@ function bootstrap(): void {
 	new DB_Updater( get_plugin_instance() );
 	new Team_Members( get_plugin_instance() );
 	new Notifications( get_plugin_instance() );
+	new AI_Assistant( get_plugin_instance() );
 	new Notification_Settings( get_plugin_instance() );
 	
 	// Initialize shortcodes

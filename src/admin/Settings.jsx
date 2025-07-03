@@ -4,6 +4,7 @@ import {
 	EnvelopeIcon,
 	UserGroupIcon,
 	BellIcon,
+	SparklesIcon,
 } from "@heroicons/react/24/outline";
 
 export default function Settings() {
@@ -12,6 +13,14 @@ export default function Settings() {
 			defaultPriority: "normal",
 			// allowGuestTickets: false,
 			// ticketsPerPage: 10,
+		},
+		ai: {
+			enabled: false,
+			provider: "openai",
+			apiKey: "",
+			model: "gpt-4o-mini",
+			maxTokens: 500,
+			temperature: 0.7,
 		},
 			// notifications: {
 		// 	adminNewTicket: true,
@@ -163,6 +172,160 @@ export default function Settings() {
 									Allow guest ticket submissions
 								</label>
 							</div> */}
+						</div>
+					</div>
+
+					{/* AI Assistant Settings */}
+					<div className="bg-white shadow rounded-lg p-6">
+						<div className="flex items-center mb-4">
+							<SparklesIcon className="h-6 w-6 text-gray-500 mr-2" />
+							<h2 className="text-xl font-semibold">AI Assistant Settings</h2>
+						</div>
+
+						<div className="space-y-4">
+							<div className="flex items-center">
+								<input
+									type="checkbox"
+									id="aiEnabled"
+									checked={settings.ai?.enabled || false}
+									onChange={(e) =>
+										handleChange("ai", "enabled", e.target.checked)
+									}
+									className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+								/>
+								<label
+									htmlFor="aiEnabled"
+									className="ml-2 block text-sm text-gray-900"
+								>
+									Enable AI-powered reply suggestions
+								</label>
+							</div>
+
+							<div>
+								<label className="block text-sm font-medium text-gray-700">
+									AI Provider
+								</label>
+								<select
+									value={settings.ai?.provider || "openai"}
+									onChange={(e) =>
+										handleChange("ai", "provider", e.target.value)
+									}
+									disabled={!settings.ai?.enabled}
+									className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 disabled:bg-gray-100 disabled:text-gray-500"
+								>
+									<option value="openai">OpenAI</option>
+									<option value="gemini">Google Gemini</option>
+									<option value="anthropic">Anthropic Claude</option>
+								</select>
+							</div>
+
+							<div>
+								<label className="block text-sm font-medium text-gray-700">
+									API Key
+								</label>
+								<input
+									type="password"
+									value={settings.ai?.apiKey || ""}
+									onChange={(e) =>
+										handleChange("ai", "apiKey", e.target.value)
+									}
+									disabled={!settings.ai?.enabled}
+									className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 disabled:bg-gray-100 disabled:text-gray-500"
+									placeholder="Enter your API key"
+								/>
+								<p className="mt-1 text-sm text-gray-500">
+									{settings.ai?.provider === "openai" && "Get your API key from https://platform.openai.com/api-keys"}
+									{settings.ai?.provider === "gemini" && "Get your API key from https://aistudio.google.com/app/apikey"}
+									{settings.ai?.provider === "anthropic" && "Get your API key from https://console.anthropic.com/"}
+								</p>
+							</div>
+
+							<div>
+								<label className="block text-sm font-medium text-gray-700">
+									AI Model
+								</label>
+								<select
+									value={settings.ai?.model || "gpt-3.5-turbo"}
+									onChange={(e) => handleChange("ai", "model", e.target.value)}
+									disabled={!settings.ai?.enabled}
+									className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 disabled:bg-gray-100 disabled:text-gray-500"
+								>
+									{settings.ai?.provider === "openai" && (
+										<>
+											<option value="gpt-3.5-turbo">GPT-3.5 Turbo</option>
+											<option value="gpt-4">GPT-4</option>
+											<option value="gpt-4-turbo">GPT-4 Turbo</option>
+											<option value="gpt-4o">GPT-4o</option>
+											<option value="gpt-4o-mini">GPT-4o Mini</option>
+											<option value="o1-preview">o1-preview</option>
+											<option value="o1-mini">o1-mini</option>
+										</>
+									)}
+									{settings.ai?.provider === "gemini" && (
+										<>
+											<option value="gemini-1.5-pro">Gemini 1.5 Pro</option>
+											<option value="gemini-1.5-flash">Gemini 1.5 Flash</option>
+											<option value="gemini-2.0-flash-exp">Gemini 2.0 Flash (Experimental)</option>
+											<option value="gemini-exp-1206">Gemini Experimental 1206</option>
+											<option value="gemini-1.0-pro">Gemini 1.0 Pro</option>
+										</>
+									)}
+									{settings.ai?.provider === "anthropic" && (
+										<>
+											<option value="claude-3-5-sonnet-20241022">Claude 3.5 Sonnet</option>
+											<option value="claude-3-5-haiku-20241022">Claude 3.5 Haiku</option>
+											<option value="claude-3-opus-20240229">Claude 3 Opus</option>
+											<option value="claude-3-sonnet-20240229">Claude 3 Sonnet</option>
+											<option value="claude-3-haiku-20240307">Claude 3 Haiku</option>
+										</>
+									)}
+								</select>
+							</div>
+
+							<div>
+								<label className="block text-sm font-medium text-gray-700">
+									Temperature (Creativity)
+								</label>
+								<input
+									type="range"
+									min="0"
+									max="1"
+									step="0.1"
+									value={settings.ai?.temperature || 0.7}
+									onChange={(e) =>
+										handleChange("ai", "temperature", parseFloat(e.target.value))
+									}
+									disabled={!settings.ai?.enabled}
+									className="mt-1 block w-full disabled:opacity-50"
+								/>
+								<div className="flex justify-between mt-1">
+									<span className="text-xs text-gray-500">Professional (0)</span>
+									<span className="text-xs text-gray-500">
+										{settings.ai?.temperature || 0.7}
+									</span>
+									<span className="text-xs text-gray-500">Creative (1)</span>
+								</div>
+							</div>
+
+							<div>
+								<label className="block text-sm font-medium text-gray-700">
+									Max Response Length
+								</label>
+								<input
+									type="number"
+									min="100"
+									max="2000"
+									value={settings.ai?.maxTokens || 500}
+									onChange={(e) =>
+										handleChange("ai", "maxTokens", parseInt(e.target.value))
+									}
+									disabled={!settings.ai?.enabled}
+									className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 disabled:bg-gray-100 disabled:text-gray-500"
+								/>
+								<p className="mt-1 text-sm text-gray-500">
+									Maximum length of AI-generated responses
+								</p>
+							</div>
 						</div>
 					</div>
 

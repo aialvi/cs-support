@@ -25,6 +25,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 require_once __DIR__ . '/vendor/autoload.php';
 require_once __DIR__ . '/includes/namespace.php';
 require_once __DIR__ . '/includes/constants.php';
+require_once __DIR__ . '/includes/api-schema.php';
 
 bootstrap();
 
