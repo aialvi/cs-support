@@ -77,5 +77,25 @@ class DB_Updater
                 ADD COLUMN is_system_note TINYINT(1) NOT NULL DEFAULT 0"
             );
         }
+
+        // Check if assignee_id column exists in tickets table
+        $assignee_column_exists = $wpdb->get_results(
+            $wpdb->prepare(
+                "SELECT * FROM INFORMATION_SCHEMA.COLUMNS 
+                WHERE TABLE_SCHEMA = %s 
+                AND TABLE_NAME = %s 
+                AND COLUMN_NAME = 'assignee_id'",
+                DB_NAME,
+                $wpdb->prefix . 'cs_support_tickets'
+            )
+        );
+
+        // If assignee_id column doesn't exist, add it
+        if (empty($assignee_column_exists)) {
+            $wpdb->query(
+                "ALTER TABLE {$wpdb->prefix}cs_support_tickets 
+                ADD COLUMN assignee_id BIGINT(20) UNSIGNED DEFAULT NULL"
+            );
+        }
     }
 }

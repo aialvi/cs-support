@@ -17,6 +17,7 @@ import {
 	XMarkIcon,
 	UserCircleIcon,
 	ExclamationTriangleIcon,
+	LockClosedIcon,
 } from "@heroicons/react/24/outline";
 import { Bar } from "react-chartjs-2";
 import {
@@ -93,7 +94,7 @@ function ProFeaturePopover({ children }) {
 		<div className="group relative">
 			{children}
 			<div className="absolute left-full ml-2 top-1/2 -translate-y-1/2 hidden group-hover:block z-10">
-				<div className="bg-gray-800 text-white text-xs px-2 py-1 rounded whitespace-nowrap">
+				<div className="bg-gray-800 text-xs px-2 py-1 rounded whitespace-nowrap">
 					Pro Feature
 					<div className="absolute top-1/2 -left-1 -translate-y-1/2 transform rotate-45 w-2 h-2 bg-gray-800"></div>
 				</div>
@@ -111,26 +112,13 @@ export default function Dashboard({ navigate }) {
 	const [recentActivity, setRecentActivity] = useState([]);
 	const [chartData, setChartData] = useState({
 		labels: ["New", "In Progress", "Resolved"],
-		datasets: [{ data: [0, 0, 0], backgroundColor: ["rgba(244, 63, 94, 0.2)", "rgba(234, 179, 8, 0.2)", "rgba(16, 185, 129, 0.2)"], borderColor: ["rgba(244, 63, 94, 1)", "rgba(234, 179, 8, 1)", "rgba(16, 185, 129, 1)"], borderWidth: 1 }]
-	});
-
-// Function to generate chart data based on tickets
-const generateChartData = (tickets) => {
-	// Get counts by status
-	const newTickets = tickets.filter(ticket => ticket.status === 'NEW').length;
-	const inProgressTickets = tickets.filter(ticket => ticket.status === 'IN_PROGRESS').length;
-	const resolvedTickets = tickets.filter(ticket => ticket.status === 'RESOLVED').length;
-
-	return {
-		labels: ["New", "In Progress", "Resolved"],
 		datasets: [
 			{
-				label: "Support Tickets",
-				data: [newTickets, inProgressTickets, resolvedTickets],
+				data: [0, 0, 0],
 				backgroundColor: [
-					"rgba(244, 63, 94, 0.2)", // rose for new
-					"rgba(234, 179, 8, 0.2)",  // yellow for in progress
-					"rgba(16, 185, 129, 0.2)", // emerald for resolved
+					"rgba(244, 63, 94, 0.2)",
+					"rgba(234, 179, 8, 0.2)",
+					"rgba(16, 185, 129, 0.2)",
 				],
 				borderColor: [
 					"rgba(244, 63, 94, 1)",
@@ -140,8 +128,42 @@ const generateChartData = (tickets) => {
 				borderWidth: 1,
 			},
 		],
+	});
+
+	// Function to generate chart data based on tickets
+	const generateChartData = (tickets) => {
+		// Get counts by status
+		const newTickets = tickets.filter(
+			(ticket) => ticket.status === "NEW",
+		).length;
+		const inProgressTickets = tickets.filter(
+			(ticket) => ticket.status === "IN_PROGRESS",
+		).length;
+		const resolvedTickets = tickets.filter(
+			(ticket) => ticket.status === "RESOLVED",
+		).length;
+
+		return {
+			labels: ["New", "In Progress", "Resolved"],
+			datasets: [
+				{
+					label: "Support Tickets",
+					data: [newTickets, inProgressTickets, resolvedTickets],
+					backgroundColor: [
+						"rgba(244, 63, 94, 0.2)", // rose for new
+						"rgba(234, 179, 8, 0.2)", // yellow for in progress
+						"rgba(16, 185, 129, 0.2)", // emerald for resolved
+					],
+					borderColor: [
+						"rgba(244, 63, 94, 1)",
+						"rgba(234, 179, 8, 1)",
+						"rgba(16, 185, 129, 1)",
+					],
+					borderWidth: 1,
+				},
+			],
+		};
 	};
-};
 
 	const notify = () =>
 		toast("Reply added", {
@@ -152,57 +174,62 @@ const generateChartData = (tickets) => {
 	// Generate activity entries from tickets and replies
 	const generateActivityEntries = (tickets, allReplies = []) => {
 		const activities = [];
-		
+
 		// Add ticket creation activities
-		tickets.forEach(ticket => {
+		tickets.forEach((ticket) => {
 			activities.push({
 				id: `ticket-${ticket.id}`,
 				activity: `New ticket: "${ticket.subject}"`,
 				date: ticket.created_at,
-				type: 'ticket_created',
-				ticketId: ticket.id
+				type: "ticket_created",
+				ticketId: ticket.id,
 			});
-			
+
 			// Add status change activities if status is not NEW
-			if (ticket.status === 'RESOLVED') {
+			if (ticket.status === "RESOLVED") {
 				activities.push({
 					id: `status-${ticket.id}`,
 					activity: `Ticket resolved: "${ticket.subject}"`,
 					date: ticket.updated_at || ticket.created_at, // Use updated_at if available
-					type: 'ticket_resolved',
-					ticketId: ticket.id
+					type: "ticket_resolved",
+					ticketId: ticket.id,
 				});
-			} else if (ticket.status === 'IN_PROGRESS') {
+			} else if (ticket.status === "IN_PROGRESS") {
 				activities.push({
 					id: `status-${ticket.id}`,
 					activity: `Ticket in progress: "${ticket.subject}"`,
 					date: ticket.updated_at || ticket.created_at,
-					type: 'ticket_in_progress',
-					ticketId: ticket.id
+					type: "ticket_in_progress",
+					ticketId: ticket.id,
 				});
 			}
 		});
-		
+
 		// Add reply activities
-		allReplies.forEach(reply => {
-			const ticket = tickets.find(t => t.id === reply.ticket_id);
+		allReplies.forEach((reply) => {
+			const ticket = tickets.find((t) => t.id === reply.ticket_id);
 			if (ticket) {
 				// Check if it's a system note about status change
-				if (reply.is_system_note && reply.reply.includes('System: Ticket status changed to')) {
+				if (
+					reply.is_system_note &&
+					reply.reply.includes("System: Ticket status changed to")
+				) {
 					// Already handled by the ticket status logic above
 				} else {
 					activities.push({
 						id: `reply-${reply.id}`,
-						activity: reply.is_system_note ? reply.reply : `New reply to: "${ticket.subject}"`,
+						activity: reply.is_system_note
+							? reply.reply
+							: `New reply to: "${ticket.subject}"`,
 						date: reply.created_at,
-						type: reply.is_system_note ? 'system_note' : 'reply_added',
+						type: reply.is_system_note ? "system_note" : "reply_added",
 						ticketId: ticket.id,
-						replyId: reply.id
+						replyId: reply.id,
 					});
 				}
 			}
 		});
-		
+
 		// Sort by date (newest first)
 		return activities.sort((a, b) => new Date(b.date) - new Date(a.date));
 	};
@@ -240,10 +267,10 @@ const generateChartData = (tickets) => {
 				});
 				const data = await response.json();
 				setSupportTickets(data);
-				
+
 				// Update chart data
 				setChartData(generateChartData(data));
-				
+
 				// Fetch all replies for activity generation
 				const allReplies = [];
 				for (const ticket of data) {
@@ -254,15 +281,18 @@ const generateChartData = (tickets) => {
 								headers: {
 									"X-WP-Nonce": CS_SUPPORT_HELPDESK_CONFIG.nonce,
 								},
-							}
+							},
 						);
 						const repliesData = await repliesResponse.json();
 						allReplies.push(...repliesData);
 					} catch (error) {
-						console.log(`Error fetching replies for ticket ${ticket.id}:`, error);
+						console.log(
+							`Error fetching replies for ticket ${ticket.id}:`,
+							error,
+						);
 					}
 				}
-				
+
 				// Generate and set activity data
 				const activities = generateActivityEntries(data, allReplies);
 				setRecentActivity(activities);
@@ -296,17 +326,17 @@ const generateChartData = (tickets) => {
 				setReply("");
 				// Fetch updated replies after successful submission
 				fetchReplies(selectedTicket.id);
-				
+
 				// Add new activity entry for the reply
 				const newActivity = {
 					id: `reply-${Date.now()}`, // Temporary ID until we get the actual reply ID
 					activity: `New reply to: "${selectedTicket.subject}"`,
 					date: new Date().toISOString(),
-					type: 'reply_added',
-					ticketId: selectedTicket.id
+					type: "reply_added",
+					ticketId: selectedTicket.id,
 				};
-				setRecentActivity(prev => [newActivity, ...prev]);
-				
+				setRecentActivity((prev) => [newActivity, ...prev]);
+
 				// Update chart data when replies are added (may affect status counts)
 				setChartData(generateChartData(supportTickets));
 			} else {
@@ -384,6 +414,23 @@ const generateChartData = (tickets) => {
 									),
 								)}
 							</nav>
+
+							{/* Pro Features Promotional Section - Mobile */}
+							<div className="px-2 pb-4">
+								<div className="bg-gradient-to-r from-purple-600 to-blue-600 rounded-lg p-4 text-center">
+									<div className="flex flex-col items-center space-y-2">
+										<LockClosedIcon className="h-8 w-8" aria-hidden="true" />
+										<div className="text-white">
+											<p className="text-sm font-medium">More sections and</p>
+											<p className="text-sm font-medium">reports available</p>
+											<p className="text-sm font-medium">on Pro</p>
+										</div>
+										<button className="mt-2 bg-white bg-opacity-20 hover:bg-opacity-30 text-xs font-medium py-1 px-3 rounded-md transition-all duration-200">
+											Upgrade Now
+										</button>
+									</div>
+								</div>
+							</div>
 						</div>
 					</div>
 				</TransitionChild>
@@ -442,6 +489,27 @@ const generateChartData = (tickets) => {
 									),
 								)}
 							</nav>
+
+							{/* Pro Features Promotional Section - Desktop */}
+							<div className="mx-1 px-2 pb-4 mt-[100%]">
+								<div className="bg-gradient-to-r from-orange-50 to-red-50 rounded-lg p-4 text-center shadow-sm border border-gray-200">
+									<div className="flex flex-col items-center space-y-2">
+										<LockClosedIcon className="h-8 w-8" aria-hidden="true" />
+										<div>
+											<p className="text-sm font-medium">
+												Unlock Premium Features
+											</p>
+											<p className="text-sm font-medium">Advanced reporting</p>
+											<p className="text-sm font-medium">
+												Team collaboration tools
+											</p>
+										</div>
+										<button className="mt-2 bg-white hover:bg-gray-100 text-orange-700 text-xs font-semibold py-1.5 px-4 rounded-md transition-all duration-200 shadow-sm">
+											Upgrade to Pro
+										</button>
+									</div>
+								</div>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -526,9 +594,7 @@ const generateChartData = (tickets) => {
 																}}
 															>
 																<div className="flex justify-between">
-																	<span
-																		className="font-medium text-md text-purple-950"
-																	>
+																	<span className="font-medium text-md text-purple-950">
 																		{ticket.subject}
 																	</span>
 																	<span className="text-sm text-gray-500">
@@ -581,14 +647,16 @@ const generateChartData = (tickets) => {
 												{recentActivity.length > 0 ? (
 													<ul className="space-y-2">
 														{recentActivity.map((activity) => (
-															<li 
-																key={activity.id} 
+															<li
+																key={activity.id}
 																className={`py-2 px-1 border-b border-gray-100 last:border-b-0 cursor-pointer hover:bg-gray-50 
-																	${activity.type === 'system_note' ? 'bg-gray-50' : ''}`}
+																	${activity.type === "system_note" ? "bg-gray-50" : ""}`}
 																onClick={() => {
 																	// Find and select the relevant ticket when clicking on activity
 																	if (activity.ticketId) {
-																		const ticket = supportTickets.find(t => t.id === activity.ticketId);
+																		const ticket = supportTickets.find(
+																			(t) => t.id === activity.ticketId,
+																		);
 																		if (ticket) {
 																			setSelectedTicket(ticket);
 																			fetchReplies(ticket.id);
@@ -597,10 +665,10 @@ const generateChartData = (tickets) => {
 																}}
 															>
 																<div className="flex justify-between">
-																	<span className={`font-medium text-sm mr-2 
-																		${activity.type === 'system_note' 
-																			? 'text-gray-600 italic' 
-																			: 'text-gray-800'}`}>
+																	<span
+																		className={`font-medium text-sm mr-2 
+																		${activity.type === "system_note" ? "text-gray-600 italic" : "text-gray-800"}`}
+																	>
 																		{activity.activity}
 																	</span>
 																	<span className="text-xs text-gray-500 whitespace-nowrap">
@@ -621,35 +689,35 @@ const generateChartData = (tickets) => {
 									<div className="bg-white overflow-hidden shadow rounded-lg h-96">
 										<div className="p-5 h-full flex flex-col">
 											<h2 className="text-lg font-medium text-gray-900">
-												Tickets Overview (	Priority )
+												Tickets Overview ( Priority )
 											</h2>
 											<div className="flex-1">
-												<Bar 
-													data={chartData} 
-													className="h-full" 
+												<Bar
+													data={chartData}
+													className="h-full"
 													options={{
 														responsive: true,
 														maintainAspectRatio: false,
 														plugins: {
 															legend: {
-																display: false
+																display: false,
 															},
 															tooltip: {
 																callbacks: {
-																	label: function(context) {
+																	label: function (context) {
 																		return `Count: ${context.raw}`;
-																	}
-																}
-															}
+																	},
+																},
+															},
 														},
 														scales: {
 															y: {
 																beginAtZero: true,
 																ticks: {
-																	precision: 0
-																}
-															}
-														}
+																	precision: 0,
+																},
+															},
+														},
 													}}
 												/>
 											</div>
@@ -659,7 +727,11 @@ const generateChartData = (tickets) => {
 														High
 													</h3>
 													<p className="text-3xl text-center font-semibold text-gray-900">
-														{supportTickets.filter(ticket => ticket.priority === 'high').length}
+														{
+															supportTickets.filter(
+																(ticket) => ticket.priority === "high",
+															).length
+														}
 													</p>
 												</div>
 												<div className="bg-white overflow-hidden shadow rounded-lg p-1">
@@ -667,7 +739,11 @@ const generateChartData = (tickets) => {
 														Medium
 													</h3>
 													<p className="text-3xl text-center font-semibold text-gray-900">
-														{supportTickets.filter(ticket => ticket.priority === 'normal').length}
+														{
+															supportTickets.filter(
+																(ticket) => ticket.priority === "normal",
+															).length
+														}
 													</p>
 												</div>
 												<div className="bg-white overflow-hidden shadow rounded-lg p-1">
@@ -675,7 +751,11 @@ const generateChartData = (tickets) => {
 														Low
 													</h3>
 													<p className="text-3xl text-center font-semibold text-gray-900">
-														{supportTickets.filter(ticket => ticket.priority === 'low').length}
+														{
+															supportTickets.filter(
+																(ticket) => ticket.priority === "low",
+															).length
+														}
 													</p>
 												</div>
 											</div>

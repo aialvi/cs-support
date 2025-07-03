@@ -36,6 +36,9 @@ function bootstrap(): void {
 	new Admin( get_plugin_instance() );
 	new Rest_API( get_plugin_instance() );
 	new DB_Updater( get_plugin_instance() );
+	new Team_Members( get_plugin_instance() );
+	new Notifications( get_plugin_instance() );
+	new Notification_Settings( get_plugin_instance() );
 	
 	// Initialize shortcodes
 	$shortcodes = new Shortcodes();

@@ -8,6 +8,7 @@ module.exports = merge(defaultConfig, {
 		admin: path.resolve(process.cwd(), "src/admin/admin.js"),
 		"create-ticket": path.resolve(process.cwd(), "src/admin/create-ticket.js"),
 		tickets: path.resolve(process.cwd(), "src/admin/tickets.js"),
+		"team-management": path.resolve(process.cwd(), "src/admin/team-management.js"),
 		faq: path.resolve(process.cwd(), "src/admin/faq.js"),
 		settings: path.resolve(process.cwd(), "src/admin/settings.js"),
 	},

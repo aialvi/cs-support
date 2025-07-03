@@ -54,6 +54,7 @@ class Admin
 			$this->hook,
 			'cs-support_page_clientsync-support-helpdesk-create-ticket',
 			'cs-support_page_clientsync-support-helpdesk-tickets',
+			'cs-support_page_clientsync-support-helpdesk-team',
 			'cs-support_page_clientsync-support-helpdesk-settings',
 			'cs-support_page_clientsync-support-helpdesk-help',
 			'cs-support_page_clientsync-support-helpdesk-shortcodes'
@@ -68,7 +69,7 @@ class Admin
 				__METHOD__,
 				sprintf(
 					// Translators: %s Plugin directory path.
-					__('Please run `pnpm build` or `pnpm `dev` inside %s directory.', 'clientsync-support-helpdesk'),
+					__('Please run `pnpm build` or `pnpm `dev` inside %s directory.', 'cs-support'),
 					$this->plugin->dir
 				)
 			);
@@ -81,7 +82,7 @@ class Admin
 		if (empty($asset) || ! is_array($asset)) {
 			wp_trigger_error(
 				__METHOD__,
-				__('Invalid asset file.', 'clientsync-support-helpdesk')
+				__('Invalid asset file.', 'cs-support')
 			);
 
 			return;
@@ -203,6 +204,25 @@ class Admin
 				]
 			);
 		}
+
+		// Load team management assets
+		if ($hook === 'cs-support_page_clientsync-support-helpdesk-team') {
+			$asset_file = include "{$this->plugin->dir}build/admin/team-management.asset.php";
+
+			wp_enqueue_script(
+				"{$this->plugin->prefix}-team-management",
+				"{$this->plugin->url}build/admin/team-management.js",
+				$asset_file['dependencies'],
+				$asset_file['version'],
+				true
+			);
+
+			wp_localize_script(
+				"{$this->plugin->prefix}-team-management",
+				'CS_SUPPORT_HELPDESK_TEAM_CONFIG',
+				$this->get_script_data()
+			);
+		}
 	}
 
 	/**
@@ -242,8 +262,8 @@ class Admin
 	protected function register_page(): void
 	{
 		$this->hook = add_menu_page(
-			__('CS Support', 'clientsync-support-helpdesk'),
-			__('CS Support', 'clientsync-support-helpdesk'),
+			__('CS Support', 'cs-support'),
+			__('CS Support', 'cs-support'),
 			'manage_options',
 			'clientsync-support-helpdesk',
 			$this->render_page(...),
@@ -253,8 +273,8 @@ class Admin
 
 		// add_submenu_page(
 		// 	'clientsync-support-helpdesk',
-		// 	__('Create Ticket', 'clientsync-support-helpdesk'),
-		// 	__('Create Ticket', 'clientsync-support-helpdesk'),
+		// 	__('Create Ticket', 'cs-support'),
+		// 	__('Create Ticket', 'cs-support'),
 		// 	'manage_options',
 		// 	'clientsync-support-helpdesk-create-ticket',
 		// 	[$this, 'render_create_ticket_page']
@@ -262,17 +282,26 @@ class Admin
 
 		add_submenu_page(
 			'clientsync-support-helpdesk',
-			__('Tickets', 'clientsync-support-helpdesk'),
-			__('Tickets', 'clientsync-support-helpdesk'),
-			'manage_options',
+			__('Tickets', 'cs-support'),
+			__('Tickets', 'cs-support'),
+			'read', // Allow any logged-in user, but we'll do detailed permission check in the page
 			'clientsync-support-helpdesk-tickets',
 			[$this, 'render_tickets_page']
 		);
 
 		add_submenu_page(
 			'clientsync-support-helpdesk',
-			__('Settings', 'clientsync-support-helpdesk'),
-			__('Settings', 'clientsync-support-helpdesk'),
+			__('Team Management', 'cs-support'),
+			__('Team Management', 'cs-support'),
+			'assign_tickets',
+			'clientsync-support-helpdesk-team',
+			[$this, 'render_team_management_page']
+		);
+
+		add_submenu_page(
+			'clientsync-support-helpdesk',
+			__('Settings', 'cs-support'),
+			__('Settings', 'cs-support'),
 			'manage_options',
 			'clientsync-support-helpdesk-settings',
 			[$this, 'render_settings_page']
@@ -280,8 +309,8 @@ class Admin
 
 		add_submenu_page(
 			'clientsync-support-helpdesk',
-			__('FAQ', 'clientsync-support-helpdesk'),
-			__('FAQ', 'clientsync-support-helpdesk'),
+			__('FAQ', 'cs-support'),
+			__('FAQ', 'cs-support'),
 			'manage_options',
 			'clientsync-support-helpdesk-help',
 			[$this, 'render_faq_page']
@@ -289,8 +318,8 @@ class Admin
 
 		add_submenu_page(
 			'clientsync-support-helpdesk',
-			__('Shortcodes', 'clientsync-support-helpdesk'),
-			__('Shortcodes', 'clientsync-support-helpdesk'),
+			__('Shortcodes', 'cs-support'),
+			__('Shortcodes', 'cs-support'),
 			'manage_options',
 			'clientsync-support-helpdesk-shortcodes',
 			[$this, 'render_shortcodes_page']
@@ -326,6 +355,10 @@ class Admin
 	 */
 	public function render_tickets_page(): void
 	{
+		// Check if user has permission to view tickets
+		if (!$this->can_user_access_tickets()) {
+			wp_die(__('Sorry, you are not allowed to access this page.', 'cs-support'));
+		}
 	?>
 		<div class="wrap">
 			<div id="cs-tickets-table"></div>
@@ -364,21 +397,21 @@ class Admin
 	{
 		?>
 		<div class="wrap">
-			<h1><?php _e('CS Support Shortcodes', 'clientsync-support-helpdesk'); ?></h1>
+			<h1><?php _e('CS Support Shortcodes', 'cs-support'); ?></h1>
 			
 			<div class="cs-support-shortcodes-help">
-				<p><?php _e('Use these shortcodes to add CS Support forms and ticket displays to any page, post, or widget area.', 'clientsync-support-helpdesk'); ?></p>
+				<p><?php _e('Use these shortcodes to add CS Support forms and ticket displays to any page, post, or widget area.', 'cs-support'); ?></p>
 				
 				<div class="postbox">
-					<h2 class="hndle"><?php _e('Support Form Shortcode', 'clientsync-support-helpdesk'); ?></h2>
+					<h2 class="hndle"><?php _e('Support Form Shortcode', 'cs-support'); ?></h2>
 					<div class="inside">
-						<p><?php _e('Display a support ticket creation form:', 'clientsync-support-helpdesk'); ?></p>
+						<p><?php _e('Display a support ticket creation form:', 'cs-support'); ?></p>
 						<code class="shortcode-example">[cs_support]</code>
 						
-						<h4><?php _e('With Custom Attributes:', 'clientsync-support-helpdesk'); ?></h4>
+						<h4><?php _e('With Custom Attributes:', 'cs-support'); ?></h4>
 						<code class="shortcode-example">[cs_support title="Contact Us" submit_button_text="Send Message" background_color="#f8f9fa"]</code>
 						
-						<h4><?php _e('Available Attributes:', 'clientsync-support-helpdesk'); ?></h4>
+						<h4><?php _e('Available Attributes:', 'cs-support'); ?></h4>
 						<ul class="shortcode-attributes">
 							<li><strong>title</strong> - Form title (default: "Create a new support ticket")</li>
 							<li><strong>show_title</strong> - Show/hide title: "true" or "false" (default: "true")</li>
@@ -397,15 +430,15 @@ class Admin
 				</div>
 				
 				<div class="postbox">
-					<h2 class="hndle"><?php _e('Tickets List Shortcode', 'clientsync-support-helpdesk'); ?></h2>
+					<h2 class="hndle"><?php _e('Tickets List Shortcode', 'cs-support'); ?></h2>
 					<div class="inside">
-						<p><?php _e('Display the current user\'s support tickets:', 'clientsync-support-helpdesk'); ?></p>
+						<p><?php _e('Display the current user\'s support tickets:', 'cs-support'); ?></p>
 						<code class="shortcode-example">[cs_support_tickets]</code>
 						
-						<h4><?php _e('With Custom Attributes:', 'clientsync-support-helpdesk'); ?></h4>
+						<h4><?php _e('With Custom Attributes:', 'cs-support'); ?></h4>
 						<code class="shortcode-example">[cs_support_tickets title="Your Tickets" tickets_per_page="5" accent_color="#007cba"]</code>
 						
-						<h4><?php _e('Available Attributes:', 'clientsync-support-helpdesk'); ?></h4>
+						<h4><?php _e('Available Attributes:', 'cs-support'); ?></h4>
 						<ul class="shortcode-attributes">
 							<li><strong>title</strong> - List title (default: "My Support Tickets")</li>
 							<li><strong>tickets_per_page</strong> - Number of tickets per page (default: "10")</li>
@@ -420,27 +453,27 @@ class Admin
 				</div>
 				
 				<div class="postbox">
-					<h2 class="hndle"><?php _e('Usage Examples', 'clientsync-support-helpdesk'); ?></h2>
+					<h2 class="hndle"><?php _e('Usage Examples', 'cs-support'); ?></h2>
 					<div class="inside">
-						<h4><?php _e('Contact Page:', 'clientsync-support-helpdesk'); ?></h4>
+						<h4><?php _e('Contact Page:', 'cs-support'); ?></h4>
 						<code class="shortcode-example">[cs_support title="Contact Us" submit_button_text="Send Message" background_color="#f8f9fa" button_color="#007cba"]</code>
 						
-						<h4><?php _e('User Dashboard:', 'clientsync-support-helpdesk'); ?></h4>
+						<h4><?php _e('User Dashboard:', 'cs-support'); ?></h4>
 						<code class="shortcode-example">[cs_support_tickets title="My Tickets" tickets_per_page="5"]</code>
 						
-						<h4><?php _e('Widget Area (Sidebar):', 'clientsync-support-helpdesk'); ?></h4>
+						<h4><?php _e('Widget Area (Sidebar):', 'cs-support'); ?></h4>
 						<code class="shortcode-example">[cs_support show_title="false" max_width="100%" submit_button_text="Get Help"]</code>
 					</div>
 				</div>
 				
 				<div class="postbox">
-					<h2 class="hndle"><?php _e('Notes', 'clientsync-support-helpdesk'); ?></h2>
+					<h2 class="hndle"><?php _e('Notes', 'cs-support'); ?></h2>
 					<div class="inside">
 						<ul>
-							<li><?php _e('Shortcodes work in any editor: Classic Editor, Gutenberg, page builders, and widget areas.', 'clientsync-support-helpdesk'); ?></li>
-							<li><?php _e('The ticket list shortcode only shows tickets for the currently logged-in user.', 'clientsync-support-helpdesk'); ?></li>
-							<li><?php _e('Colors can be specified using hex values (#ffffff) or CSS color names (white).', 'clientsync-support-helpdesk'); ?></li>
-							<li><?php _e('All forms are responsive and include accessibility features.', 'clientsync-support-helpdesk'); ?></li>
+							<li><?php _e('Shortcodes work in any editor: Classic Editor, Gutenberg, page builders, and widget areas.', 'cs-support'); ?></li>
+							<li><?php _e('The ticket list shortcode only shows tickets for the currently logged-in user.', 'cs-support'); ?></li>
+							<li><?php _e('Colors can be specified using hex values (#ffffff) or CSS color names (white).', 'cs-support'); ?></li>
+							<li><?php _e('All forms are responsive and include accessibility features.', 'cs-support'); ?></li>
 						</ul>
 					</div>
 				</div>
@@ -473,5 +506,84 @@ class Admin
 			</style>
 		</div>
 		<?php
+	}
+
+	/**
+	 * Render the team management page
+	 */
+	public function render_team_management_page(): void
+	{
+	?>
+		<div class="wrap">
+			<div id="cs-support-team-management"></div>
+		</div>
+	<?php
+	}
+
+	/**
+	 * Check if current user can access tickets page
+	 *
+	 * @return bool True if user has access
+	 */
+	protected function can_user_access_tickets(): bool
+	{
+		$current_user_id = get_current_user_id();
+		
+		// Admins can access all tickets
+		if (current_user_can('manage_options')) {
+			return true;
+		}
+		
+		// Support team members can access tickets
+		if (current_user_can('view_all_tickets') || current_user_can('edit_tickets') || current_user_can('reply_to_tickets')) {
+			return true;
+		}
+		
+		// If accessing a specific ticket, check if user is assigned to it or owns it
+		if (isset($_GET['ticket_id'])) {
+			$ticket_id = (int) $_GET['ticket_id'];
+			return $this->can_user_access_ticket($ticket_id, $current_user_id);
+		}
+		
+		// Regular users can access their own tickets
+		return is_user_logged_in();
+	}
+
+	/**
+	 * Check if user can access a specific ticket
+	 *
+	 * @param int $ticket_id Ticket ID
+	 * @param int $user_id User ID
+	 * @return bool True if user has access
+	 */
+	protected function can_user_access_ticket(int $ticket_id, int $user_id): bool
+	{
+		global $wpdb;
+		
+		// Admins can access all tickets
+		if (current_user_can('manage_options')) {
+			return true;
+		}
+		
+		// Support team members can access tickets
+		if (current_user_can('view_all_tickets') || current_user_can('edit_tickets') || current_user_can('reply_to_tickets')) {
+			return true;
+		}
+		
+		// Check if user is the ticket owner or assignee
+		$ticket = $wpdb->get_row(
+			$wpdb->prepare(
+				"SELECT user_id, assignee_id FROM {$wpdb->prefix}cs_support_tickets WHERE id = %d",
+				$ticket_id
+			),
+			ARRAY_A
+		);
+		
+		if (!$ticket) {
+			return false;
+		}
+		
+		// User owns the ticket or is assigned to it
+		return ($ticket['user_id'] == $user_id) || ($ticket['assignee_id'] == $user_id);
 	}
 }

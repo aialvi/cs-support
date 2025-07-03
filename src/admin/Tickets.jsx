@@ -1,11 +1,13 @@
 import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
+import TicketAssignment from "./TicketAssignment";
 
 import {
 	EyeIcon,
 	XMarkIcon,
 	ChatBubbleLeftRightIcon,
 	DocumentTextIcon,
+	UserIcon,
 } from "@heroicons/react/24/outline";
 
 export default function Tickets() {
@@ -22,10 +24,51 @@ export default function Tickets() {
 		fetchTickets();
 	}, []);
 
-	// Fetch replies when ticket selected
+	// Handle ticket_id URL parameter on initial load
+	useEffect(() => {
+		const urlParams = new URLSearchParams(window.location.search);
+		const ticketId = urlParams.get('ticket_id');
+		
+		if (ticketId) {
+			// Fetch the specific ticket immediately
+			fetchSingleTicket(ticketId).then(ticket => {
+				if (ticket) {
+					setSelectedTicket(ticket);
+				}
+			});
+		}
+	}, []); // Empty dependency array - runs only on mount
+
+	// Check for ticket_id in URL parameters and auto-open ticket
+	useEffect(() => {
+		const urlParams = new URLSearchParams(window.location.search);
+		const ticketId = urlParams.get('ticket_id');
+		
+		if (ticketId) {
+			// First try to find in existing tickets
+			const ticket = tickets.find(t => t.id == ticketId);
+			if (ticket) {
+				setSelectedTicket(ticket);
+			} else if (tickets.length > 0) {
+				// If not found in existing tickets, try to fetch it individually
+				fetchSingleTicket(ticketId).then(ticket => {
+					if (ticket) {
+						setSelectedTicket(ticket);
+					}
+				});
+			}
+		}
+	}, [tickets]);
+
+	// Fetch replies when ticket selected and update URL
 	useEffect(() => {
 		if (selectedTicket) {
 			fetchReplies(selectedTicket.id);
+
+			// Update URL to include ticket_id parameter
+			const currentUrl = new URL(window.location);
+			currentUrl.searchParams.set('ticket_id', selectedTicket.id);
+			window.history.pushState({}, '', currentUrl.toString());
 
 			// Add event listener for Escape key to close modal
 			const handleEscapeKey = (e) => {
@@ -46,6 +89,13 @@ export default function Tickets() {
 			return () => {
 				document.removeEventListener("keydown", handleEscapeKey);
 			};
+		} else {
+			// Remove ticket_id parameter from URL when modal is closed
+			const currentUrl = new URL(window.location);
+			if (currentUrl.searchParams.has('ticket_id')) {
+				currentUrl.searchParams.delete('ticket_id');
+				window.history.pushState({}, '', currentUrl.toString());
+			}
 		}
 	}, [selectedTicket]);
 
@@ -203,6 +253,46 @@ export default function Tickets() {
 		}
 	};
 
+	const handleAssignmentChange = (updatedTicket) => {
+		// Update the ticket in the tickets list
+		setTickets(tickets.map(ticket => 
+			ticket.id === updatedTicket.id ? updatedTicket : ticket
+		));
+		
+		// Update selected ticket if it's the same one
+		if (selectedTicket && selectedTicket.id === updatedTicket.id) {
+			setSelectedTicket(updatedTicket);
+		}
+	};
+
+	const fetchSingleTicket = async (ticketId) => {
+		try {
+			const response = await fetch(
+				`/wp-json/cs-support/v1/tickets/${ticketId}`,
+				{
+					headers: {
+						"X-WP-Nonce": CS_SUPPORT_HELPDESK_TICKETS_CONFIG.nonce,
+					},
+				},
+			);
+			
+			if (response.ok) {
+				const ticket = await response.json();
+				return ticket;
+			} else if (response.status === 403) {
+				toast.error("You don't have permission to access this ticket");
+				return null;
+			} else {
+				toast.error("Ticket not found");
+				return null;
+			}
+		} catch (error) {
+			console.error("Error fetching ticket:", error);
+			toast.error("Failed to load ticket");
+			return null;
+		}
+	};
+
 	return (
 		<div className="container mx-auto p-4">
 			<h1 className="text-2xl font-bold my-4" tabIndex="-1">
@@ -234,10 +324,13 @@ export default function Tickets() {
 									Priority
 								</th>
 								<th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+									Assigned To
+								</th>
+								<th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
 									Created
 								</th>
 								<th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-									View
+									Actions
 								</th>
 							</tr>
 						</thead>
@@ -282,7 +375,26 @@ export default function Tickets() {
 											</span>
 										</td>
 										<td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-											{ticket.priority}
+											<span
+												className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full
+                      ${
+												ticket.priority === "low"
+													? "bg-gray-100 text-gray-800"
+													: ticket.priority === "normal"
+													? "bg-blue-100 text-blue-800"
+													: ticket.priority === "high"
+													? "bg-orange-100 text-orange-800"
+													: "bg-red-100 text-red-800"
+											}`}
+											>
+												{ticket.priority}
+											</span>
+										</td>
+										<td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+											<TicketAssignment 
+												ticket={ticket} 
+												onAssignmentChange={handleAssignmentChange}
+											/>
 										</td>
 										<td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
 											{new Date(ticket.created_at).toLocaleDateString()}

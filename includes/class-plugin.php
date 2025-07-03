@@ -126,7 +126,7 @@ class Plugin {
         // Add Admin role
         add_role(
             'support_admin',
-            __('Support Admin', 'clientsync-support-helpdesk'),
+            __('Support Admin', 'cs-support'),
             [
                 'read' => true,
                 'edit_tickets' => true,
