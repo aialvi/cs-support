@@ -302,10 +302,22 @@ class Rest_API
 			], 500);
 		}
 
-		return new \WP_REST_Response([
+		// Get redirect URL if set in settings
+		$redirect_url = '';
+		if (!empty($settings['general']['redirectPage'])) {
+			$redirect_url = get_permalink($settings['general']['redirectPage']);
+		}
+
+		$response_data = [
 			'success' => true,
 			'ticket_id' => $wpdb->insert_id
-		], 201);
+		];
+
+		if ($redirect_url) {
+			$response_data['redirect_url'] = $redirect_url;
+		}
+
+		return new \WP_REST_Response($response_data, 201);
 	}
 
 	/**

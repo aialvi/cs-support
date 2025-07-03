@@ -11,6 +11,7 @@ export default function Settings() {
 	const [settings, setSettings] = useState({
 		general: {
 			defaultPriority: "normal",
+			redirectPage: "",
 			// allowGuestTickets: false,
 			// ticketsPerPage: 10,
 		},
@@ -43,9 +44,10 @@ export default function Settings() {
 	const [isSaving, setIsSaving] = useState(false);
 	const [isLoading, setIsLoading] = useState(true);
 	const [saveMessage, setSaveMessage] = useState("");
+	const [pages, setPages] = useState([]);
 
 	useEffect(() => {
-		// Fetch current settings
+		// Fetch current settings and pages
 		const fetchSettings = async () => {
 			try {
 				const response = await fetch(CS_SUPPORT_HELPDESK_SETTINGS_CONFIG.apiUrl, {
@@ -64,12 +66,29 @@ export default function Settings() {
 				}
 			} catch (error) {
 				console.error("Error fetching settings:", error);
+			}
+		};
+
+		const fetchPages = async () => {
+			try {
+				const response = await fetch("/wp-json/wp/v2/pages?per_page=100", {
+					headers: {
+						"X-WP-Nonce": CS_SUPPORT_HELPDESK_SETTINGS_CONFIG.nonce,
+					},
+				});
+
+				if (response.ok) {
+					const data = await response.json();
+					setPages(data);
+				}
+			} catch (error) {
+				console.error("Error fetching pages:", error);
 			} finally {
 				setIsLoading(false);
 			}
 		};
 
-		fetchSettings();
+		Promise.all([fetchSettings(), fetchPages()]);
 	}, []);
 
 	const handleSubmit = async (e) => {
@@ -148,6 +167,29 @@ export default function Settings() {
 								</select>
 								<p className="mt-1 text-sm text-gray-500">
 									This will be the default priority for all new tickets
+								</p>
+							</div>
+
+							<div>
+								<label className="block text-sm font-medium text-gray-700">
+									Redirect Page After Ticket Creation
+								</label>
+								<select
+									value={settings.general.redirectPage || ""}
+									onChange={(e) =>
+										handleChange("general", "redirectPage", e.target.value)
+									}
+									className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+								>
+									<option value="">No redirect (stay on current page)</option>
+									{pages.map((page) => (
+										<option key={page.id} value={page.id}>
+											{page.title.rendered}
+										</option>
+									))}
+								</select>
+								<p className="mt-1 text-sm text-gray-500">
+									Select a page where users will be redirected after creating a ticket. This page should contain the cs-support-frontend block to display their tickets.
 								</p>
 							</div>
 

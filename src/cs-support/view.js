@@ -55,6 +55,18 @@ document.addEventListener("DOMContentLoaded", () => {
 			if (data.success) {
 				showMessage(successMessage, "success");
 				form.reset();
+				
+				// Check for block-level redirect override first, then global setting
+				const blockRedirectUrl = form.dataset.redirectUrl;
+				const redirectUrl = blockRedirectUrl || data.redirect_url;
+				
+				// Handle redirect if specified
+				if (redirectUrl) {
+					// Add a delay to show the success message briefly before redirecting
+					setTimeout(() => {
+						window.location.href = redirectUrl;
+					}, 1500);
+				}
 			} else {
 				showMessage(errorMessage, "error");
 			}

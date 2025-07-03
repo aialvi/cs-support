@@ -44,6 +44,13 @@ $button_border_radius = $attributes['buttonBorderRadius'] ?? '4px';
 $button_padding = $attributes['buttonPadding'] ?? '10px 15px';
 $button_align = $attributes['buttonAlign'] ?? 'left';
 $button_full_width = $attributes['buttonFullWidth'] ?? false;
+$redirect_page = $attributes['redirectPage'] ?? '';
+
+// Get redirect URL if redirect page is set
+$redirect_url = '';
+if (!empty($redirect_page)) {
+	$redirect_url = get_permalink(intval($redirect_page));
+}
 
 // Build inline styles
 $form_style = sprintf(
@@ -94,7 +101,7 @@ $is_logged_in = is_user_logged_in();
 				<h2><?php echo esc_html($title); ?></h2>
 			<?php endif; ?>
 
-			<form id="cs-support-form">
+			<form id="cs-support-form" data-redirect-url="<?php echo esc_url($redirect_url); ?>">
 				<div class="cs-form-field">
 					<div class="form-field-with-icon">
 						<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">

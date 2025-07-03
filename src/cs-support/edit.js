@@ -28,6 +28,8 @@ import {
 	__experimentalUnitControl as UnitControl,
 } from "@wordpress/components";
 
+import { useSelect } from "@wordpress/data";
+
 /**
  * Lets webpack process CSS, SASS or SCSS files referenced in JavaScript files.
  * Those files can contain any CSS code that gets applied to the editor.
@@ -69,10 +71,16 @@ export default function Edit({ attributes, setAttributes }) {
 		buttonPadding,
 		buttonAlign,
 		buttonFullWidth,
+		redirectPage,
 	} = attributes;
 
 	const blockProps = useBlockProps();
 	const colorSettings = useMultipleOriginColorsAndGradients();
+
+	// Get all pages for the redirect dropdown
+	const pages = useSelect((select) => {
+		return select('core').getEntityRecords('postType', 'page');
+	}, []);
 
 	// Form style for preview
 	const formStyle = {
@@ -146,6 +154,22 @@ export default function Edit({ attributes, setAttributes }) {
 						label={__("Error Message", "cs-support")}
 						value={errorMessage}
 						onChange={(value) => setAttributes({ errorMessage: value })}
+					/>
+				</PanelBody>
+
+				<PanelBody title={__("Behavior", "cs-support")} initialOpen={false}>
+					<SelectControl
+						label={__("Redirect Page After Ticket Creation", "cs-support")}
+						value={redirectPage}
+						options={[
+							{ label: __("No redirect (stay on current page)", "cs-support"), value: "" },
+							...(pages || []).map((page) => ({
+								label: page.title.rendered,
+								value: page.id.toString(),
+							})),
+						]}
+						onChange={(value) => setAttributes({ redirectPage: value })}
+						help={__("Select a page where users will be redirected after creating a ticket. This page should contain the cs-support-frontend block to display their tickets.", "cs-support")}
 					/>
 				</PanelBody>
 

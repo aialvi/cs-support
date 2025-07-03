@@ -35,34 +35,34 @@ export default function Tickets() {
 	useEffect(() => {
 		const checkAISettings = async () => {
 			try {
-				const response = await fetch('/wp-json/cs-support/v1/settings', {
-					method: 'GET',
+				const response = await fetch("/wp-json/cs-support/v1/settings", {
+					method: "GET",
 					headers: {
-						'Content-Type': 'application/json',
-						'X-WP-Nonce': CS_SUPPORT_HELPDESK_TICKETS_CONFIG.nonce,
+						"Content-Type": "application/json",
+						"X-WP-Nonce": CS_SUPPORT_HELPDESK_TICKETS_CONFIG.nonce,
 					},
 				});
-				
+
 				if (response.ok) {
 					const data = await response.json();
 					setAiEnabled(data?.ai?.enabled && data?.ai?.apiKey);
 				}
 			} catch (error) {
-				console.error('Failed to check AI settings:', error);
+				console.error("Failed to check AI settings:", error);
 			}
 		};
-		
+
 		checkAISettings();
 	}, []);
 
 	// Handle ticket_id URL parameter on initial load
 	useEffect(() => {
 		const urlParams = new URLSearchParams(window.location.search);
-		const ticketId = urlParams.get('ticket_id');
-		
+		const ticketId = urlParams.get("ticket_id");
+
 		if (ticketId) {
 			// Fetch the specific ticket immediately
-			fetchSingleTicket(ticketId).then(ticket => {
+			fetchSingleTicket(ticketId).then((ticket) => {
 				if (ticket) {
 					setSelectedTicket(ticket);
 				}
@@ -73,16 +73,16 @@ export default function Tickets() {
 	// Check for ticket_id in URL parameters and auto-open ticket
 	useEffect(() => {
 		const urlParams = new URLSearchParams(window.location.search);
-		const ticketId = urlParams.get('ticket_id');
-		
+		const ticketId = urlParams.get("ticket_id");
+
 		if (ticketId) {
 			// First try to find in existing tickets
-			const ticket = tickets.find(t => t.id == ticketId);
+			const ticket = tickets.find((t) => t.id == ticketId);
 			if (ticket) {
 				setSelectedTicket(ticket);
 			} else if (tickets.length > 0) {
 				// If not found in existing tickets, try to fetch it individually
-				fetchSingleTicket(ticketId).then(ticket => {
+				fetchSingleTicket(ticketId).then((ticket) => {
 					if (ticket) {
 						setSelectedTicket(ticket);
 					}
@@ -98,8 +98,8 @@ export default function Tickets() {
 
 			// Update URL to include ticket_id parameter
 			const currentUrl = new URL(window.location);
-			currentUrl.searchParams.set('ticket_id', selectedTicket.id);
-			window.history.pushState({}, '', currentUrl.toString());
+			currentUrl.searchParams.set("ticket_id", selectedTicket.id);
+			window.history.pushState({}, "", currentUrl.toString());
 
 			// Add event listener for Escape key to close modal
 			const handleEscapeKey = (e) => {
@@ -123,9 +123,9 @@ export default function Tickets() {
 		} else {
 			// Remove ticket_id parameter from URL when modal is closed
 			const currentUrl = new URL(window.location);
-			if (currentUrl.searchParams.has('ticket_id')) {
-				currentUrl.searchParams.delete('ticket_id');
-				window.history.pushState({}, '', currentUrl.toString());
+			if (currentUrl.searchParams.has("ticket_id")) {
+				currentUrl.searchParams.delete("ticket_id");
+				window.history.pushState({}, "", currentUrl.toString());
 			}
 		}
 	}, [selectedTicket]);
@@ -286,10 +286,12 @@ export default function Tickets() {
 
 	const handleAssignmentChange = (updatedTicket) => {
 		// Update the ticket in the tickets list
-		setTickets(tickets.map(ticket => 
-			ticket.id === updatedTicket.id ? updatedTicket : ticket
-		));
-		
+		setTickets(
+			tickets.map((ticket) =>
+				ticket.id === updatedTicket.id ? updatedTicket : ticket,
+			),
+		);
+
 		// Update selected ticket if it's the same one
 		if (selectedTicket && selectedTicket.id === updatedTicket.id) {
 			setSelectedTicket(updatedTicket);
@@ -306,7 +308,7 @@ export default function Tickets() {
 					},
 				},
 			);
-			
+
 			if (response.ok) {
 				const ticket = await response.json();
 				return ticket;
@@ -332,11 +334,11 @@ export default function Tickets() {
 		setShowAiReply(false);
 
 		try {
-			const response = await fetch('/wp-json/cs-support/v1/ai/generate-reply', {
-				method: 'POST',
+			const response = await fetch("/wp-json/cs-support/v1/ai/generate-reply", {
+				method: "POST",
 				headers: {
-					'Content-Type': 'application/json',
-					'X-WP-Nonce': CS_SUPPORT_HELPDESK_TICKETS_CONFIG.nonce,
+					"Content-Type": "application/json",
+					"X-WP-Nonce": CS_SUPPORT_HELPDESK_TICKETS_CONFIG.nonce,
 				},
 				body: JSON.stringify({
 					ticket_id: selectedTicket.id,
@@ -345,15 +347,15 @@ export default function Tickets() {
 
 			if (response.ok) {
 				const data = await response.json();
-				setAiReply(data.reply || '');
+				setAiReply(data.reply || "");
 				setShowAiReply(true);
 			} else {
 				const errorData = await response.json();
-				throw new Error(errorData.message || 'Failed to generate AI reply');
+				throw new Error(errorData.message || "Failed to generate AI reply");
 			}
 		} catch (error) {
-			console.error('Failed to generate AI reply:', error);
-			toast.error(error.message || 'Failed to generate AI reply', {
+			console.error("Failed to generate AI reply:", error);
+			toast.error(error.message || "Failed to generate AI reply", {
 				autoClose: 3000,
 				position: "bottom-right",
 			});
@@ -365,15 +367,15 @@ export default function Tickets() {
 	const acceptAIReply = () => {
 		setNewReply(aiReply);
 		setShowAiReply(false);
-		setAiReply('');
-		
+		setAiReply("");
+
 		// Focus the textarea
-		const textarea = document.getElementById('reply-textarea');
+		const textarea = document.getElementById("reply-textarea");
 		if (textarea) {
 			textarea.focus();
 		}
-		
-		toast.success('AI reply accepted', {
+
+		toast.success("AI reply accepted", {
 			autoClose: 2000,
 			position: "bottom-right",
 		});
@@ -381,330 +383,268 @@ export default function Tickets() {
 
 	const rejectAIReply = () => {
 		setShowAiReply(false);
-		setAiReply('');
-		
-		toast.info('AI reply rejected', {
+		setAiReply("");
+
+		toast.info("AI reply rejected", {
 			autoClose: 2000,
 			position: "bottom-right",
 		});
 	};
 
 	return (
-		<div className="container mx-auto p-4">
-			<h1 className="text-2xl font-bold my-4" tabIndex="-1">
-				Support Tickets
-			</h1>
-
-			{loading ? (
-				<div aria-live="polite" role="status">
-					Loading tickets...
+		<div className="min-h-screen bg-gray-50 py-6">
+			<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+				<div className="mb-8">
+					<h1 className="text-3xl font-bold text-gray-900" tabIndex="-1">
+						Support Tickets
+					</h1>
+					<p className="mt-2 text-sm text-gray-600">
+						Manage and respond to customer support requests
+					</p>
 				</div>
-			) : (
-				<div className="bg-white shadow-md rounded-lg overflow-hidden mt-2">
-					<table
-						className="min-w-full divide-y divide-gray-200"
-						aria-label="Support tickets"
+
+				{loading ? (
+					<div
+						className="flex items-center justify-center h-64"
+						aria-live="polite"
+						role="status"
 					>
-						<thead className="bg-gray-50">
-							<tr>
-								<th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-									ID
-								</th>
-								<th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-									Subject
-								</th>
-								<th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-									Status
-								</th>
-								<th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-									Priority
-								</th>
-								<th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-									Assigned To
-								</th>
-								<th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-									Created
-								</th>
-								<th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-									Actions
-								</th>
-							</tr>
-						</thead>
-						{tickets.length > 0 ? (
-							<tbody className="divide-y divide-gray-200">
-								{tickets.map((ticket) => (
-									<tr key={ticket.id}>
-										<td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-											#{ticket.id}
-										</td>
-										<td
-											className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 cursor-pointer hover:underline"
-											onClick={() => setSelectedTicket(ticket)}
-											tabIndex="0"
-											role="button"
-											aria-label={`View ticket: ${ticket.subject}`}
-											onKeyDown={(e) => {
-												if (e.key === "Enter" || e.key === " ") {
-													e.preventDefault();
-													setSelectedTicket(ticket);
-												}
-											}}
-										>
-											{ticket.subject}
-										</td>
-										<td className="px-6 py-4 whitespace-nowrap">
-											<span
-												className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full
-                      ${
-												ticket.status === "NEW"
-													? "bg-yellow-100 text-yellow-800"
-													: ticket.status === "IN_PROGRESS"
-													? "bg-blue-100 text-blue-800"
-													: "bg-green-100 text-green-800"
-											}`}
-											>
-												{ticket.status === "NEW"
-													? "New"
-													: ticket.status === "IN_PROGRESS"
-													? "In Progress"
-													: "Resolved"}
-											</span>
-										</td>
-										<td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-											<span
-												className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full
-                      ${
-												ticket.priority === "low"
-													? "bg-gray-100 text-gray-800"
-													: ticket.priority === "normal"
-													? "bg-blue-100 text-blue-800"
-													: ticket.priority === "high"
-													? "bg-orange-100 text-orange-800"
-													: "bg-red-100 text-red-800"
-											}`}
-											>
-												{ticket.priority}
-											</span>
-										</td>
-										<td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-											<TicketAssignment 
-												ticket={ticket} 
-												onAssignmentChange={handleAssignmentChange}
-											/>
-										</td>
-										<td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-											{new Date(ticket.created_at).toLocaleDateString()}
-										</td>
-										<td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-											<button
-												onClick={() => setSelectedTicket(ticket)}
-												className="text-emerald-600 hover:text-emerald-900 p-1 rounded focus:outline-none focus:ring-2 focus:ring-emerald-500"
-												aria-label={`View details of ticket: ${ticket.subject}`}
-												title="View ticket details"
-											>
-												<EyeIcon className="h-5 w-5" aria-hidden="true" />
-											</button>
-										</td>
+						<div className="flex items-center space-x-2">
+							<svg
+								className="animate-spin h-5 w-5 text-blue-600"
+								xmlns="http://www.w3.org/2000/svg"
+								fill="none"
+								viewBox="0 0 24 24"
+							>
+								<circle
+									className="opacity-25"
+									cx="12"
+									cy="12"
+									r="10"
+									stroke="currentColor"
+									strokeWidth="4"
+								></circle>
+								<path
+									className="opacity-75"
+									fill="currentColor"
+									d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+								></path>
+							</svg>
+							<span className="text-gray-600">Loading tickets...</span>
+						</div>
+					</div>
+				) : (
+					<div className="bg-white shadow-xl rounded-xl border border-gray-200 overflow-hidden">
+						<div className="px-6 py-4 bg-gradient-to-r from-blue-50 to-indigo-50 border-b border-gray-200">
+							<h2 className="text-lg font-semibold text-gray-900">
+								All Tickets
+							</h2>
+						</div>
+						<div className="overflow-x-auto">
+							<table
+								className="min-w-full divide-y divide-gray-200"
+								aria-label="Support tickets"
+							>
+								<thead className="bg-gradient-to-r from-gray-50 to-gray-100">
+									<tr>
+										<th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+											ID
+										</th>
+										<th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+											Subject
+										</th>
+										<th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+											Status
+										</th>
+										<th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+											Priority
+										</th>
+										<th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+											Assigned To
+										</th>
+										<th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+											Created
+										</th>
+										<th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+											Actions
+										</th>
 									</tr>
-								))}
-							</tbody>
-						) : (
-							<tbody>
-								<tr>
-									<td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-										No tickets found.
-									</td>
-								</tr>
-							</tbody>
-						)}
-					</table>
-				</div>
-			)}
+								</thead>
+								{tickets.length > 0 ? (
+									<tbody className="bg-white divide-y divide-gray-200">
+										{tickets.map((ticket) => (
+											<tr
+												key={ticket.id}
+												className="hover:bg-gray-50 transition-colors duration-150"
+											>
+												<td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-600">
+													<span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+														#{ticket.id}
+													</span>
+												</td>
+												<td
+													className="px-6 py-4 text-sm font-medium text-gray-900 cursor-pointer hover:text-blue-600 transition-colors duration-150"
+													onClick={() => setSelectedTicket(ticket)}
+													tabIndex="0"
+													role="button"
+													aria-label={`View ticket: ${ticket.subject}`}
+													onKeyDown={(e) => {
+														if (e.key === "Enter" || e.key === " ") {
+															e.preventDefault();
+															setSelectedTicket(ticket);
+														}
+													}}
+												>
+													<div className="max-w-xs truncate">
+														{ticket.subject}
+													</div>
+												</td>
+												<td className="px-6 py-4 whitespace-nowrap">
+													<span
+														className={`inline-flex items-center px-3 py-1 text-xs font-semibold rounded-full shadow-sm
+													${
+														ticket.status === "NEW"
+															? "bg-yellow-100 text-yellow-800 ring-1 ring-yellow-200"
+															: ticket.status === "IN_PROGRESS"
+															? "bg-blue-100 text-blue-800 ring-1 ring-blue-200"
+															: "bg-green-100 text-green-800 ring-1 ring-green-200"
+													}`}
+													>
+														{ticket.status === "NEW"
+															? "New"
+															: ticket.status === "IN_PROGRESS"
+															? "In Progress"
+															: "Resolved"}
+													</span>
+												</td>
+												<td className="px-6 py-4 whitespace-nowrap">
+													<span
+														className={`inline-flex items-center px-3 py-1 text-xs font-semibold rounded-full shadow-sm
+													${
+														ticket.priority === "low"
+															? "bg-gray-100 text-gray-700 ring-1 ring-gray-200"
+															: ticket.priority === "normal"
+															? "bg-blue-100 text-blue-700 ring-1 ring-blue-200"
+															: ticket.priority === "high"
+															? "bg-orange-100 text-orange-700 ring-1 ring-orange-200"
+															: "bg-red-100 text-red-700 ring-1 ring-red-200"
+													}`}
+													>
+														{ticket.priority.charAt(0).toUpperCase() +
+															ticket.priority.slice(1)}
+													</span>
+												</td>
+												<td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+													<TicketAssignment
+														ticket={ticket}
+														onAssignmentChange={handleAssignmentChange}
+													/>
+												</td>
+												<td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+													<div className="flex flex-col">
+														<span className="font-medium">
+															{new Date(ticket.created_at).toLocaleDateString()}
+														</span>
+														<span className="text-xs text-gray-400">
+															{new Date(ticket.created_at).toLocaleTimeString(
+																[],
+																{
+																	hour: "2-digit",
+																	minute: "2-digit",
+																},
+															)}
+														</span>
+													</div>
+												</td>
+												<td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+													<button
+														onClick={() => setSelectedTicket(ticket)}
+														className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-150"
+														aria-label={`View details of ticket: ${ticket.subject}`}
+														title="View ticket details"
+													>
+														<EyeIcon
+															className="h-4 w-4 mr-1"
+															aria-hidden="true"
+														/>
+														View
+													</button>
+												</td>
+											</tr>
+										))}
+									</tbody>
+								) : (
+									<tbody>
+										<tr>
+											<td colSpan="7" className="px-6 py-12 text-center">
+												<div className="flex flex-col items-center space-y-3">
+													<DocumentTextIcon className="h-12 w-12 text-gray-400" />
+													<div>
+														<h3 className="text-lg font-medium text-gray-900">
+															No tickets found
+														</h3>
+														<p className="text-sm text-gray-500 mt-1">
+															There are currently no support tickets to display.
+														</p>
+													</div>
+												</div>
+											</td>
+										</tr>
+									</tbody>
+								)}
+							</table>
+						</div>
+					</div>
+				)}
 
-			{/* Reply Modal */}
-			{selectedTicket && (
-				<div
-					className="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center p-4"
-					role="dialog"
-					aria-modal="true"
-					aria-labelledby="ticket-modal-title"
-					onClick={(e) => {
+				{/* Reply Modal */}
+				{selectedTicket && (
+					<div
+						className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center p-4 z-50"
+						role="dialog"
+						aria-modal="true"
+						aria-labelledby="ticket-modal-title"					onClick={(e) => {
 						// Close modal when clicking outside the modal content
 						if (e.target === e.currentTarget) {
 							setSelectedTicket(null);
+							// Clean up AI suggestion when closing modal
+							setShowAiReply(false);
+							setAiReply("");
 						}
 					}}
-				>
-					<div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-hidden">
-						<div className="p-4 shadow shadow-gray-200 flex justify-between items-center">
-							<div className="flex items-center space-x-4">
-								<h2 className="text-xl font-semibold" id="ticket-modal-title">
-									Ticket #{selectedTicket.id}
-								</h2>
-								<div className="relative">
-									<select
-										value={selectedTicket.status}
-										onChange={(e) => handleStatusUpdate(e.target.value)}
-										disabled={updatingStatus}
-										aria-label="Change ticket status"
-										className={`text-sm font-medium py-1 px-3 rounded-full border focus:outline-none focus:ring-2 focus:ring-offset-1
-											${
-												selectedTicket.status === "NEW"
-													? "bg-yellow-100 text-yellow-800 border-yellow-200 focus:ring-yellow-300"
-													: selectedTicket.status === "IN_PROGRESS"
-													? "bg-blue-100 text-blue-800 border-blue-200 focus:ring-blue-300"
-													: "bg-green-100 text-green-800 border-green-200 focus:ring-green-300"
-											}`}
+					>
+						<div className="bg-white rounded-2xl max-w-4xl w-full max-h-[95vh] overflow-hidden shadow-2xl transform transition-all">
+							<div className="px-6 py-4 bg-gradient-to-r from-blue-50 to-indigo-50 border-b border-gray-200 flex justify-between items-center">
+								<div className="flex items-center space-x-4">
+									<h2
+										className="text-2xl font-bold text-gray-900"
+										id="ticket-modal-title"
 									>
-										<option value="NEW">New</option>
-										<option value="IN_PROGRESS">In Progress</option>
-										<option value="RESOLVED">Resolved</option>
-									</select>
-									{updatingStatus && (
-										<div className="absolute -right-6 top-1/2 transform -translate-y-1/2">
-											<svg
-												className="animate-spin h-4 w-4 text-gray-500"
-												xmlns="http://www.w3.org/2000/svg"
-												fill="none"
-												viewBox="0 0 24 24"
-											>
-												<circle
-													className="opacity-25"
-													cx="12"
-													cy="12"
-													r="10"
-													stroke="currentColor"
-													strokeWidth="4"
-												></circle>
-												<path
-													className="opacity-75"
-													fill="currentColor"
-													d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-												></path>
-											</svg>
-										</div>
-									)}
-								</div>
-							</div>
-							<button
-								onClick={() => setSelectedTicket(null)}
-								className="text-gray-500 hover:text-gray-700 p-1 rounded focus:outline-none focus:ring-2 focus:ring-gray-300"
-								aria-label="Close ticket details"
-								title="Close"
-							>
-								<XMarkIcon className="h-6 w-6" aria-hidden="true" />
-							</button>
-						</div>
-
-						<div className="p-4 overflow-y-auto max-h-[60vh]">
-							<div className="mb-4">
-								<h3 className="font-medium text-gray-900">
-									‟{selectedTicket.subject}”
-								</h3>
-								<p className="text-sm text-gray-500">
-									{selectedTicket.user_name} &lt;{selectedTicket.user_email}&gt;
-								</p>
-							</div>
-
-							<div className="mb-4 p-4 bg-indigo-50">
-								<p>{selectedTicket.description}</p>
-							</div>
-
-							<div className="mb-4">
-								{replies.map((reply) => (
-									<div
-										key={reply.id}
-										className={`mb-3 p-3 rounded-lg ${
-											reply.is_system_note
-												? "bg-gray-100 border border-gray-200"
-												: "bg-gray-50"
+										Ticket #{selectedTicket.id}
+									</h2>
+									<div className="relative">
+										<select
+											value={selectedTicket.status}
+											onChange={(e) => handleStatusUpdate(e.target.value)}
+											disabled={updatingStatus}
+											aria-label="Change ticket status"
+											className={`text-sm font-semibold py-2 px-4 rounded-full border-2 focus:outline-none focus:ring-2 focus:ring-offset-1 transition-all duration-150
+										${
+											selectedTicket.status === "NEW"
+												? "bg-yellow-100 text-yellow-800 border-yellow-200 focus:ring-yellow-300"
+												: selectedTicket.status === "IN_PROGRESS"
+												? "bg-blue-100 text-blue-800 border-blue-200 focus:ring-blue-300"
+												: "bg-green-100 text-green-800 border-green-200 focus:ring-green-300"
 										}`}
-									>
-										<div className="flex items-start space-x-3">
-											{reply.is_system_note ? (
-												<DocumentTextIcon className="h-5 w-5 text-gray-400" />
-											) : (
-												<ChatBubbleLeftRightIcon className="h-5 w-5 text-gray-400" />
-											)}
-											<div>
-												<p
-													className={`text-sm ${
-														reply.is_system_note
-															? "text-gray-600 italic"
-															: "text-gray-900"
-													}`}
-												>
-													{reply.reply}
-												</p>
-												<p className="text-xs text-gray-500 mt-1">
-													{new Date(reply.created_at).toLocaleString()}
-												</p>
-											</div>
-										</div>
-									</div>
-								))}
-							</div>
-						</div>
-
-						<div className="p-4 shadow shadow-gray-600">
-							{/* AI Suggestion Display */}
-							{showAiReply && (
-								<div className="mb-4 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-lg">
-									<div className="flex items-center gap-2 mb-3">
-										<SparklesIcon className="h-5 w-5 text-blue-600" />
-										<h4 className="text-sm font-medium text-blue-900">AI Suggestion</h4>
-									</div>
-									<div className="text-sm text-gray-800 whitespace-pre-wrap mb-3 p-3 bg-white rounded border">
-										{aiReply}
-									</div>
-									<div className="flex justify-end gap-2">
-										<button
-											onClick={acceptAIReply}
-											className="inline-flex items-center gap-1 px-3 py-1.5 bg-green-600 text-white text-sm rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
-											aria-label="Accept AI reply"
 										>
-											<CheckIcon className="h-4 w-4" />
-											Accept
-										</button>
-										<button
-											onClick={rejectAIReply}
-											className="inline-flex items-center gap-1 px-3 py-1.5 bg-gray-500 text-white text-sm rounded-md hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
-											aria-label="Reject AI reply"
-										>
-											<XCircleIcon className="h-4 w-4" />
-											Reject
-										</button>
-									</div>
-								</div>
-							)}
-
-							<form onSubmit={handleSubmitReply}>
-								<div className="relative">
-									<label htmlFor="reply-textarea" className="sr-only">
-										Type your reply
-									</label>
-									<textarea
-										id="reply-textarea"
-										value={newReply}
-										onChange={(e) => setNewReply(e.target.value)}
-										className="w-full p-3 border rounded-md resize-none"
-										rows="4"
-										placeholder="Type your reply..."
-										required
-										aria-label="Reply to support ticket"
-									/>
-									{aiEnabled && (
-										<button
-											type="button"
-											onClick={generateAIReply}
-											disabled={isGeneratingAIReply}
-											className="absolute top-2 right-2 p-2 text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-											title="Generate AI suggestion"
-											aria-label="Generate AI reply suggestion"
-										>
-											{isGeneratingAIReply ? (
+											<option value="NEW">New</option>
+											<option value="IN_PROGRESS">In Progress</option>
+											<option value="RESOLVED">Resolved</option>
+										</select>
+										{updatingStatus && (
+											<div className="absolute -right-6 top-1/2 transform -translate-y-1/2">
 												<svg
-													className="animate-spin h-5 w-5"
+													className="animate-spin h-4 w-4 text-gray-500"
 													xmlns="http://www.w3.org/2000/svg"
 													fill="none"
 													viewBox="0 0 24 24"
@@ -723,30 +663,183 @@ export default function Tickets() {
 														d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
 													></path>
 												</svg>
-											) : (
-												<SparklesIcon className="h-5 w-5" />
-											)}
-										</button>
-									)}
+											</div>
+										)}
+									</div>
+								</div>							<button
+								onClick={() => {
+									setSelectedTicket(null);
+									// Clean up AI suggestion when closing modal
+									setShowAiReply(false);
+									setAiReply("");
+								}}
+								className="text-gray-500 hover:text-gray-700 p-1 rounded focus:outline-none focus:ring-2 focus:ring-gray-300"
+								aria-label="Close ticket details"
+								title="Close"
+							>
+									<XMarkIcon className="h-6 w-6" aria-hidden="true" />
+								</button>
+							</div>
+
+							<div className="p-4 overflow-y-auto max-h-[60vh]">
+								<div className="mb-4">
+									<h3 className="font-medium text-gray-900">
+										‟{selectedTicket.subject}”
+									</h3>
+									<p className="text-sm text-gray-500">
+										{selectedTicket.user_name} &lt;{selectedTicket.user_email}
+										&gt;
+									</p>
 								</div>
-								<div className="flex gap-2 mt-3">
-									<button
-										type="submit"
-										disabled={submitting}
-										aria-busy={submitting}
-										className="flex-1 shadow shadow-blue-500/100 px-4 py-2 rounded-md disabled:opacity-50 text-center hover:shadow-blue-600/100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-									>
-										{submitting ? "Sending..." : "Reply"}
-									</button>
-									{aiEnabled && !showAiReply && (
-										<button
-											type="button"
-											onClick={generateAIReply}
-											disabled={isGeneratingAIReply}
-											className="px-4 py-2 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-md shadow hover:from-blue-600 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
-											aria-label="Generate AI reply"
+
+								<div className="mb-4 p-4 bg-indigo-50">
+									<p>{selectedTicket.description}</p>
+								</div>
+
+								<div className="mb-6">
+									<h4 className="text-sm font-semibold text-gray-700 mb-4 flex items-center">
+										<ChatBubbleLeftRightIcon className="h-4 w-4 mr-2" />
+										Conversation History
+									</h4>
+									<div className="space-y-4">
+										{replies.map((reply) => (
+											<div
+												key={reply.id}
+												className={`p-4 rounded-xl shadow-sm border transition-all duration-150 ${
+													reply.is_system_note
+														? "bg-gray-50 border-gray-200"
+														: "bg-white border-blue-200"
+												}`}
+											>
+												<div className="flex items-start space-x-3">
+													{reply.is_system_note ? (
+														<div className="flex-shrink-0 w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center">
+															<DocumentTextIcon className="h-4 w-4 text-gray-600" />
+														</div>
+													) : (
+														<div className="flex-shrink-0 w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+															<ChatBubbleLeftRightIcon className="h-4 w-4 text-blue-600" />
+														</div>
+													)}
+													<div className="flex-1 min-w-0">
+														<p
+															className={`text-sm leading-relaxed ${
+																reply.is_system_note
+																	? "text-gray-600 italic"
+																	: "text-gray-900"
+															}`}
+														>
+															{reply.reply}
+														</p>
+														<p className="text-xs text-gray-500 mt-2 font-medium">
+															{new Date(reply.created_at).toLocaleString()}
+														</p>
+													</div>
+												</div>
+											</div>
+										))}
+									</div>
+								</div>
+							</div>
+
+							<div className="px-6 py-4 bg-gradient-to-r from-gray-50 to-gray-100 border-t border-gray-200">
+				{/* AI Suggestion Display */}
+				{showAiReply && (
+					<div className="mb-6 p-5 bg-gradient-to-r from-blue-50 to-indigo-50 border-2 border-blue-200 rounded-xl shadow-sm">
+						<div className="flex items-center gap-2 mb-4">
+							<div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+								<SparklesIcon className="h-4 w-4 text-blue-600" />
+							</div>
+							<h4 className="text-sm font-semibold text-blue-900">
+								AI Suggestion
+							</h4>
+						</div>
+						<div className="text-sm text-gray-800 whitespace-pre-wrap mb-4 p-4 bg-white rounded-lg border border-blue-100 shadow-sm max-h-40 overflow-y-auto">
+							{aiReply}
+						</div>
+										<div className="flex justify-end gap-3">
+											<button
+												onClick={acceptAIReply}
+												className="inline-flex items-center gap-2 px-4 py-2 bg-green-600 text-white text-sm font-medium rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition-colors duration-150 shadow-sm"
+												aria-label="Accept AI reply"
+											>
+												<CheckIcon className="h-4 w-4" />
+												Accept
+											</button>
+											<button
+												onClick={rejectAIReply}
+												className="inline-flex items-center gap-2 px-4 py-2 bg-gray-500 text-white text-sm font-medium rounded-lg hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-colors duration-150 shadow-sm"
+												aria-label="Reject AI reply"
+											>
+												<XCircleIcon className="h-4 w-4" />
+												Reject
+											</button>
+										</div>
+									</div>
+								)}
+
+								<form onSubmit={handleSubmitReply} className="space-y-4">
+									<div className="relative">
+										<label
+											htmlFor="reply-textarea"
+											className="block text-sm font-medium text-gray-700 mb-2"
 										>
-											{isGeneratingAIReply ? (
+											Your Reply
+										</label>
+										<textarea
+											id="reply-textarea"
+											value={newReply}
+											onChange={(e) => setNewReply(e.target.value)}
+											className="w-full p-4 border-2 border-gray-200 rounded-xl resize-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-150"
+											rows="4"
+											placeholder="Type your reply here..."
+											required
+											aria-label="Reply to support ticket"
+										/>
+										{aiEnabled && (
+											<button
+												type="button"
+												onClick={generateAIReply}
+												disabled={isGeneratingAIReply}
+												className="absolute top-9 right-3 p-2 text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+												title="Generate AI suggestion"
+												aria-label="Generate AI reply suggestion"
+											>
+												{isGeneratingAIReply ? (
+													<svg
+														className="animate-spin h-5 w-5"
+														xmlns="http://www.w3.org/2000/svg"
+														fill="none"
+														viewBox="0 0 24 24"
+													>
+														<circle
+															className="opacity-25"
+															cx="12"
+															cy="12"
+															r="10"
+															stroke="currentColor"
+															strokeWidth="4"
+														></circle>
+														<path
+															className="opacity-75"
+															fill="currentColor"
+															d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+														></path>
+													</svg>
+												) : (
+													<SparklesIcon className="h-5 w-5" />
+												)}
+											</button>
+										)}
+									</div>
+									<div className="flex gap-3">
+										<button
+											type="submit"
+											disabled={submitting}
+											aria-busy={submitting}
+											className="flex-1 bg-blue-600 text-white px-6 py-3 rounded-xl font-medium hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-150 shadow-sm"
+										>
+											{submitting ? (
 												<>
 													<svg
 														className="animate-spin h-4 w-4 inline-block mr-2"
@@ -768,22 +861,59 @@ export default function Tickets() {
 															d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
 														></path>
 													</svg>
-													Generating...
+													Sending...
 												</>
 											) : (
-												<>
-													<SparklesIcon className="h-4 w-4 inline-block mr-2" />
-													AI Assist
-												</>
+												"Send Reply"
 											)}
 										</button>
-									)}
-								</div>
-							</form>
+										{aiEnabled && !showAiReply && (
+											<button
+												type="button"
+												onClick={generateAIReply}
+												disabled={isGeneratingAIReply}
+												className="px-6 py-3 bg-gradient-to-r from-purple-500 to-indigo-600 text-white rounded-xl font-medium shadow-sm hover:from-purple-600 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-150"
+												aria-label="Generate AI reply"
+											>
+												{isGeneratingAIReply ? (
+													<>
+														<svg
+															className="animate-spin h-4 w-4 inline-block mr-2"
+															xmlns="http://www.w3.org/2000/svg"
+															fill="none"
+															viewBox="0 0 24 24"
+														>
+															<circle
+																className="opacity-25"
+																cx="12"
+																cy="12"
+																r="10"
+																stroke="currentColor"
+																strokeWidth="4"
+															></circle>
+															<path
+																className="opacity-75"
+																fill="currentColor"
+																d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+															></path>
+														</svg>
+														Generating...
+													</>
+												) : (
+													<>
+														<SparklesIcon className="h-4 w-4 inline-block mr-2" />
+														AI Assist
+													</>
+												)}
+											</button>
+										)}
+									</div>
+								</form>
+							</div>
 						</div>
 					</div>
-				</div>
-			)}
+				)}
+			</div>
 		</div>
 	);
 }

@@ -104,6 +104,10 @@
 		"buttonFullWidth": {
 			"type": "boolean",
 			"default": false
+		},
+		"redirectPage": {
+			"type": "string",
+			"default": ""
 		}
 	},
 	"textdomain": "cs-support",
