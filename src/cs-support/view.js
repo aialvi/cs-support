@@ -10,7 +10,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
 		// Get form elements
 		const submitButton = form.querySelector(".cs-form-submit");
-		const messageContainer = form.querySelector(".cs-form-message");
 		const successMessage =
 			submitButton.dataset.successMessage || "Ticket created successfully!";
 		const errorMessage =
@@ -22,7 +21,7 @@ document.addEventListener("DOMContentLoaded", () => {
 		const category = form.querySelector("#cs-category").value;
 		const priority = form.querySelector("#cs-priority").value;
 		const description = form.querySelector("#cs-description").value;
-        const status = "NEW";
+		const status = "NEW";
 
 		// Validate form
 		if (!subject || !category || !description) {
@@ -46,7 +45,7 @@ document.addEventListener("DOMContentLoaded", () => {
 					category,
 					priority,
 					description,
-                    status,
+					status,
 				}),
 			});
 
@@ -55,11 +54,11 @@ document.addEventListener("DOMContentLoaded", () => {
 			if (data.success) {
 				showMessage(successMessage, "success");
 				form.reset();
-				
+
 				// Check for block-level redirect override first, then global setting
 				const blockRedirectUrl = form.dataset.redirectUrl;
 				const redirectUrl = blockRedirectUrl || data.redirect_url;
-				
+
 				// Handle redirect if specified
 				if (redirectUrl) {
 					// Add a delay to show the success message briefly before redirecting
