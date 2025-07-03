@@ -63,8 +63,9 @@ class Notifications
             return false;
         }
 
+        // translators: %1$s: site name, %2$d: ticket ID
         $subject = sprintf(
-            __('[%s] Ticket #%d has been assigned to you', 'cs-support'),
+            __('[%1$s] Ticket #%2$d has been assigned to you', 'cs-support'),
             get_bloginfo('name'),
             $ticket_id
         );
@@ -117,8 +118,9 @@ class Notifications
         $success = true;
 
         // Send notification to new assignee
+        // translators: %1$s: site name, %2$d: ticket ID
         $subject_new = sprintf(
-            __('[%s] Ticket #%d has been reassigned to you', 'cs-support'),
+            __('[%1$s] Ticket #%2$d has been reassigned to you', 'cs-support'),
             get_bloginfo('name'),
             $ticket_id
         );
@@ -142,8 +144,9 @@ class Notifications
 
         // Send notification to old assignee if different and exists
         if ($old_assignee && $old_assignee_id !== $new_assignee_id) {
+            // translators: %1$s: site name, %2$d: ticket ID
             $subject_old = sprintf(
-                __('[%s] Ticket #%d has been reassigned', 'cs-support'),
+                __('[%1$s] Ticket #%2$d has been reassigned', 'cs-support'),
                 get_bloginfo('name'),
                 $ticket_id
             );
@@ -186,8 +189,9 @@ class Notifications
             return false;
         }
 
+        // translators: %1$s: site name, %2$d: ticket ID
         $subject = sprintf(
-            __('[%s] Your ticket #%d status has been updated', 'cs-support'),
+            __('[%1$s] Your ticket #%2$d status has been updated', 'cs-support'),
             get_bloginfo('name'),
             $ticket_id
         );
@@ -257,12 +261,12 @@ class Notifications
 			<div class="header">
 				<h2>🎫 New Ticket Assignment</h2>
 			</div>
-			
+
 			<div class="content">
 				<p>Hello <strong>{assignee_name}</strong>,</p>
-				
+
 				<p>A support ticket has been assigned to you by <strong>{assigned_by_name}</strong>.</p>
-				
+
 				<div class="ticket-details">
 					<h3>Ticket Details:</h3>
 					<p><strong>Ticket ID:</strong> #{ticket_id}</p>
@@ -273,17 +277,17 @@ class Notifications
 					<p><strong>Status:</strong> {status}</p>
 					<p><strong>Created:</strong> {created_at}</p>
 				</div>
-				
+
 				<p><strong>Description:</strong></p>
 				<p>{description}</p>
-				
+
 				<p>
 					<a href="{ticket_url}" class="btn">View Ticket in Admin</a>
 				</p>
-				
+
 				<p>Please review the ticket and respond as soon as possible.</p>
 			</div>
-			
+
 			<div class="footer">
 				<p>This email was sent automatically from {site_name}.</p>
 			</div>
@@ -348,14 +352,14 @@ class Notifications
 			<div class="header">
 				<h2>🔄 Ticket Reassigned to You</h2>
 			</div>
-			
+
 			<div class="content">
 				<p>Hello <strong>{assignee_name}</strong>,</p>
-				
+
 				<p>A support ticket has been reassigned to you by <strong>{reassigned_by_name}</strong>.</p>
-				
+
 				{old_assignee_info}
-				
+
 				<div class="ticket-details">
 					<h3>Ticket Details:</h3>
 					<p><strong>Ticket ID:</strong> #{ticket_id}</p>
@@ -483,25 +487,25 @@ class Notifications
 			<div class="header">
 				<h2>📊 Ticket Status Updated</h2>
 			</div>
-			
+
 			<div class="content">
 				<p>Hello <strong>{customer_name}</strong>,</p>
-				
+
 				<p>The status of your support ticket has been updated.</p>
-				
+
 				<div class="status-change">
 					<h3>Status Change</h3>
 					<p><strong>Ticket #</strong>{ticket_id}: {subject}</p>
 					<p><strong>Status changed from:</strong> {old_status} <strong>to:</strong> {new_status}</p>
 				</div>
-				
+
 				<p>
 					<a href="{ticket_url}" class="btn">View Your Ticket</a>
 				</p>
-				
+
 				<p>If you have any questions, please don\'t hesitate to contact us.</p>
 			</div>
-			
+
 			<div class="footer">
 				<p>This email was sent automatically from {site_name}.</p>
 			</div>
