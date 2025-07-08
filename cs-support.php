@@ -11,15 +11,15 @@
  * License:           GPL-2.0-or-later
  * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain:       cs-support
- * Domain Path: 	  /languages
+ * Domain Path:       /languages
  *
  * @package Clientsync
  */
 
 namespace ClientSync\CS_Support;
 
-if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly.
+if (! defined('ABSPATH')) {
+    exit; // Exit if accessed directly.
 }
 
 require_once __DIR__ . '/vendor/autoload.php';
@@ -36,12 +36,13 @@ bootstrap();
  *
  * @see https://developer.wordpress.org/reference/functions/register_block_type/
  */
-function clientsync_cs_support_block_init() {
-	// Register the main support form block
-	\register_block_type( __DIR__ . '/build/' . PLUGIN_NAME );
-	
-	// Register the frontend display block
-	\register_block_type( __DIR__ . '/build/cs-support-frontend' );
+function clientsync_cs_support_block_init()
+{
+    // Register the main support form block
+    \register_block_type(__DIR__ . '/build/' . PLUGIN_NAME);
+
+    // Register the frontend display block
+    \register_block_type(__DIR__ . '/build/cs-support-frontend');
 }
 
-\add_action( 'init', __NAMESPACE__ . '\\clientsync_cs_support_block_init' );
+\add_action('init', __NAMESPACE__ . '\\clientsync_cs_support_block_init');

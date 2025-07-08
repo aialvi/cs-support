@@ -395,117 +395,222 @@ class Admin
 	 */
 	public function render_shortcodes_page(): void
 	{
-		?>
-		<div class="wrap">
-			<h1><?php _e('CS Support Shortcodes', 'cs-support'); ?></h1>
-			
-			<div class="cs-support-shortcodes-help">
-				<p><?php _e('Use these shortcodes to add CS Support forms and ticket displays to any page, post, or widget area.', 'cs-support'); ?></p>
-				
-				<div class="postbox">
-					<h2 class="hndle"><?php _e('Support Form Shortcode', 'cs-support'); ?></h2>
-					<div class="inside">
-						<p><?php _e('Display a support ticket creation form:', 'cs-support'); ?></p>
-						<code class="shortcode-example">[cs_support]</code>
-						
-						<h4><?php _e('With Custom Attributes:', 'cs-support'); ?></h4>
-						<code class="shortcode-example">[cs_support title="Contact Us" submit_button_text="Send Message" background_color="#f8f9fa"]</code>
-						
-						<h4><?php _e('Available Attributes:', 'cs-support'); ?></h4>
-						<ul class="shortcode-attributes">
-							<li><strong>title</strong> - Form title (default: "Create a new support ticket")</li>
-							<li><strong>show_title</strong> - Show/hide title: "true" or "false" (default: "true")</li>
-							<li><strong>submit_button_text</strong> - Button text (default: "Create Ticket")</li>
-							<li><strong>background_color</strong> - Form background color (default: "#ffffff")</li>
-							<li><strong>text_color</strong> - Text color (default: "#000000")</li>
-							<li><strong>button_color</strong> - Button background color (default: "#2c3338")</li>
-							<li><strong>button_text_color</strong> - Button text color (default: "#ffffff")</li>
-							<li><strong>max_width</strong> - Maximum form width (default: "600px")</li>
-							<li><strong>border_radius</strong> - Border radius (default: "8px")</li>
-							<li><strong>box_shadow</strong> - Enable box shadow: "true" or "false" (default: "false")</li>
-							<li><strong>button_align</strong> - Button alignment: "left", "center", or "right" (default: "left")</li>
-							<li><strong>button_full_width</strong> - Full width button: "true" or "false" (default: "false")</li>
-						</ul>
-					</div>
-				</div>
-				
-				<div class="postbox">
-					<h2 class="hndle"><?php _e('Tickets List Shortcode', 'cs-support'); ?></h2>
-					<div class="inside">
-						<p><?php _e('Display the current user\'s support tickets:', 'cs-support'); ?></p>
-						<code class="shortcode-example">[cs_support_tickets]</code>
-						
-						<h4><?php _e('With Custom Attributes:', 'cs-support'); ?></h4>
-						<code class="shortcode-example">[cs_support_tickets title="Your Tickets" tickets_per_page="5" accent_color="#007cba"]</code>
-						
-						<h4><?php _e('Available Attributes:', 'cs-support'); ?></h4>
-						<ul class="shortcode-attributes">
-							<li><strong>title</strong> - List title (default: "My Support Tickets")</li>
-							<li><strong>tickets_per_page</strong> - Number of tickets per page (default: "10")</li>
-							<li><strong>background_color</strong> - Background color (default: "#ffffff")</li>
-							<li><strong>text_color</strong> - Text color (default: "#000000")</li>
-							<li><strong>accent_color</strong> - Accent color for buttons and status (default: "#2c3338")</li>
-							<li><strong>border_radius</strong> - Border radius (default: "8")</li>
-							<li><strong>box_shadow</strong> - Enable box shadow: "true" or "false" (default: "true")</li>
-							<li><strong>row_hover_effect</strong> - Enable row hover effect: "true" or "false" (default: "true")</li>
-						</ul>
-					</div>
-				</div>
-				
-				<div class="postbox">
-					<h2 class="hndle"><?php _e('Usage Examples', 'cs-support'); ?></h2>
-					<div class="inside">
-						<h4><?php _e('Contact Page:', 'cs-support'); ?></h4>
-						<code class="shortcode-example">[cs_support title="Contact Us" submit_button_text="Send Message" background_color="#f8f9fa" button_color="#007cba"]</code>
-						
-						<h4><?php _e('User Dashboard:', 'cs-support'); ?></h4>
-						<code class="shortcode-example">[cs_support_tickets title="My Tickets" tickets_per_page="5"]</code>
-						
-						<h4><?php _e('Widget Area (Sidebar):', 'cs-support'); ?></h4>
-						<code class="shortcode-example">[cs_support show_title="false" max_width="100%" submit_button_text="Get Help"]</code>
-					</div>
-				</div>
-				
-				<div class="postbox">
-					<h2 class="hndle"><?php _e('Notes', 'cs-support'); ?></h2>
-					<div class="inside">
-						<ul>
-							<li><?php _e('Shortcodes work in any editor: Classic Editor, Gutenberg, page builders, and widget areas.', 'cs-support'); ?></li>
-							<li><?php _e('The ticket list shortcode only shows tickets for the currently logged-in user.', 'cs-support'); ?></li>
-							<li><?php _e('Colors can be specified using hex values (#ffffff) or CSS color names (white).', 'cs-support'); ?></li>
-							<li><?php _e('All forms are responsive and include accessibility features.', 'cs-support'); ?></li>
-						</ul>
-					</div>
-				</div>
-			</div>
-			
-			<style>
-			.cs-support-shortcodes-help .postbox {
-				margin-bottom: 20px;
-				padding: 20px;
-			}
-			.shortcode-example {
-				display: block;
-				background: #f1f1f1;
-				padding: 10px;
-				margin: 10px 0;
-				border-left: 4px solid #0073aa;
-				font-family: monospace;
-				overflow-x: auto;
-				white-space: nowrap;
-			}
-			.shortcode-attributes {
-				margin-left: 20px;
-			}
-			.shortcode-attributes li {
-				margin-bottom: 5px;
-			}
-			.shortcode-attributes strong {
-				color: #0073aa;
-			}
-			</style>
-		</div>
-		<?php
+        ?>
+        <div class="wrap cs-support-shortcodes-modern cs-support-shortcodes-fullwidth">
+            <div class="cs-support-shortcodes-inner">
+                <h1 class="cs-shortcodes-title">
+                    <?php _e('CS Support Shortcodes', 'cs-support'); ?>
+                </h1>
+                <div class="cs-support-shortcodes-help cs-shortcodes-grid">
+                    <div class="cs-modern-card">
+                        <h2 class="cs-modern-card-title"><?php _e('Support Form Shortcode', 'cs-support'); ?></h2>
+                        <div class="cs-modern-card-body">
+                            <p class="cs-shortcodes-desc"><?php _e('Display a support ticket creation form:', 'cs-support'); ?></p>
+                            <code class="cs-modern-shortcode">[cs_support]</code>
+                            <h4 class="cs-shortcodes-subtitle"><?php _e('With Custom Attributes:', 'cs-support'); ?></h4>
+                            <code class="cs-modern-shortcode">[cs_support title="Contact Us" submit_button_text="Send Message" background_color="#f8f9fa"]</code>
+                            <h4 class="cs-shortcodes-subtitle"><?php _e('Available Attributes:', 'cs-support'); ?></h4>
+                            <ul class="cs-modern-attributes">
+                                <li><strong>title</strong> - Form title (default: "Create a new support ticket")</li>
+                                <li><strong>show_title</strong> - Show/hide title: "true" or "false" (default: "true")</li>
+                                <li><strong>submit_button_text</strong> - Button text (default: "Create Ticket")</li>
+                                <li><strong>background_color</strong> - Form background color (default: "#ffffff")</li>
+                                <li><strong>text_color</strong> - Text color (default: "#000000")</li>
+                                <li><strong>button_color</strong> - Button background color (default: "#2c3338")</li>
+                                <li><strong>button_text_color</strong> - Button text color (default: "#ffffff")</li>
+                                <li><strong>max_width</strong> - Maximum form width (default: "600px")</li>
+                                <li><strong>border_radius</strong> - Border radius (default: "8px")</li>
+                                <li><strong>box_shadow</strong> - Enable box shadow: "true" or "false" (default: "false")</li>
+                                <li><strong>button_align</strong> - Button alignment: "left", "center", or "right" (default: "left")</li>
+                                <li><strong>button_full_width</strong> - Full width button: "true" or "false" (default: "false")</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="cs-modern-card">
+                        <h2 class="cs-modern-card-title"><?php _e('Tickets List Shortcode', 'cs-support'); ?></h2>
+                        <div class="cs-modern-card-body">
+                            <p class="cs-shortcodes-desc"><?php _e('Display the current user\'s support tickets:', 'cs-support'); ?></p>
+                            <code class="cs-modern-shortcode">[cs_support_tickets]</code>
+                            <h4 class="cs-shortcodes-subtitle"><?php _e('With Custom Attributes:', 'cs-support'); ?></h4>
+                            <code class="cs-modern-shortcode">[cs_support_tickets title="Your Tickets" tickets_per_page="5" accent_color="#007cba"]</code>
+                            <h4 class="cs-shortcodes-subtitle"><?php _e('Available Attributes:', 'cs-support'); ?></h4>
+                            <ul class="cs-modern-attributes">
+                                <li><strong>title</strong> - List title (default: "My Support Tickets")</li>
+                                <li><strong>tickets_per_page</strong> - Number of tickets per page (default: "10")</li>
+                                <li><strong>background_color</strong> - Background color (default: "#ffffff")</li>
+                                <li><strong>text_color</strong> - Text color (default: "#000000")</li>
+                                <li><strong>accent_color</strong> - Accent color for buttons and status (default: "#2c3338")</li>
+                                <li><strong>border_radius</strong> - Border radius (default: "8")</li>
+                                <li><strong>box_shadow</strong> - Enable box shadow: "true" or "false" (default: "true")</li>
+                                <li><strong>row_hover_effect</strong> - Enable row hover effect: "true" or "false" (default: "true")</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="cs-modern-card">
+                        <h2 class="cs-modern-card-title"><?php _e('Usage Examples', 'cs-support'); ?></h2>
+                        <div class="cs-modern-card-body">
+                            <h4 class="cs-shortcodes-subtitle"><?php _e('Contact Page:', 'cs-support'); ?></h4>
+                            <code class="cs-modern-shortcode">[cs_support title="Contact Us" submit_button_text="Send Message" background_color="#f8f9fa" button_color="#007cba"]</code>
+                            <h4 class="cs-shortcodes-subtitle"><?php _e('User Dashboard:', 'cs-support'); ?></h4>
+                            <code class="cs-modern-shortcode">[cs_support_tickets title="My Tickets" tickets_per_page="5"]</code>
+                            <h4 class="cs-shortcodes-subtitle"><?php _e('Widget Area (Sidebar):', 'cs-support'); ?></h4>
+                            <code class="cs-modern-shortcode">[cs_support show_title="false" max_width="100%" submit_button_text="Get Help"]</code>
+                        </div>
+                    </div>
+                    <div class="cs-modern-card">
+                        <h2 class="cs-modern-card-title"><?php _e('Notes', 'cs-support'); ?></h2>
+                        <div class="cs-modern-card-body">
+                            <ul>
+                                <li><?php _e('Shortcodes work in any editor: Classic Editor, Gutenberg, page builders, and widget areas.', 'cs-support'); ?></li>
+                                <li><?php _e('The ticket list shortcode only shows tickets for the currently logged-in user.', 'cs-support'); ?></li>
+                                <li><?php _e('Colors can be specified using hex values (#ffffff) or CSS color names (white).', 'cs-support'); ?></li>
+                                <li><?php _e('All forms are responsive and include accessibility features.', 'cs-support'); ?></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <style>
+            .cs-support-shortcodes-modern {
+                background: linear-gradient(120deg, #f8fafc 0%, #e0e7ef 100%);
+                padding: 32px 0 24px 0;
+                border-radius: 0;
+                box-shadow: 0 4px 32px 0 rgba(60,72,100,0.10);
+                max-width: none;
+                width: 100vw;
+                margin: 0;
+            }
+            .cs-support-shortcodes-fullwidth {
+                width: 100vw !important;
+                max-width: 100vw !important;
+                margin-left: 0 !important;
+                margin-right: 0 !important;
+                border-radius: 0 !important;
+            }
+            .cs-support-shortcodes-inner {
+                max-width: 1650px;
+                margin: 0 0 auto 0;
+                padding: 0 32px;
+            }
+            .cs-shortcodes-title {
+                font-size: 3rem;
+                font-weight: 900;
+                color: #2d3748;
+                margin-bottom: 3rem !important;
+                letter-spacing: -0.01em;
+            }
+            .cs-shortcodes-grid {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 32px;
+            }
+            .cs-modern-card {
+                background: #fff;
+                border-radius: 16px;
+                box-shadow: 0 2px 16px 0 rgba(60,72,100,0.08);
+                margin-bottom: 0;
+                padding: 0;
+                overflow: hidden;
+                border: 1px solid #e5e7eb;
+                flex: 1 1 45%;
+                min-width: 340px;
+                max-width: 48%;
+                display: flex;
+                flex-direction: column;
+            }
+            .cs-modern-card-title {
+                background: linear-gradient(90deg,rgb(59, 59, 59) 0%,rgb(27, 27, 27) 100%);
+                color: #fff;
+                font-size: 1.08rem;
+                font-weight: 600;
+                padding: 14px 22px;
+                margin: 0;
+                letter-spacing: 0.01em;
+            }
+            .cs-modern-card-body {
+                padding: 18px 22px 16px 22px;
+                font-size: 0.98rem;
+            }
+            .cs-modern-shortcode {
+                display: block;
+                background: #f1f5f9;
+                color: #6b6b6b;
+                padding: 10px 12px;
+                margin: 10px 0 14px 0;
+                border-left: 4px solid #333333;
+                font-family: 'Fira Mono', 'Consolas', 'Menlo', monospace;
+                font-size: 0.97rem;
+                border-radius: 6px;
+                overflow-x: auto;
+                white-space: pre;
+            }
+            .cs-modern-attributes {
+                margin-left: 12px;
+                margin-bottom: 0;
+                color: #475569;
+                font-size: 0.97rem;
+            }
+            .cs-modern-attributes li {
+                margin-bottom: 4px;
+            }
+            .cs-modern-attributes strong {
+                color: #000000;
+            }
+            .cs-shortcodes-desc {
+                font-size: 0.97rem;
+                color: #475569;
+                margin-bottom: 0.5rem;
+            }
+            .cs-shortcodes-subtitle {
+                font-size: 1.01rem;
+                color: #0f0f0f !important;
+                margin: 12px 0 6px 0;
+                font-weight: 600;
+            }
+            .cs-modern-card-body h4 {
+                font-size: 1.01rem;
+                color: #0ea5e9;
+                margin: 12px 0 6px 0;
+                font-weight: 600;
+            }
+            .cs-modern-card_body ul {
+                padding-left: 14px;
+            }
+            .cs-modern-card_body ul li {
+                list-style: disc;
+            }
+            @media (max-width: 900px) {
+                .cs-support-shortcodes-inner {
+                    padding: 0 8px;
+                }
+                .cs-shortcodes-grid {
+                    gap: 18px;
+                }
+                .cs-modern-card {
+                    min-width: 260px;
+                    max-width: 100%;
+                }
+            }
+            @media (max-width: 700px) {
+                .cs-support-shortcodes-modern {
+                    padding: 12px 0;
+                }
+                .cs-shortcodes-grid {
+                    flex-direction: column;
+                    gap: 18px;
+                }
+                .cs-modern-card-title, .cs-modern-card-body {
+                    padding-left: 10px;
+                    padding-right: 10px;
+                }
+                .cs-modern-card {
+                    min-width: 0;
+                    max-width: 100%;
+                }
+            }
+            </style>
+        </div>
+        <?php
 	}
 
 	/**

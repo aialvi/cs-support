@@ -275,7 +275,7 @@ export default function Dashboard({ navigate }) {
 						'X-WP-Nonce': CS_SUPPORT_HELPDESK_CONFIG.nonce,
 					},
 				});
-				
+
 				if (response.ok) {
 					const data = await response.json();
 					setAiEnabled(data?.ai?.enabled && data?.ai?.apiKey);
@@ -284,20 +284,20 @@ export default function Dashboard({ navigate }) {
 				console.error('Failed to check AI settings:', error);
 			}
 		};
-		
+
 		checkAISettings();
 	}, []);
-	
+
 	const generateAIReply = async () => {
 		if (!selectedTicket) {
 			toast.error('Please select a ticket first');
 			return;
 		}
-		
+
 		setIsGeneratingAIReply(true);
 		setShowAiReply(false);
 		setAiReply('');
-		
+
 		try {
 			const response = await fetch(CS_SUPPORT_HELPDESK_CONFIG.apiUrl + '/ai/generate-reply', {
 				method: 'POST',
@@ -309,9 +309,9 @@ export default function Dashboard({ navigate }) {
 					ticket_id: selectedTicket.id,
 				}),
 			});
-			
+
 			const data = await response.json();
-			
+
 			if (data.success) {
 				setAiReply(data.reply);
 				setShowAiReply(true);
@@ -325,18 +325,18 @@ export default function Dashboard({ navigate }) {
 			setIsGeneratingAIReply(false);
 		}
 	};
-	
+
 	const acceptAIReply = () => {
 		setReply(aiReply);
 		setShowAiReply(false);
 		setAiReply('');
 	};
-	
+
 	const rejectAIReply = () => {
 		setShowAiReply(false);
 		setAiReply('');
 	};
-	
+
 	useEffect(() => {
 		const fetchTickets = async () => {
 			try {
@@ -632,7 +632,7 @@ export default function Dashboard({ navigate }) {
 										</div>
 									</div>
 								</div>
-								
+
 								<div className="bg-white overflow-hidden shadow-lg shadow-emerald-100 rounded-xl border border-emerald-100 hover:shadow-xl transition-shadow duration-300">
 									<div className="p-6">
 										<div className="flex items-center">
@@ -656,7 +656,7 @@ export default function Dashboard({ navigate }) {
 										</div>
 									</div>
 								</div>
-								
+
 								<div className="bg-white overflow-hidden shadow-lg shadow-blue-100 rounded-xl border border-blue-100 hover:shadow-xl transition-shadow duration-300">
 									<div className="p-6">
 										<div className="flex items-center">
@@ -723,8 +723,8 @@ export default function Dashboard({ navigate }) {
 																	<span className={classNames(
 																		"text-xs px-2 py-1 rounded-full font-medium",
 																		ticket.priority === "high" ? "bg-red-100 text-red-800" :
-																		ticket.priority === "normal" ? "bg-yellow-100 text-yellow-800" :
-																		"bg-gray-100 text-gray-800"
+																			ticket.priority === "normal" ? "bg-yellow-100 text-yellow-800" :
+																				"bg-gray-100 text-gray-800"
 																	)}>
 																		{ticket.priority}
 																	</span>
@@ -737,15 +737,15 @@ export default function Dashboard({ navigate }) {
 																		ticket.status === "NEW"
 																			? "bg-rose-100 text-rose-800"
 																			: ticket.status === "IN_PROGRESS"
-																			? "bg-yellow-100 text-yellow-800"
-																			: "bg-emerald-100 text-emerald-800",
+																				? "bg-yellow-100 text-yellow-800"
+																				: "bg-emerald-100 text-emerald-800",
 																	)}
 																>
 																	{ticket.status === "NEW"
 																		? "New"
 																		: ticket.status === "IN_PROGRESS"
-																		? "In Progress"
-																		: "Resolved"}
+																			? "In Progress"
+																			: "Resolved"}
 																</div>
 																<div className="flex items-center space-x-2 text-xs text-gray-500">
 																	<span>{timeAgo(ticket.created_at)}</span>
@@ -781,36 +781,47 @@ export default function Dashboard({ navigate }) {
 										<div className="overflow-y-auto flex-1">
 											{recentActivity.length > 0 ? (
 												<ul className="space-y-3">
-													{recentActivity.map((activity) => (
-														<li
-															key={activity.id}
-															className={`p-3 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50 transition-all duration-200
-																${activity.type === "system_note" ? "bg-gray-50 border-gray-300" : ""}`}
-															onClick={() => {
-																if (activity.ticketId) {
-																	const ticket = supportTickets.find(
-																		(t) => t.id === activity.ticketId,
-																	);
-																	if (ticket) {
-																		setSelectedTicket(ticket);
-																		fetchReplies(ticket.id);
+													{recentActivity.map((activity) => {
+														// Determine if this activity is a ticket creation and has not been replied to
+														const isTicketCreated = activity.type === "ticket_created";
+														const hasReplies = ticketReplies.some(
+															(reply) => reply.ticket_id === activity.ticketId
+														);
+														const showOverlay = isTicketCreated && !hasReplies;
+
+														return (
+															<li
+																key={activity.id}
+																className={`p-3 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50 transition-all duration-200
+																	${activity.type === "system_note" ? "bg-gray-50 border-gray-300" : ""}
+																	${showOverlay ? "bg-red-50" : ""}
+																`}
+																onClick={() => {
+																	if (activity.ticketId) {
+																		const ticket = supportTickets.find(
+																			(t) => t.id === activity.ticketId,
+																		);
+																		if (ticket) {
+																			setSelectedTicket(ticket);
+																			fetchReplies(ticket.id);
+																		}
 																	}
-																}
-															}}
-														>
-															<div className="flex justify-between items-start">
-																<span
-																	className={`text-sm font-medium mr-2 
-																	${activity.type === "system_note" ? "text-gray-600 italic" : "text-gray-800"}`}
-																>
-																	{activity.activity}
-																</span>
-																<span className="text-xs text-gray-500 whitespace-nowrap">
-																	{timeAgo(activity.date)}
-																</span>
-															</div>
-														</li>
-													))}
+																}}
+															>
+																<div className="flex justify-between items-start">
+																	<span
+																		className={`text-sm font-medium mr-2 
+																		${activity.type === "system_note" ? "text-gray-600 italic" : "text-gray-800"}`}
+																	>
+																		{activity.activity}
+																	</span>
+																	<span className="text-xs text-gray-500 whitespace-nowrap">
+																		{timeAgo(activity.date)}
+																	</span>
+																</div>
+															</li>
+														);
+													})}
 												</ul>
 											) : (
 												<div className="flex items-center justify-center h-full text-gray-500">
@@ -944,7 +955,7 @@ export default function Dashboard({ navigate }) {
 													))}
 												</select>
 											</div>
-											
+
 											<div>
 												<div className="flex items-center justify-between mb-2">
 													<label
@@ -965,7 +976,7 @@ export default function Dashboard({ navigate }) {
 														</button>
 													)}
 												</div>
-												
+
 												{showAiReply && (
 													<div className="mb-4 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-lg">
 														<div className="flex items-center justify-between mb-3">
@@ -997,7 +1008,7 @@ export default function Dashboard({ navigate }) {
 														</div>
 													</div>
 												)}
-												
+
 												<textarea
 													id="reply"
 													name="reply"
@@ -1009,7 +1020,7 @@ export default function Dashboard({ navigate }) {
 													required
 												/>
 											</div>
-											
+
 											<button
 												type="button"
 												className="w-full flex justify-center items-center px-4 py-3 border border-transparent text-sm font-medium rounded-lg text-white bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all duration-200 shadow-lg hover:shadow-xl"
@@ -1063,8 +1074,8 @@ export default function Dashboard({ navigate }) {
 																<div className="flex items-center space-x-2">
 																	<div className={classNames(
 																		"rounded-full p-1",
-																		reply.user_id === selectedTicket.user_id 
-																			? "bg-green-500" 
+																		reply.user_id === selectedTicket.user_id
+																			? "bg-green-500"
 																			: "bg-purple-500"
 																	)}>
 																		<UserCircleIcon className="h-4 w-4 text-white" />
