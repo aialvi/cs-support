@@ -110,6 +110,7 @@ class AI_Assistant
         $ticket_id = (int) $request->get_param('ticket_id');
 
         // Get ticket details
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom table query for AI processing, caching not necessary for one-time operations
         $ticket = $wpdb->get_row($wpdb->prepare(
             "SELECT * FROM {$wpdb->prefix}cs_support_tickets WHERE id = %d",
             $ticket_id
@@ -123,6 +124,7 @@ class AI_Assistant
         }
 
         // Get ticket replies
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom table query for AI processing, caching not necessary for one-time operations
         $replies = $wpdb->get_results($wpdb->prepare(
             "SELECT * FROM {$wpdb->prefix}cs_support_ticket_replies WHERE ticket_id = %d ORDER BY created_at ASC",
             $ticket_id

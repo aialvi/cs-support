@@ -215,6 +215,7 @@ class Notifications
     {
         global $wpdb;
 
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Necessary for ticket notifications, caching unnecessary for one-time notification processing
         $ticket = $wpdb->get_row(
             $wpdb->prepare(
                 "SELECT t.*, u.display_name as customer_name, u.user_email as customer_email

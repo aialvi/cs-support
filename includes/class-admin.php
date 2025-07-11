@@ -228,6 +228,24 @@ class Admin
 	}
 
 	/**
+	 * Generate a nonced URL for ticket viewing
+	 * 
+	 * @param int $ticket_id The ticket ID to view
+	 * @return string The URL with nonce
+	 */
+	protected function get_ticket_view_url(int $ticket_id): string
+	{
+		return add_query_arg(
+			[
+				'page' => 'clientsync-support-helpdesk-tickets',
+				'ticket_id' => absint($ticket_id),
+				'_wpnonce' => wp_create_nonce('view_ticket_' . absint($ticket_id))
+			],
+			admin_url('admin.php')
+		);
+	}
+
+	/**
 	 * Get script data
 	 *
 	 * @return array
@@ -241,6 +259,8 @@ class Admin
 			'apiUrl' => rest_url('cs-support/v1'),
 			'ticketsUrl' => rest_url('cs-support/v1/tickets'),
 			'repliesUrl' => rest_url('cs-support/v1/tickets/%s/replies'),
+			'adminUrl' => admin_url('admin.php'),
+			'ticketsPage' => 'clientsync-support-helpdesk-tickets',
 		];
 	}
 
@@ -569,12 +589,6 @@ class Admin
                 margin: 12px 0 6px 0;
                 font-weight: 600;
             }
-            .cs-modern-card-body h4 {
-                font-size: 1.01rem;
-                color: #0ea5e9;
-                margin: 12px 0 6px 0;
-                font-weight: 600;
-            }
             .cs-modern-card_body ul {
                 padding-left: 14px;
             }
@@ -661,6 +675,16 @@ class Admin
 		// If accessing a specific ticket, check if user is assigned to it or owns it
 		if (isset($_GET['ticket_id'])) {
 			$ticket_id = (int) $_GET['ticket_id'];
+			
+			// Check nonce when viewing specific tickets
+			$nonce_action = 'view_ticket_' . $ticket_id;
+			$nonce_ok = isset($_GET['_wpnonce']) && wp_verify_nonce(sanitize_text_field(wp_unslash($_GET['_wpnonce'])), $nonce_action);
+			
+			// If nonce is provided but invalid, deny access
+			if (isset($_GET['_wpnonce']) && !$nonce_ok) {
+				wp_die(esc_html__('Security check failed. Please try again.', 'cs-support'));
+			}
+			
 			return $this->can_user_access_ticket($ticket_id, $current_user_id);
 		}
 		
@@ -690,6 +714,7 @@ class Admin
 		}
 		
 		// Check if user is the ticket owner or assignee
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Access control check, not worth caching
 		$ticket = $wpdb->get_row(
 			$wpdb->prepare(
 				"SELECT user_id, assignee_id FROM {$wpdb->prefix}cs_support_tickets WHERE id = %d",

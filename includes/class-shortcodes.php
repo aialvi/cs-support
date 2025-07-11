@@ -17,6 +17,10 @@ class Shortcodes {
      */
     public function init(): void {
         add_action('init', [$this, 'register_shortcodes']);
+        // Add a filter for admin footer text to show debug links when WP_DEBUG is true
+        if (defined('WP_DEBUG') && WP_DEBUG) {
+            add_filter('admin_footer_text', [$this, 'add_debug_links']);
+        }
     }
 
     /**
@@ -70,8 +74,18 @@ class Shortcodes {
         
         // Debug mode output
         if (defined('WP_DEBUG') && WP_DEBUG && isset($_GET['debug_shortcode'])) {
-            require_once plugin_dir_path(__FILE__) . 'shortcode-validator.php';
-            return ShortcodeValidator::debug_shortcode_render('cs_support', $attributes);
+            // Verify nonce for debug actions
+            $nonce_verified = false;
+            if (isset($_GET['_wpnonce'])) {
+                $nonce_verified = wp_verify_nonce(sanitize_text_field(wp_unslash($_GET['_wpnonce'])), 'cs_support_debug_shortcode');
+            }
+            
+            if ($nonce_verified) {
+                require_once plugin_dir_path(__FILE__) . 'shortcode-validator.php';
+                return ShortcodeValidator::debug_shortcode_render('cs_support', $attributes);
+            } else {
+                return '<div class="cs-support-error">Security check failed. Please use a valid nonce.</div>';
+            }
         }
         
         // Convert string boolean values to actual booleans
@@ -152,6 +166,22 @@ class Shortcodes {
         // Parse shortcode attributes
         $attributes = shortcode_atts($default_atts, $atts, 'cs_support_tickets');
         
+        // Debug mode output
+        if (defined('WP_DEBUG') && WP_DEBUG && isset($_GET['debug_shortcode'])) {
+            // Verify nonce for debug actions
+            $nonce_verified = false;
+            if (isset($_GET['_wpnonce'])) {
+                $nonce_verified = wp_verify_nonce(sanitize_text_field(wp_unslash($_GET['_wpnonce'])), 'cs_support_debug_shortcode');
+            }
+            
+            if ($nonce_verified) {
+                require_once plugin_dir_path(__FILE__) . 'shortcode-validator.php';
+                return ShortcodeValidator::debug_shortcode_render('cs_support_tickets', $attributes);
+            } else {
+                return '<div class="cs-support-error">Security check failed. Please use a valid nonce.</div>';
+            }
+        }
+        
         // Convert string values to appropriate types
         $attributes['ticketsPerPage'] = (int) $attributes['tickets_per_page'];
         $attributes['borderRadius'] = (int) $attributes['border_radius'];
@@ -188,6 +218,41 @@ class Shortcodes {
         }
         
         return ob_get_clean();
+    }
+
+    /**
+     * Generate a debug URL for shortcodes.
+     *
+     * @param string $shortcode The shortcode to debug.
+     * @return string The URL with nonce.
+     */
+    public function get_debug_url(string $shortcode): string {
+        $current_url = remove_query_arg(['_wpnonce', 'debug_shortcode']);
+        $url = add_query_arg(
+            [
+                'debug_shortcode' => '1',
+                '_wpnonce' => wp_create_nonce('cs_support_debug_shortcode')
+            ],
+            $current_url
+        );
+        
+        return esc_url($url);
+    }
+
+    /**
+     * Add debug links to the admin footer when in debug mode.
+     *
+     * @param string $text The current admin footer text.
+     * @return string The modified footer text.
+     */
+    public function add_debug_links(string $text): string {
+        // Only show on our plugin's admin pages
+        $screen = get_current_screen();
+        if ($screen && strpos($screen->id, 'clientsync-support-helpdesk') !== false) {
+            $text .= ' | <a href="' . $this->get_debug_url('cs_support') . '">Debug Support Form</a>';
+            $text .= ' | <a href="' . $this->get_debug_url('cs_support_tickets') . '">Debug Tickets List</a>';
+        }
+        return $text;
     }
 
     /**

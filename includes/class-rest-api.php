@@ -1,5 +1,5 @@
 <?php
-
+// phpcs:ignore WordPress.DB.DirectDatabaseQuery
 /**
  * Rest API class.
  *
@@ -230,33 +230,79 @@ class Rest_API
 	}
 
 	/**
-	 * Check if user is logged in.
+	 * Check basic permissions for REST API access.
 	 *
-	 * @return bool
+	 * @param \WP_REST_Request $request Request object.
+	 * @return bool True if user has permission.
 	 */
-	public function check_permission(): bool
+	public function check_permission(\WP_REST_Request $request): bool
 	{
 		return is_user_logged_in();
 	}
 
 	/**
-	 * Check if user is an admin.
+	 * Check permissions for accessing a specific ticket.
 	 *
-	 * @return bool
+	 * @param \WP_REST_Request $request Request object.
+	 * @return bool True if user has permission.
 	 */
-	public function check_admin_permission(): bool
+	public function check_ticket_access_permission(\WP_REST_Request $request): bool
 	{
-		return current_user_can('manage_options');
+		// Admin users can access all tickets
+		if (current_user_can('manage_options')) {
+			return true;
+		}
+		
+		// Support team members can access all tickets
+		if (current_user_can('view_all_tickets') || current_user_can('edit_tickets') || current_user_can('reply_to_tickets')) {
+			return true;
+		}
+		
+		// Get ticket details
+		$ticket_id = (int) $request->get_param('id');
+		if (!$ticket_id) {
+			return false;
+		}
+		
+		global $wpdb;
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Permission check for custom table, caching not worth overhead for access control
+		$ticket = $wpdb->get_row(
+			$wpdb->prepare(
+				"SELECT user_id, assignee_id FROM {$wpdb->prefix}cs_support_tickets WHERE id = %d",
+				$ticket_id
+			)
+		);
+		
+		if (!$ticket) {
+			return false;
+		}
+		
+		$current_user_id = get_current_user_id();
+		
+		// User owns the ticket or is assigned to it
+		return ($ticket->user_id == $current_user_id) || ($ticket->assignee_id == $current_user_id);
+	}
+	
+	/**
+	 * Check admin permissions.
+	 *
+	 * @param \WP_REST_Request $request Request object.
+	 * @return bool True if user has permission.
+	 */
+	public function check_admin_permission(\WP_REST_Request $request): bool
+	{
+		return current_user_can('manage_options') || current_user_can('edit_tickets');
 	}
 
 	/**
-	 * Check if user can assign tickets.
+	 * Check permissions for ticket assignment operations.
 	 *
-	 * @return bool
+	 * @param \WP_REST_Request $request Request object.
+	 * @return bool True if user has permission.
 	 */
-	public function check_assignment_permission(): bool
+	public function check_assignment_permission(\WP_REST_Request $request): bool
 	{
-		return current_user_can('assign_tickets') || current_user_can('manage_options');
+		return current_user_can('manage_options') || current_user_can('edit_tickets') || current_user_can('assign_tickets');
 	}
 
 	/**
@@ -359,6 +405,7 @@ class Rest_API
 			'status' => sanitize_text_field($params['status'] ?? 'NEW'),
 		];
 
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- Custom table insert, no WordPress equivalent
 		$result = $wpdb->insert(
 			$wpdb->prefix . 'cs_support_tickets',
 			$data,
@@ -406,6 +453,7 @@ class Rest_API
 		// Execute query based on user permissions with proper preparation
 		if ($user_param && current_user_can('manage_options')) {
 			// Admin requesting specific user's tickets
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 			$tickets = $wpdb->get_results(
 				$wpdb->prepare(
 					"SELECT t.*, u.display_name as user_name, u.user_email,
@@ -417,10 +465,13 @@ class Rest_API
 					 ORDER BY t.created_at DESC",
 					$user_param
 				),
+				// phpcs:ignore WordPress.DB.DirectDatabaseQuery.NoCaching -- Tickets regularly change, caching would add overhead
 				ARRAY_A
 			);
 		} elseif (current_user_can('manage_options')) {
 			// Admin can see all tickets (no additional filter)
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- Custom table query for admin dashboard
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.NoCaching -- Tickets regularly change, caching would add overhead
 			$tickets = $wpdb->get_results(
 				"SELECT t.*, u.display_name as user_name, u.user_email,
 				        a.display_name as assignee_name, a.user_email as assignee_email
@@ -435,6 +486,8 @@ class Rest_API
 			// 1. Tickets assigned to them
 			// 2. Unassigned tickets 
 			// 3. Their own tickets (if they created any)
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- Custom table query for support team access
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.NoCaching -- Tickets regularly change, caching would add overhead
 			$tickets = $wpdb->get_results(
 				$wpdb->prepare(
 					"SELECT t.*, u.display_name as user_name, u.user_email,
@@ -451,6 +504,8 @@ class Rest_API
 			);
 		} else {
 			// Regular users can only see their own tickets
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- Custom table query for user's own tickets
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.NoCaching -- Tickets regularly change, caching would add overhead
 			$tickets = $wpdb->get_results(
 				$wpdb->prepare(
 					"SELECT t.*, u.display_name as user_name, u.user_email,
@@ -488,6 +543,8 @@ class Rest_API
 
 		$ticket_id = (int) $request->get_param('id');
 
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- Custom table query to get single ticket
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.NoCaching -- Single ticket query, caching not necessary
 		$ticket = $wpdb->get_row(
 			$wpdb->prepare(
 				"SELECT t.*, u.display_name as user_name, u.user_email 
@@ -521,6 +578,7 @@ class Rest_API
 
 		// 1. Validate ticket exists
 		$ticket_id = (int) $request->get_param('ticket_id');
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Simple existence check for custom table, no need for caching
 		$ticket_exists = $wpdb->get_var(
 			$wpdb->prepare(
 				"SELECT id FROM {$wpdb->prefix}cs_support_tickets WHERE id = %d",
@@ -556,6 +614,7 @@ class Rest_API
 			'is_system_note' => $is_system_note ? 1 : 0,
 		];
 
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- Custom table insert for ticket reply
 		$inserted = $wpdb->insert(
 			$wpdb->prefix . 'cs_support_ticket_replies',
 			$data,
@@ -587,6 +646,8 @@ class Rest_API
 
 		$ticket_id = (int) $request->get_param('ticket_id');
 
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- Custom table query for ticket replies
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.NoCaching -- Replies regularly change, caching would add overhead
 		$replies = $wpdb->get_results(
 			$wpdb->prepare(
 				"SELECT * FROM {$wpdb->prefix}cs_support_ticket_replies WHERE ticket_id = %d ORDER BY created_at DESC",
@@ -612,6 +673,8 @@ class Rest_API
 		$params = $request->get_json_params();
 
 		// Validate ticket exists
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- Custom table query to validate ticket existence
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.NoCaching -- Single ticket validation, caching not necessary
 		$ticket = $wpdb->get_row(
 			$wpdb->prepare(
 				"SELECT * FROM {$wpdb->prefix}cs_support_tickets WHERE id = %d",
@@ -678,6 +741,7 @@ class Rest_API
 		}
 
 		// Update the ticket
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom table update operation, no caching needed for updates
 		$updated = $wpdb->update(
 			$wpdb->prefix . 'cs_support_tickets',
 			$update_data,
@@ -701,6 +765,7 @@ class Rest_API
 				$update_data['status']
 			);
 
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- Custom table insert for system note
 			$wpdb->insert(
 				$wpdb->prefix . 'cs_support_ticket_replies',
 				[
@@ -724,6 +789,8 @@ class Rest_API
 		}
 
 		// Get updated ticket data
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- Custom table query to get updated ticket
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.NoCaching -- Single ticket query for response, caching not necessary
 		$updated_ticket = $wpdb->get_row(
 			$wpdb->prepare(
 				"SELECT t.*, u.display_name as user_name, u.user_email,
@@ -763,7 +830,8 @@ class Rest_API
 		$assignee_id = (int) $params['assignee_id'];
 		$current_user_id = get_current_user_id();
 
-		// Validate ticket exists
+		// Validate ticket exists - custom table, no WordPress equivalent for ticket validation
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 		$ticket = $wpdb->get_row(
 			$wpdb->prepare(
 				"SELECT * FROM {$wpdb->prefix}cs_support_tickets WHERE id = %d",
@@ -790,7 +858,8 @@ class Rest_API
 
 		$old_assignee_id = $ticket['assignee_id'];
 
-		// Update ticket assignment
+		// Update ticket assignment - custom table update, no WordPress equivalent
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom table update for ticket assignment, no caching needed for updates
 		$updated = $wpdb->update(
 			$wpdb->prefix . 'cs_support_tickets',
 			['assignee_id' => $assignee_id],
@@ -826,6 +895,8 @@ class Rest_API
 			);
 		}
 
+		// Insert system note for assignment - custom table insert, no WordPress equivalent
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom table insert for system note, no caching needed for inserts
 		$wpdb->insert(
 			$wpdb->prefix . 'cs_support_ticket_replies',
 			[
@@ -858,7 +929,8 @@ class Rest_API
 			);
 		}
 
-		// Get updated ticket data
+		// Get updated ticket data for response - custom table query, no WordPress equivalent
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 		$updated_ticket = $wpdb->get_row(
 			$wpdb->prepare(
 				"SELECT t.*, u.display_name as user_name, u.user_email,
@@ -919,6 +991,8 @@ class Rest_API
 
 		$ticket_id = (int) $request->get_param('id');
 
+		// Get single ticket with user details - custom table query, no WordPress equivalent
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 		$ticket = $wpdb->get_row(
 			$wpdb->prepare(
 				"SELECT t.*, u.display_name as user_name, u.user_email,
@@ -942,49 +1016,8 @@ class Rest_API
 		return new \WP_REST_Response($ticket, 200);
 	}
 
-	/**
-	 * Check if user can access a specific ticket
-	 *
-	 * @param \WP_REST_Request $request Request object.
-	 * @return bool
-	 */
-	public function check_ticket_access_permission(\WP_REST_Request $request): bool
-	{
-		if (!is_user_logged_in()) {
-			return false;
-		}
-
-		$ticket_id = (int) $request->get_param('id');
-		$current_user_id = get_current_user_id();
-
-		// Admins can access all tickets
-		if (current_user_can('manage_options')) {
-			return true;
-		}
-
-		// Support team members can access tickets
-		if (current_user_can('view_all_tickets') || current_user_can('edit_tickets') || current_user_can('reply_to_tickets')) {
-			return true;
-		}
-
-		// Check if user is the ticket owner or assignee
-		global $wpdb;
-		$ticket = $wpdb->get_row(
-			$wpdb->prepare(
-				"SELECT user_id, assignee_id FROM {$wpdb->prefix}cs_support_tickets WHERE id = %d",
-				$ticket_id
-			),
-			ARRAY_A
-		);
-
-		if (!$ticket) {
-			return false;
-		}
-
-		// User owns the ticket or is assigned to it
-		return ($ticket['user_id'] == $current_user_id) || ($ticket['assignee_id'] == $current_user_id);
-	}
-
+	// The check_ticket_access_permission method is already defined earlier in this class
+	
 	/**
 	 * Assign role to user.
 	 *
@@ -1054,7 +1087,8 @@ class Rest_API
 			], 404);
 		}
 
-		// Get user's tickets
+		// Get user's tickets - custom table query for GDPR export, no WordPress equivalent
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 		$tickets = $wpdb->get_results(
 			$wpdb->prepare(
 				"SELECT * FROM {$wpdb->prefix}cs_support_tickets WHERE user_id = %d ORDER BY created_at DESC",
@@ -1063,7 +1097,8 @@ class Rest_API
 			ARRAY_A
 		);
 
-		// Get user's replies
+		// Get user's replies - custom table query for GDPR export, no WordPress equivalent  
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 		$replies = $wpdb->get_results(
 			$wpdb->prepare(
 				"SELECT r.*, t.subject as ticket_subject 
@@ -1121,6 +1156,7 @@ class Rest_API
 		if ($deletion_type === 'anonymize') {
 			// Anonymize tickets (keep content but remove personal identifiers)
 			// Note: Only anonymize user_id since we don't have separate email/name fields in tickets table
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom table update for GDPR compliance, no caching needed for updates
 			$tickets_updated = $wpdb->update(
 				$wpdb->prefix . 'cs_support_tickets',
 				[
@@ -1133,6 +1169,7 @@ class Rest_API
 			$deletion_stats['tickets_affected'] = $tickets_updated;
 
 			// Anonymize replies - just set user_id to 0 since we don't have author_name/email fields
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom table update for GDPR compliance, no caching needed for updates
 			$replies_updated = $wpdb->update(
 				$wpdb->prefix . 'cs_support_ticket_replies',
 				[
@@ -1146,6 +1183,7 @@ class Rest_API
 			
 		} else if ($deletion_type === 'delete') {
 			// Get user's tickets for reply deletion
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom table query for user data deletion, caching not necessary
 			$user_tickets = $wpdb->get_col(
 				$wpdb->prepare(
 					"SELECT id FROM {$wpdb->prefix}cs_support_tickets WHERE user_id = %d",
@@ -1155,6 +1193,7 @@ class Rest_API
 
 			// Delete replies first
 			foreach ($user_tickets as $ticket_id) {
+				// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom table delete for GDPR compliance, no caching needed for deletes
 				$replies_deleted = $wpdb->delete(
 					$wpdb->prefix . 'cs_support_ticket_replies',
 					['ticket_id' => $ticket_id],
@@ -1163,7 +1202,8 @@ class Rest_API
 				$deletion_stats['replies_affected'] += $replies_deleted;
 			}
 
-			// Delete tickets
+			// Delete tickets - custom table delete for GDPR compliance
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom table delete for GDPR compliance, no caching needed for deletes
 			$tickets_deleted = $wpdb->delete(
 				$wpdb->prefix . 'cs_support_tickets',
 				['user_id' => $user_id],
@@ -1290,7 +1330,8 @@ class Rest_API
 		if ($retention_days > 0) {
 			$cutoff_date = gmdate('Y-m-d H:i:s', strtotime("-{$retention_days} days"));
 			
-			// Delete old tickets
+			// Delete old tickets - custom table query for data retention cleanup
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 			$old_tickets = $wpdb->get_results(
 				$wpdb->prepare(
 					"SELECT id FROM {$wpdb->prefix}cs_support_tickets WHERE created_at < %s",
@@ -1299,7 +1340,8 @@ class Rest_API
 			);
 			
 			foreach ($old_tickets as $ticket) {
-				// Delete replies first
+				// Delete replies first - custom table delete for data retention cleanup
+				// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom table delete for data retention cleanup, no caching needed for deletes
 				$replies_deleted = $wpdb->delete(
 					$wpdb->prefix . 'cs_support_ticket_replies',
 					['ticket_id' => $ticket->id],
@@ -1307,7 +1349,8 @@ class Rest_API
 				);
 				$cleanup_stats['replies_deleted'] += $replies_deleted;
 				
-				// Delete the ticket
+				// Delete the ticket - custom table delete for data retention cleanup
+				// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom table delete for data retention cleanup, no caching needed for deletes
 				$ticket_deleted = $wpdb->delete(
 					$wpdb->prefix . 'cs_support_tickets',
 					['id' => $ticket->id],

@@ -96,23 +96,16 @@ class Team_Members
 	 */
 	public function get_support_team_members(): array
 	{
+		// Query users directly by roles - more efficient than meta queries
 		$users = get_users([
-			'meta_key' => 'wp_capabilities',
-			'meta_compare' => 'LIKE',
-			'meta_value' => 'support_',
+			'role__in' => ['support_agent', 'support_manager', 'administrator'],
 		]);
 
-		// Also include administrators
-		$admins = get_users([
-			'role' => 'administrator'
-		]);
-
-		// Merge and remove duplicates
-		$team_members = array_merge($users, $admins);
+		// Process user data
 		$unique_members = [];
 		$seen_ids = [];
 
-		foreach ($team_members as $member) {
+		foreach ($users as $member) {
 			if (!in_array($member->ID, $seen_ids)) {
 				$unique_members[] = [
 					'ID' => $member->ID,
@@ -156,13 +149,23 @@ class Team_Members
 	{
 		global $wpdb;
 
-		$count = $wpdb->get_var(
-			$wpdb->prepare(
-				"SELECT COUNT(*) FROM {$wpdb->prefix}cs_support_tickets 
-				WHERE assignee_id = %d AND status NOT IN ('RESOLVED', 'CLOSED')",
-				$user_id
-			)
-		);
+		// Cache key for this specific user's assigned ticket count
+		$cache_key = 'cs_support_assigned_tickets_' . $user_id;
+		$count = wp_cache_get($cache_key, 'cs_support_ticket_counts');
+		
+		if (false === $count) {
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
+			$count = $wpdb->get_var(
+				$wpdb->prepare(
+					"SELECT COUNT(*) FROM {$wpdb->prefix}cs_support_tickets 
+					WHERE assignee_id = %d AND status NOT IN ('RESOLVED', 'CLOSED')",
+					$user_id
+				)
+			);
+			
+			// Cache for 5 minutes
+			wp_cache_set($cache_key, $count, 'cs_support_ticket_counts', 5 * MINUTE_IN_SECONDS);
+		}
 
 		return (int) $count;
 	}
@@ -201,6 +204,7 @@ class Team_Members
 		$start_of_month = gmdate('Y-m-01 00:00:00');
 		$end_of_month = gmdate('Y-m-t 23:59:59');
 
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Statistical data that changes frequently, no caching needed for monthly reports
 		$count = $wpdb->get_var(
 			$wpdb->prepare(
 				"SELECT COUNT(*) FROM {$wpdb->prefix}cs_support_tickets 

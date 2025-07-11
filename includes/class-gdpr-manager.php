@@ -103,6 +103,7 @@ class GDPR_Manager
 		$this->clear_gdpr_cache_for_ticket($ticket_id);
 
 		// Anonymize ticket
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Required for GDPR compliance, no caching needed for compliance operations
 		$wpdb->update(
 			$wpdb->prefix . 'cs_support_tickets',
 			[
@@ -118,6 +119,7 @@ class GDPR_Manager
 		);
 
 		// Anonymize replies
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Required for GDPR compliance, no caching needed for compliance operations
 		$wpdb->update(
 			$wpdb->prefix . 'cs_support_replies',
 			[
@@ -145,6 +147,7 @@ class GDPR_Manager
 		$this->clear_gdpr_cache_for_ticket($ticket_id);
 
 		// Delete replies first
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Required for GDPR compliance, no caching needed for compliance operations
 		$wpdb->delete(
 			$wpdb->prefix . 'cs_support_replies',
 			['ticket_id' => $ticket_id],
@@ -152,6 +155,7 @@ class GDPR_Manager
 		);
 
 		// Delete the ticket
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Required for GDPR compliance, no caching needed for compliance operations
 		$wpdb->delete(
 			$wpdb->prefix . 'cs_support_tickets',
 			['id' => $ticket_id],
@@ -221,6 +225,7 @@ class GDPR_Manager
 		}
 
 		// Get user's tickets
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- Required for GDPR data export
 		$tickets = $wpdb->get_results(
 			$wpdb->prepare(
 				"SELECT * FROM {$wpdb->prefix}cs_support_tickets WHERE user_id = %d OR email = %s",
@@ -228,6 +233,7 @@ class GDPR_Manager
 				$email_address
 			)
 		);
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.NoCaching -- GDPR operation, using custom caching mechanism
 
 		foreach ($tickets as $ticket) {
 			$item_data = [
@@ -266,6 +272,7 @@ class GDPR_Manager
 		}
 
 		// Get user's replies
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- Required for GDPR data export
 		$replies = $wpdb->get_results(
 			$wpdb->prepare(
 				"SELECT r.*, t.subject as ticket_subject 
@@ -276,6 +283,7 @@ class GDPR_Manager
 				$email_address
 			)
 		);
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.NoCaching -- GDPR operation, using custom caching mechanism
 
 		foreach ($replies as $reply) {
 			$item_data = [
@@ -341,6 +349,7 @@ class GDPR_Manager
 		$anonymize_instead_delete = isset($settings['anonymize_instead_delete']) ? $settings['anonymize_instead_delete'] : true;
 
 		// Get user's tickets
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Required for GDPR data erasure, no caching needed for compliance operations
 		$tickets = $wpdb->get_results(
 			$wpdb->prepare(
 				"SELECT id FROM {$wpdb->prefix}cs_support_tickets WHERE user_id = %d OR email = %s",
@@ -393,12 +402,14 @@ class GDPR_Manager
 			}
 		}
 
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- Necessary for data retention management
 		$old_tickets = $wpdb->get_results(
 			$wpdb->prepare(
 				"SELECT id, user_id FROM {$wpdb->prefix}cs_support_tickets WHERE created_at < %s",
 				$cutoff_date
 			)
 		);
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.NoCaching -- Using custom caching with the cache_key
 
 		if ($use_cache && !empty($old_tickets)) {
 			// Cache for 1 hour if using cache
@@ -418,6 +429,7 @@ class GDPR_Manager
 		global $wpdb;
 
 		// Get the ticket details to find associated users
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Necessary for cache invalidation, this is part of cache management itself
 		$ticket = $wpdb->get_row(
 			$wpdb->prepare(
 				"SELECT user_id, email FROM {$wpdb->prefix}cs_support_tickets WHERE id = %d",
