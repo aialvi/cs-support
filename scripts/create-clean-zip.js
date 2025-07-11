@@ -18,8 +18,11 @@ const pluginName = packageJson.name;
 const version = packageJson.version;
 
 // Create temp directory name
-const tempDir = `${pluginName}-${version}`;
-const zipFileName = `${pluginName}-${version}.zip`;
+// const tempDir = `${pluginName}-${version}`;
+// const zipFileName = `${pluginName}-${version}.zip`;
+
+const tempDir = `${pluginName}`;
+const zipFileName = `${pluginName}.zip`;
 
 console.log('🏗️  Creating clean plugin ZIP for WordPress.org submission...');
 console.log(`📦 Plugin: ${pluginName} v${version}`);
