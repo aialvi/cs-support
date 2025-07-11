@@ -9,6 +9,11 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
+// Add REST API nonce meta tag for JavaScript access
+add_action('wp_head', function() {
+	echo '<meta name="wp-rest-nonce" content="' . esc_attr(wp_create_nonce('wp_rest')) . '">' . "\n";
+}, 1);
+
 // Check if we're in a block context or shortcode context
 $is_shortcode = !isset($block);
 

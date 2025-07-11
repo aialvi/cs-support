@@ -1,6 +1,27 @@
 /**
  * Frontend script for the CS Support Frontend block
  */
+
+import { __ } from '@wordpress/i18n';
+
+// Ensure WordPress API settings are available
+const getApiSettings = () => {
+	if (typeof wpApiSettings !== 'undefined') {
+		return wpApiSettings;
+	}
+	
+	// Fallback: try to get from WordPress REST API
+	if (typeof wp !== 'undefined' && wp.api && wp.api.wpApiSettings) {
+		return wp.api.wpApiSettings;
+	}
+	
+	// Last fallback: construct from available WordPress globals
+	return {
+		nonce: document.querySelector('meta[name="wp-rest-nonce"]')?.getAttribute('content') || '',
+		root: (typeof wpApiSettings !== 'undefined' && wpApiSettings.root) || '/wp-json/'
+	};
+};
+
 document.addEventListener("DOMContentLoaded", () => {
 	const container = document.querySelector(".cs-support-frontend-container");
 	if (!container) return;
@@ -93,12 +114,13 @@ document.addEventListener("DOMContentLoaded", () => {
 	async function fetchTickets() {
 		try {
 			// Add current_user=true parameter to ensure we only get tickets for the current user
+			const apiSettings = getApiSettings();
 			const response = await fetch(
 				"/wp-json/cs-support/v1/tickets?current_user=true",
 				{
 					method: "GET",
 					headers: {
-						"X-WP-Nonce": wpApiSettings.nonce,
+						"X-WP-Nonce": apiSettings.nonce,
 						"Content-Type": "application/json",
 					},
 				},
@@ -337,12 +359,13 @@ document.addEventListener("DOMContentLoaded", () => {
 	 */
 	async function fetchReplies(ticketId) {
 		try {
+			const apiSettings = getApiSettings();
 			const response = await fetch(
 				`/wp-json/cs-support/v1/tickets/${ticketId}/replies`,
 				{
 					method: "GET",
 					headers: {
-						"X-WP-Nonce": wpApiSettings.nonce,
+						"X-WP-Nonce": apiSettings.nonce,
 						"Content-Type": "application/json",
 					},
 				},
@@ -449,17 +472,17 @@ document.addEventListener("DOMContentLoaded", () => {
 		submitButton.setAttribute("aria-busy", "true");
 		submitButton.textContent = "Sending...";
 
-		try {
-			const response = await fetch(
-				`/wp-json/cs-support/v1/tickets/${currentTicketId}/replies`,
-				{
-					method: "POST",
-					headers: {
-						"Content-Type": "application/json",
-						"X-WP-Nonce": wpApiSettings.nonce,
+		try {				const apiSettings = getApiSettings();
+				const response = await fetch(
+					`/wp-json/cs-support/v1/tickets/${currentTicketId}/replies`,
+					{
+						method: "POST",
+						headers: {
+							"Content-Type": "application/json",
+							"X-WP-Nonce": apiSettings.nonce,
+						},
+						body: JSON.stringify({ reply: replyText }),
 					},
-					body: JSON.stringify({ reply: replyText }),
-				},
 			);
 
 			if (!response.ok) {

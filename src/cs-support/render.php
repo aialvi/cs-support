@@ -17,7 +17,7 @@ $is_shortcode = !isset($block);
 $wrapper_attributes = $is_shortcode ? 
 	'class="wp-block-clientsync-cs-support cs-support-shortcode"' : 
 	get_block_wrapper_attributes([
-		'class' => 'cs-support-block'
+		'class' => 'wp-block-clientsync-cs-support cs-support-block'
 	]);
 
 // Get block attributes
@@ -87,7 +87,7 @@ $button_style = sprintf(
 $is_logged_in = is_user_logged_in();
 ?>
 
-<div <?php echo esc_attr($wrapper_attributes); ?>>
+<div <?php echo $wrapper_attributes; ?>>
 	<?php if (!$is_logged_in) : ?>
 		<div class="cs-support-login-required">
 			<p><?php esc_html_e('You must be logged in to create a support ticket.', 'cs-support'); ?></p>

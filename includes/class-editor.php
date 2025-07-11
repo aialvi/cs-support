@@ -22,29 +22,31 @@ class Editor
 	 */
 	public function __construct(protected Plugin $plugin)
 	{
-		add_action('init', [$this, 'register_block_styles']);
 		add_action('wp_enqueue_scripts', [$this, 'enqueue_frontend_assets'], 5);
 		add_action('enqueue_block_editor_assets', [$this, 'enqueue_editor_assets']);
+		add_filter('render_block', [$this, 'enqueue_block_assets'], 10, 2);
 	}
 
 	/**
-	 * Register block styles that can be used by both blocks and shortcodes
+	 * Enqueue assets when a block is rendered
 	 */
-	public function register_block_styles(): void
+	public function enqueue_block_assets($block_content, $block): string
 	{
-		$blocks = ['cs-support', 'cs-support-frontend'];
-		
-		foreach ($blocks as $block_name) {
-			$style_file = $this->plugin->dir . 'build/' . $block_name . '/style-index.css';
-			if (file_exists($style_file)) {
-				wp_register_style(
-					'cs-support-' . $block_name . '-style',
-					$this->plugin->url . 'build/' . $block_name . '/style-index.css',
-					[],
-					filemtime($style_file)
-				);
-			}
+		if (in_array($block['blockName'], ['clientsync/cs-support', 'clientsync/cs-support-frontend'])) {
+			// Enqueue the API script 
+			wp_enqueue_script('wp-api-fetch');
+			
+			// Add inline script to make wpApiSettings available globally
+			wp_add_inline_script('wp-api-fetch', 
+				'window.wpApiSettings = window.wpApiSettings || {' .
+				'nonce: "' . wp_create_nonce('wp_rest') . '",' .
+				'root: "' . esc_url_raw(rest_url()) . '"' .
+				'};', 
+				'before'
+			);
 		}
+		
+		return $block_content;
 	}
 
 	/**
@@ -57,24 +59,39 @@ class Editor
 		
 		// Check if we're on a page that might have blocks or shortcodes
 		if (is_singular() && $post) {
-			// Check for blocks
-			if (has_block('clientsync/cs-support', $post) || 
-				has_block('clientsync/cs-support-frontend', $post)) {
-				$should_load_assets = true;
-			}
-			
-			// Check for shortcodes
+			// Check for shortcodes (blocks are automatically handled by WordPress)
 			if (has_shortcode($post->post_content, 'cs_support') || 
 				has_shortcode($post->post_content, 'cs_support_tickets')) {
 				$should_load_assets = true;
 			}
 		}
 		
-		// Load assets if needed
+		// Load assets for shortcodes
 		if ($should_load_assets) {
-			// Enqueue block styles
-			wp_enqueue_style('cs-support-cs-support-style');
-			wp_enqueue_style('cs-support-cs-support-frontend-style');
+			// Get plugin instance for URLs
+			$plugin_url = $this->plugin->url;
+			
+			// Enqueue shortcode styles (same as block styles)
+			$cs_support_style = $plugin_url . 'build/cs-support/style-index.css';
+			$cs_support_frontend_style = $plugin_url . 'build/cs-support-frontend/style-index.css';
+			
+			if (file_exists($this->plugin->dir . 'build/cs-support/style-index.css')) {
+				wp_enqueue_style(
+					'cs-support-shortcode-style',
+					$cs_support_style,
+					[],
+					filemtime($this->plugin->dir . 'build/cs-support/style-index.css')
+				);
+			}
+			
+			if (file_exists($this->plugin->dir . 'build/cs-support-frontend/style-index.css')) {
+				wp_enqueue_style(
+					'cs-support-frontend-shortcode-style',
+					$cs_support_frontend_style,
+					[],
+					filemtime($this->plugin->dir . 'build/cs-support-frontend/style-index.css')
+				);
+			}
 			
 			// Enqueue API scripts
 			wp_enqueue_script('wp-api');
@@ -90,10 +107,6 @@ class Editor
 	 */
 	public function enqueue_editor_assets(): void
 	{
-		// Always load in editor
-		wp_enqueue_style('cs-support-cs-support-style');
-		wp_enqueue_style('cs-support-cs-support-frontend-style');
-		
 		wp_enqueue_script('wp-api');
 		wp_localize_script('wp-api', 'wpApiSettings', array(
 			'nonce' => wp_create_nonce('wp_rest'),

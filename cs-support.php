@@ -39,7 +39,7 @@ bootstrap();
 function clientsync_cs_support_block_init()
 {
     // Register the main support form block
-    \register_block_type(__DIR__ . '/build/' . PLUGIN_NAME);
+    \register_block_type(__DIR__ . '/build/cs-support');
 
     // Register the frontend display block
     \register_block_type(__DIR__ . '/build/cs-support-frontend');
