@@ -453,7 +453,7 @@ class Rest_API
 		// Execute query based on user permissions with proper preparation
 		if ($user_param && current_user_can('manage_options')) {
 			// Admin requesting specific user's tickets
-			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom table query for admin user filter, caching would add overhead
 			$tickets = $wpdb->get_results(
 				$wpdb->prepare(
 					"SELECT t.*, u.display_name as user_name, u.user_email,
@@ -470,8 +470,7 @@ class Rest_API
 			);
 		} elseif (current_user_can('manage_options')) {
 			// Admin can see all tickets (no additional filter)
-			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- Custom table query for admin dashboard
-			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.NoCaching -- Tickets regularly change, caching would add overhead
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom table query for admin dashboard, caching would add overhead
 			$tickets = $wpdb->get_results(
 				"SELECT t.*, u.display_name as user_name, u.user_email,
 				        a.display_name as assignee_name, a.user_email as assignee_email
@@ -486,8 +485,7 @@ class Rest_API
 			// 1. Tickets assigned to them
 			// 2. Unassigned tickets 
 			// 3. Their own tickets (if they created any)
-			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- Custom table query for support team access
-			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.NoCaching -- Tickets regularly change, caching would add overhead
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom table query for support team access, caching would add overhead
 			$tickets = $wpdb->get_results(
 				$wpdb->prepare(
 					"SELECT t.*, u.display_name as user_name, u.user_email,
@@ -504,8 +502,7 @@ class Rest_API
 			);
 		} else {
 			// Regular users can only see their own tickets
-			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- Custom table query for user's own tickets
-			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.NoCaching -- Tickets regularly change, caching would add overhead
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom table query for user's own tickets, caching would add overhead
 			$tickets = $wpdb->get_results(
 				$wpdb->prepare(
 					"SELECT t.*, u.display_name as user_name, u.user_email,
@@ -543,8 +540,7 @@ class Rest_API
 
 		$ticket_id = (int) $request->get_param('id');
 
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- Custom table query to get single ticket
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.NoCaching -- Single ticket query, caching not necessary
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom table query to get single ticket, caching not necessary
 		$ticket = $wpdb->get_row(
 			$wpdb->prepare(
 				"SELECT t.*, u.display_name as user_name, u.user_email 
@@ -646,8 +642,7 @@ class Rest_API
 
 		$ticket_id = (int) $request->get_param('ticket_id');
 
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- Custom table query for ticket replies
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.NoCaching -- Replies regularly change, caching would add overhead
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom table query for ticket replies, caching would add overhead
 		$replies = $wpdb->get_results(
 			$wpdb->prepare(
 				"SELECT * FROM {$wpdb->prefix}cs_support_ticket_replies WHERE ticket_id = %d ORDER BY created_at DESC",
@@ -673,8 +668,7 @@ class Rest_API
 		$params = $request->get_json_params();
 
 		// Validate ticket exists
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- Custom table query to validate ticket existence
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.NoCaching -- Single ticket validation, caching not necessary
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom table query to validate ticket existence, caching not necessary
 		$ticket = $wpdb->get_row(
 			$wpdb->prepare(
 				"SELECT * FROM {$wpdb->prefix}cs_support_tickets WHERE id = %d",
@@ -789,8 +783,7 @@ class Rest_API
 		}
 
 		// Get updated ticket data
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- Custom table query to get updated ticket
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.NoCaching -- Single ticket query for response, caching not necessary
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom table query to get updated ticket, caching not necessary
 		$updated_ticket = $wpdb->get_row(
 			$wpdb->prepare(
 				"SELECT t.*, u.display_name as user_name, u.user_email,
