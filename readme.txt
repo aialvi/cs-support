@@ -296,9 +296,9 @@ Simply use the shortcodes `[cs_support]` and `[cs_support_tickets]`.
 1. **Beautiful Support Form** - The customer-facing ticket creation form with modern design
 2. **Powerful Admin Dashboard** - Manage all tickets with advanced filtering and search
 3. **Customer Ticket Portal** - Users can view their ticket history and status
-4. **Gutenberg Integration** - Live preview and customization in the block editor
-5. **Mobile Experience** - Responsive design that works perfectly on all devices
-6. **Settings Panel** - Easy configuration with visual customization options
+4. **Settings Panel** - Easy configuration with visual customization options
+5. **Admin Ticket Management** - View, edit, and respond to customer inquiries
+6. **AI Assistance** - AI-powered suggestions for ticket responses
 
 == 📋 Changelog ==
 
@@ -440,8 +440,8 @@ Simply use the shortcodes `[cs_support]` and `[cs_support_tickets]`.
 
 **Stay Connected:**
 - 🌐 Website: https://clientsync.tech
-- 🐦 Twitter: @ClientSyncWP
-- 📘 Facebook: ClientSync WordPress
+- 🐦 Twitter: @ClientSync
+- 📘 Facebook: ClientSync
 
 ---
 

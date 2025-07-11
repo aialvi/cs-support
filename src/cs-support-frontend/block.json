@@ -52,6 +52,66 @@
 		"cardStyle": {
 			"type": "string",
 			"default": "default"
+		},
+		"tableStriped": {
+			"type": "boolean",
+			"default": false
+		},
+		"tableBordered": {
+			"type": "boolean",
+			"default": true
+		},
+		"showSearch": {
+			"type": "boolean",
+			"default": false
+		},
+		"showFilters": {
+			"type": "boolean",
+			"default": false
+		},
+		"enableSorting": {
+			"type": "boolean",
+			"default": false
+		},
+		"compactView": {
+			"type": "boolean",
+			"default": false
+		},
+		"primaryColor": {
+			"type": "string",
+			"default": "#1976d2"
+		},
+		"secondaryColor": {
+			"type": "string",
+			"default": "#f5f5f5"
+		},
+		"successColor": {
+			"type": "string",
+			"default": "#4caf50"
+		},
+		"warningColor": {
+			"type": "string",
+			"default": "#ff9800"
+		},
+		"errorColor": {
+			"type": "string",
+			"default": "#f44336"
+		},
+		"customCSS": {
+			"type": "string",
+			"default": ""
+		},
+		"fontSize": {
+			"type": "string",
+			"default": "medium"
+		},
+		"spacing": {
+			"type": "string",
+			"default": "normal"
+		},
+		"maxWidth": {
+			"type": "string",
+			"default": "none"
 		}
 	},
 	"textdomain": "cs-support",

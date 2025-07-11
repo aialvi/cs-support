@@ -4,6 +4,198 @@
 
 import { __ } from '@wordpress/i18n';
 
+// Enhanced styling and functionality support
+class CSSupportFrontendEnhancer {
+    constructor(container) {
+        this.container = container;
+        this.initializeEnhancements();
+    }
+
+    initializeEnhancements() {
+        this.setupCustomColors();
+        this.setupSearchAndFilters();
+        this.setupSortableHeaders();
+        this.setupResponsiveFeatures();
+    }
+
+    setupCustomColors() {
+        const {
+            successColor,
+            warningColor,
+            errorColor,
+            primaryColor
+        } = this.container.dataset;
+
+        if (primaryColor) {
+            this.container.style.setProperty('--cs-primary-color', primaryColor);
+            this.container.style.setProperty('--cs-primary-color-hover', this.darkenColor(primaryColor, 10));
+        }
+        if (successColor) {
+            this.container.style.setProperty('--cs-success-color', successColor);
+            this.container.style.setProperty('--cs-success-color-rgb', this.hexToRgb(successColor));
+        }
+        if (warningColor) {
+            this.container.style.setProperty('--cs-warning-color', warningColor);
+            this.container.style.setProperty('--cs-warning-color-rgb', this.hexToRgb(warningColor));
+        }
+        if (errorColor) {
+            this.container.style.setProperty('--cs-error-color', errorColor);
+            this.container.style.setProperty('--cs-error-color-rgb', this.hexToRgb(errorColor));
+        }
+    }
+
+    setupSearchAndFilters() {
+        const showSearch = this.container.dataset.showSearch === 'true';
+        const showFilters = this.container.dataset.showFilters === 'true';
+
+        if (showSearch || showFilters) {
+            this.createControlsContainer();
+            
+            if (showSearch) {
+                this.createSearchInput();
+            }
+            
+            if (showFilters) {
+                this.createFilterButtons();
+            }
+        }
+    }
+
+    createControlsContainer() {
+        const content = this.container.querySelector('#cs-support-frontend-content');
+        const controlsContainer = document.createElement('div');
+        controlsContainer.className = 'cs-support-controls';
+        content.insertBefore(controlsContainer, content.firstChild);
+        this.controlsContainer = controlsContainer;
+    }
+
+    createSearchInput() {
+        const searchContainer = document.createElement('div');
+        searchContainer.className = 'cs-support-search';
+        
+        const searchInput = document.createElement('input');
+        searchInput.type = 'search';
+        searchInput.placeholder = __('Search tickets...', 'cs-support');
+        searchInput.addEventListener('input', (e) => this.handleSearch(e.target.value));
+        
+        searchContainer.appendChild(searchInput);
+        this.controlsContainer.appendChild(searchContainer);
+    }
+
+    createFilterButtons() {
+        const filtersContainer = document.createElement('div');
+        filtersContainer.className = 'cs-support-filters';
+        
+        const filters = [
+            { label: __('All', 'cs-support'), value: 'all' },
+            { label: __('New', 'cs-support'), value: 'new' },
+            { label: __('In Progress', 'cs-support'), value: 'in-progress' },
+            { label: __('Resolved', 'cs-support'), value: 'resolved' }
+        ];
+
+        filters.forEach(filter => {
+            const button = document.createElement('button');
+            button.className = 'filter-button';
+            button.textContent = filter.label;
+            button.dataset.filter = filter.value;
+            if (filter.value === 'all') button.classList.add('active');
+            
+            button.addEventListener('click', (e) => this.handleFilter(e.target.dataset.filter, e.target));
+            filtersContainer.appendChild(button);
+        });
+
+        this.controlsContainer.appendChild(filtersContainer);
+    }
+
+    setupSortableHeaders() {
+        const enableSorting = this.container.dataset.enableSorting === 'true';
+        if (!enableSorting) return;
+
+        // Add sortable functionality when table is rendered
+        this.container.addEventListener('ticketsRendered', () => {
+            const headers = this.container.querySelectorAll('.cs-support-tickets-table th');
+            headers.forEach((header, index) => {
+                header.classList.add('sortable-header');
+                header.addEventListener('click', () => this.handleSort(index, header));
+            });
+        });
+    }
+
+    setupResponsiveFeatures() {
+        const compactView = this.container.dataset.compactView === 'true';
+        if (compactView) {
+            this.container.classList.add('compact-view');
+        }
+    }
+
+    handleSearch(query) {
+        // Custom event for search functionality
+        this.container.dispatchEvent(new CustomEvent('csSearchTickets', {
+            detail: { query }
+        }));
+    }
+
+    handleFilter(filterValue, button) {
+        // Update active state
+        this.controlsContainer.querySelectorAll('.filter-button').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        button.classList.add('active');
+
+        // Custom event for filter functionality
+        this.container.dispatchEvent(new CustomEvent('csFilterTickets', {
+            detail: { filter: filterValue }
+        }));
+    }
+
+    handleSort(columnIndex, header) {
+        const currentSort = header.dataset.sort || 'none';
+        let newSort = 'asc';
+        
+        if (currentSort === 'asc') {
+            newSort = 'desc';
+        } else if (currentSort === 'desc') {
+            newSort = 'none';
+        }
+
+        // Clear other headers
+        this.container.querySelectorAll('.cs-support-tickets-table th').forEach(h => {
+            h.classList.remove('sort-asc', 'sort-desc');
+            h.dataset.sort = 'none';
+        });
+
+        // Set current header
+        if (newSort !== 'none') {
+            header.classList.add(`sort-${newSort}`);
+            header.dataset.sort = newSort;
+        }
+
+        // Custom event for sort functionality
+        this.container.dispatchEvent(new CustomEvent('csSortTickets', {
+            detail: { column: columnIndex, direction: newSort }
+        }));
+    }
+
+    // Utility functions
+    hexToRgb(hex) {
+        const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+        return result ? 
+            `${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(result[3], 16)}` : 
+            '0, 0, 0';
+    }
+
+    darkenColor(hex, percent) {
+        const num = parseInt(hex.replace("#", ""), 16);
+        const amt = Math.round(2.55 * percent);
+        const R = (num >> 16) - amt;
+        const G = (num >> 8 & 0x00FF) - amt;
+        const B = (num & 0x0000FF) - amt;
+        return "#" + (0x1000000 + (R < 255 ? R < 1 ? 0 : R : 255) * 0x10000 +
+            (G < 255 ? G < 1 ? 0 : G : 255) * 0x100 +
+            (B < 255 ? B < 1 ? 0 : B : 255)).toString(16).slice(1);
+    }
+}
+
 // Ensure WordPress API settings are available
 const getApiSettings = () => {
 	if (typeof wpApiSettings !== 'undefined') {
@@ -25,6 +217,9 @@ const getApiSettings = () => {
 document.addEventListener("DOMContentLoaded", () => {
 	const container = document.querySelector(".cs-support-frontend-container");
 	if (!container) return;
+
+	// Initialize enhanced frontend functionality
+	const enhancer = new CSSupportFrontendEnhancer(container);
 
 	const content = document.getElementById("cs-support-frontend-content");
 	const ticketsPerPage = parseInt(container.dataset.ticketsPerPage) || 10;
@@ -199,6 +394,9 @@ document.addEventListener("DOMContentLoaded", () => {
 				showTicketDetails(ticketId);
 			});
 		});
+
+		// Emit event for enhanced functionality
+		container.dispatchEvent(new CustomEvent('ticketsRendered'));
 	}
 
 	/**
@@ -506,4 +704,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 	// Initialize by loading tickets
 	fetchTickets();
+
+	// Initialize enhancements
+	new CSSupportFrontendEnhancer(container);
 });

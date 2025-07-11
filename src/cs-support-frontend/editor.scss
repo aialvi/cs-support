@@ -10,11 +10,116 @@
         color: #767676;
         background-color: rgba(0, 0, 0, 0.02);
         border-radius: 4px;
+        border: 1px dashed #ddd;
+        margin-top: 16px;
     }
 
     .cs-support-frontend-preview {
-        border: 1px dashed #ccc;
+        border: 2px dashed #e0e0e0;
         padding: 20px;
+        border-radius: 8px;
+        position: relative;
+        background: repeating-linear-gradient(
+            45deg,
+            transparent,
+            transparent 10px,
+            rgba(0, 0, 0, 0.01) 10px,
+            rgba(0, 0, 0, 0.01) 20px
+        );
+
+        &::before {
+            content: "Preview";
+            position: absolute;
+            top: -10px;
+            left: 16px;
+            background: #fff;
+            color: #666;
+            padding: 2px 8px;
+            font-size: 11px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-radius: 3px;
+            border: 1px solid #e0e0e0;
+        }
+    }
+
+    .cs-support-controls {
+        padding: 12px;
+        background-color: rgba(0, 0, 0, 0.02);
+        border-radius: 6px;
+        border: 1px dashed rgba(0, 0, 0, 0.1);
+        
+        input[type="search"] {
+            opacity: 0.7;
+            pointer-events: none;
+        }
+        
+        button {
+            opacity: 0.7;
+            pointer-events: none;
+            cursor: default !important;
+        }
+    }
+
+    .cs-support-tickets-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 16px;
+        
+        th, td {
+            text-align: left;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        th {
+            font-weight: 600;
+            position: relative;
+            
+            span[style*="cursor: pointer"] {
+                &::after {
+                    content: " ↕";
+                    opacity: 0.7;
+                    font-size: 0.8em;
+                }
+            }
+        }
+    }
+
+    // Inspector Controls enhancements
+    .components-panel__body {
+        .components-base-control__help {
+            font-size: 12px;
+            color: #757575;
+            margin-top: 4px;
+        }
+    }
+
+    .components-notice {
+        margin: 16px 0;
+        
+        &.is-warning {
+            border-left-color: #f0b849;
+        }
+    }
+}
+
+// Better spacing for inspector controls
+.block-editor-block-inspector {
+    .components-panel__body-title {
+        font-weight: 600;
+    }
+    
+    .components-base-control + .components-base-control {
+        margin-top: 16px;
+    }
+    
+    .components-toggle-control {
+        margin-bottom: 12px;
+    }
+    
+    .components-range-control {
+        margin-bottom: 16px;
     }
 }
 

@@ -577,7 +577,7 @@ export default function Tickets() {
 							}
 						}}
 					>
-						<div className="bg-white rounded-2xl max-w-4xl w-full max-h-[95vh] overflow-hidden shadow-2xl transform transition-all">
+						<div className="bg-white rounded-2xl max-w-4xl w-full max-h-[80vh] my-5 overflow-hidden shadow-2xl transform transition-all">
 							<div className="px-6 py-4 bg-gradient-to-r from-blue-50 to-indigo-50 border-b border-gray-200 flex justify-between items-center">
 								<div className="flex items-center space-x-4">
 									<h2

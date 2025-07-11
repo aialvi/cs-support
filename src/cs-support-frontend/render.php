@@ -29,26 +29,74 @@ $row_hover_effect = isset($attributes['rowHoverEffect']) ? $attributes['rowHover
 $button_style = $attributes['buttonStyle'] ?? 'rounded';
 $card_style = $attributes['cardStyle'] ?? 'default';
 
+// New enhanced attributes
+$table_striped = isset($attributes['tableStriped']) ? $attributes['tableStriped'] : false;
+$table_bordered = isset($attributes['tableBordered']) ? $attributes['tableBordered'] : true;
+$show_search = isset($attributes['showSearch']) ? $attributes['showSearch'] : false;
+$show_filters = isset($attributes['showFilters']) ? $attributes['showFilters'] : false;
+$enable_sorting = isset($attributes['enableSorting']) ? $attributes['enableSorting'] : false;
+$compact_view = isset($attributes['compactView']) ? $attributes['compactView'] : false;
+$primary_color = $attributes['primaryColor'] ?? '#1976d2';
+$secondary_color = $attributes['secondaryColor'] ?? '#f5f5f5';
+$success_color = $attributes['successColor'] ?? '#4caf50';
+$warning_color = $attributes['warningColor'] ?? '#ff9800';
+$error_color = $attributes['errorColor'] ?? '#f44336';
+$custom_css = $attributes['customCSS'] ?? '';
+$font_size = $attributes['fontSize'] ?? 'medium';
+$spacing = $attributes['spacing'] ?? 'normal';
+$max_width = $attributes['maxWidth'] ?? 'none';
+
 // Add class for card style
 $card_style_class = 'card-style-' . $card_style;
 
 // Add class for row hover effect
 $row_hover_class = $row_hover_effect ? 'row-hover-enabled' : 'row-hover-disabled';
 
-$wrapper_attributes = $is_shortcode ?
-    'class="wp-block-clientsync-cs-support-frontend cs-support-shortcode ' . $card_style_class . ' ' . $row_hover_class . '"' :
-    get_block_wrapper_attributes([
-        'class' => 'cs-support-frontend-block ' . $card_style_class . ' ' . $row_hover_class
+// Add additional classes for new features
+$additional_classes = [];
+if ($table_striped) $additional_classes[] = 'table-striped';
+if ($table_bordered) $additional_classes[] = 'table-bordered';
+if ($show_search) $additional_classes[] = 'has-search';
+if ($show_filters) $additional_classes[] = 'has-filters';
+if ($enable_sorting) $additional_classes[] = 'sortable';
+if ($compact_view) $additional_classes[] = 'compact-view';
+$additional_classes[] = 'font-size-' . $font_size;
+$additional_classes[] = 'spacing-' . $spacing;
+
+$all_classes = array_merge([$card_style_class, $row_hover_class], $additional_classes);
+
+if ($is_shortcode) {
+    $wrapper_attributes = 'class="wp-block-clientsync-cs-support-frontend cs-support-shortcode ' . esc_attr(implode(' ', $all_classes)) . '"';
+} else {
+    $block_classes = array_merge(['wp-block-clientsync-cs-support-frontend'], $all_classes);
+    $wrapper_attributes = get_block_wrapper_attributes([
+        'class' => implode(' ', $block_classes)
     ]);
+}
+
+// For WordPress coding standards compliance, we need to handle escaping properly
+// get_block_wrapper_attributes() returns pre-escaped content, but we need to mark it as safe
+$wrapper_attributes_safe = $wrapper_attributes;
 
 // Build inline styles
+$font_size_values = ['small' => '14px', 'medium' => '16px', 'large' => '18px', 'x-large' => '20px'];
+$spacing_values = ['tight' => '12px', 'normal' => '20px', 'loose' => '32px'];
+
+$font_size_css = $font_size_values[$font_size] ?? '16px';
+$spacing_css = $spacing_values[$spacing] ?? '20px';
+
 $shadow_css = $box_shadow ? 'box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);' : '';
+$max_width_css = $max_width !== 'none' ? "max-width: {$max_width}; margin: 0 auto;" : '';
+
 $container_style = sprintf(
-    'background-color: %s; color: %s; padding: 20px; border-radius: %spx; %s',
+    'background-color: %s; color: %s; padding: %s; border-radius: %spx; font-size: %s; %s %s',
     esc_attr($background_color),
     esc_attr($text_color),
+    esc_attr($spacing_css),
     esc_attr($border_radius),
-    $shadow_css
+    esc_attr($font_size_css),
+    $shadow_css,
+    $max_width_css
 );
 
 $table_header_style = sprintf(
@@ -78,7 +126,14 @@ $button_style_attr = sprintf(
 
 // Check if user is logged in
 $is_logged_in = is_user_logged_in();
-?>	<div <?php echo esc_attr($wrapper_attributes); ?>>
+?>
+<?php if (!empty($custom_css)) : ?>
+    <style>
+        <?php echo esc_html($custom_css); ?>
+    </style>
+<?php endif; ?>
+
+<div <?php echo $wrapper_attributes; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>>
     <?php if (!$is_logged_in) : ?>
         <div class="cs-support-login-required">
             <p><?php esc_html_e('You must be logged in to view your support tickets.', 'cs-support'); ?></p>
@@ -87,7 +142,18 @@ $is_logged_in = is_user_logged_in();
             </a>
         </div>
     <?php else : ?>
-        <div class="cs-support-frontend-container" style="<?php echo esc_attr($container_style); ?>" data-tickets-per-page="<?php echo esc_attr($tickets_per_page); ?>">
+        <div class="cs-support-frontend-container" 
+             style="<?php echo esc_attr($container_style); ?>" 
+             data-tickets-per-page="<?php echo esc_attr($tickets_per_page); ?>"
+             data-show-search="<?php echo esc_attr($show_search ? 'true' : 'false'); ?>"
+             data-show-filters="<?php echo esc_attr($show_filters ? 'true' : 'false'); ?>"
+             data-enable-sorting="<?php echo esc_attr($enable_sorting ? 'true' : 'false'); ?>"
+             data-compact-view="<?php echo esc_attr($compact_view ? 'true' : 'false'); ?>"
+             data-success-color="<?php echo esc_attr($success_color); ?>"
+             data-warning-color="<?php echo esc_attr($warning_color); ?>"
+             data-error-color="<?php echo esc_attr($error_color); ?>"
+             data-primary-color="<?php echo esc_attr($primary_color); ?>">
+            
             <h2 class="cs-support-frontend-title"><?php echo esc_html($title); ?></h2>
 
             <!-- Initial loading state -->

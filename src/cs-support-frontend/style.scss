@@ -560,6 +560,331 @@
         padding: 8px 12px;
         font-size: 0.9em;
     }
+
+    /* Enhanced styling options */
+    /* Font Size Variants */
+    &.font-size-small {
+        font-size: 14px;
+        
+        .cs-support-frontend-title {
+            font-size: 1.3rem;
+        }
+        
+        .cs-support-tickets-table th, 
+        .cs-support-tickets-table td {
+            padding: 8px 12px;
+            font-size: 13px;
+        }
+    }
+
+    &.font-size-large {
+        font-size: 18px;
+        
+        .cs-support-frontend-title {
+            font-size: 1.8rem;
+        }
+        
+        .cs-support-tickets-table th, 
+        .cs-support-tickets-table td {
+            padding: 16px 20px;
+            font-size: 17px;
+        }
+    }
+
+    &.font-size-x-large {
+        font-size: 20px;
+        
+        .cs-support-frontend-title {
+            font-size: 2rem;
+        }
+        
+        .cs-support-tickets-table th, 
+        .cs-support-tickets-table td {
+            padding: 20px 24px;
+            font-size: 19px;
+        }
+    }
+
+    /* Spacing Variants */
+    &.spacing-tight {
+        .cs-support-frontend-container {
+            padding: 12px;
+        }
+        
+        .cs-support-frontend-title {
+            margin-bottom: 12px;
+        }
+        
+        .cs-support-tickets-table {
+            margin-bottom: 12px;
+        }
+        
+        .cs-support-ticket-details {
+            margin-bottom: 12px;
+        }
+    }
+
+    &.spacing-loose {
+        .cs-support-frontend-container {
+            padding: 32px;
+        }
+        
+        .cs-support-frontend-title {
+            margin-bottom: 32px;
+        }
+        
+        .cs-support-tickets-table {
+            margin-bottom: 32px;
+        }
+        
+        .cs-support-ticket-details {
+            margin-bottom: 32px;
+        }
+    }
+
+    /* Compact View */
+    &.compact-view {
+        .cs-support-tickets-table th,
+        .cs-support-tickets-table td {
+            padding: 6px 10px;
+        }
+        
+        .cs-support-frontend-title {
+            font-size: 1.2rem;
+            margin-bottom: 12px;
+        }
+        
+        .cs-support-ticket-details {
+            padding: 12px;
+        }
+        
+        .cs-support-reply {
+            padding: 10px;
+            margin-bottom: 8px;
+        }
+    }
+
+    /* Table Styling Options */
+    &.table-striped {
+        .cs-support-tickets-table tbody tr:nth-child(even) {
+            background-color: rgba(0, 0, 0, 0.02);
+        }
+        
+        &.card-style-modern tbody tr:nth-child(even) {
+            background-color: rgba(0, 0, 0, 0.01);
+        }
+    }
+
+    &.table-bordered {
+        .cs-support-tickets-table {
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            
+            th, td {
+                border: 1px solid rgba(0, 0, 0, 0.08);
+            }
+        }
+        
+        &.card-style-modern .cs-support-tickets-table {
+            border-color: rgba(0, 0, 0, 0.05);
+            
+            th, td {
+                border-color: rgba(0, 0, 0, 0.04);
+            }
+        }
+    }
+
+    /* Search and Filter Controls */
+    &.has-search,
+    &.has-filters {
+        .cs-support-controls {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+            padding: 16px;
+            background-color: rgba(0, 0, 0, 0.02);
+            border-radius: 8px;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            
+            .card-style-modern & {
+                background-color: #ffffff;
+                box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            }
+            
+            .card-style-minimal & {
+                background-color: transparent;
+                border-width: 0;
+                border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+                border-radius: 0;
+                padding-left: 0;
+                padding-right: 0;
+            }
+        }
+        
+        .cs-support-search {
+            flex: 1;
+            min-width: 200px;
+            
+            input {
+                width: 100%;
+                padding: 8px 12px;
+                border: 1px solid rgba(0, 0, 0, 0.2);
+                border-radius: 4px;
+                font-size: inherit;
+                
+                &:focus {
+                    outline: none;
+                    border-color: var(--cs-primary-color, #1976d2);
+                    box-shadow: 0 0 0 2px rgba(25, 118, 210, 0.1);
+                }
+            }
+        }
+        
+        .cs-support-filters {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            
+            .filter-button {
+                padding: 6px 12px;
+                border: 1px solid var(--cs-primary-color, #1976d2);
+                background-color: transparent;
+                color: var(--cs-primary-color, #1976d2);
+                border-radius: 4px;
+                cursor: pointer;
+                font-size: 0.9em;
+                font-weight: 500;
+                transition: all 0.2s ease;
+                
+                &:hover {
+                    background-color: var(--cs-primary-color, #1976d2);
+                    color: white;
+                }
+                
+                &.active {
+                    background-color: var(--cs-primary-color, #1976d2);
+                    color: white;
+                }
+            }
+        }
+    }
+
+    /* Sortable Table Headers */
+    &.sortable {
+        .cs-support-tickets-table th {
+            cursor: pointer;
+            position: relative;
+            transition: background-color 0.2s ease;
+            
+            &:hover {
+                background-color: rgba(0, 0, 0, 0.1) !important;
+            }
+            
+            &.sortable-header::after {
+                content: '⇅';
+                position: absolute;
+                right: 8px;
+                top: 50%;
+                transform: translateY(-50%);
+                opacity: 0.5;
+                font-size: 0.8em;
+            }
+            
+            &.sort-asc::after {
+                content: '↑';
+                opacity: 1;
+            }
+            
+            &.sort-desc::after {
+                content: '↓';
+                opacity: 1;
+            }
+        }
+    }
+
+    /* Enhanced Status Colors with CSS Variables */
+    .cs-ticket-status {
+        &.status-new {
+            background-color: rgba(var(--cs-error-color-rgb, 244, 67, 54), 0.1);
+            color: var(--cs-error-color, #f44336);
+            
+            &::before {
+                background-color: var(--cs-error-color, #f44336);
+            }
+        }
+        
+        &.status-in-progress {
+            background-color: rgba(var(--cs-warning-color-rgb, 255, 152, 0), 0.1);
+            color: var(--cs-warning-color, #ff9800);
+            
+            &::before {
+                background-color: var(--cs-warning-color, #ff9800);
+            }
+        }
+        
+        &.status-resolved {
+            background-color: rgba(var(--cs-success-color-rgb, 76, 175, 80), 0.1);
+            color: var(--cs-success-color, #4caf50);
+            
+            &::before {
+                background-color: var(--cs-success-color, #4caf50);
+            }
+        }
+    }
+
+    /* Enhanced button styles using CSS variables */
+    .cs-support-create-ticket-link,
+    .cs-support-reply-form button,
+    .cs-support-login-link {
+        background-color: var(--cs-primary-color, #1976d2);
+        
+        &:hover {
+            background-color: var(--cs-primary-color-hover, #1565c0);
+        }
+    }
+
+    /* Responsive Design Enhancements */
+    @media (max-width: 768px) {
+        &.has-search .cs-support-controls {
+            flex-direction: column;
+            align-items: stretch;
+        }
+        
+        &.has-filters .cs-support-filters {
+            justify-content: center;
+        }
+        
+        .cs-support-tickets-table {
+            font-size: 0.9em;
+            
+            th, td {
+                padding: 8px 6px;
+            }
+        }
+        
+        &.compact-view .cs-support-tickets-table {
+            th, td {
+                padding: 4px;
+                font-size: 0.8em;
+            }
+        }
+    }
+
+    @media (max-width: 480px) {
+        .cs-support-tickets-table {
+            th, td {
+                padding: 6px 4px;
+                font-size: 0.8em;
+            }
+        }
+        
+        &.spacing-loose {
+            .cs-support-frontend-container {
+                padding: 16px;
+            }
+        }
+    }
 }
 
 .cs-support-login-required {
