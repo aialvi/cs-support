@@ -1,6 +1,6 @@
 === CS Support ===
 
-Contributors: clientsync
+Contributors: clientsync, aialvi, mugniul
 Donate link: https://www.buymeacoffee.com/aialvi
 Tags: support, customer support, helpdesk, tickets, contact form
 Requires at least: 6.7
