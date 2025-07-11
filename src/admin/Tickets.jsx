@@ -163,7 +163,8 @@ export default function Tickets() {
 				},
 			);
 			const data = await response.json();
-			setReplies(data);
+			const sortedReplies = data.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+			setReplies(sortedReplies);
 		} catch (error) {
 			console.error("Error fetching replies:", error);
 		}
@@ -442,7 +443,7 @@ export default function Tickets() {
 								<thead className="bg-gray-50">
 									<tr>
 										<th className="px-6 py-3 uppercase font-semibold tracking-wider">ID</th>
-										<th className="px-6 py-3 uppercase font-semibold tracking-wider">Subject</th>
+										<th className="px-6 py-3 uppercase font-semibold tracking-wider w-20 min-w-20">Subject</th>
 										<th className="px-6 py-3 uppercase font-semibold tracking-wider">Status</th>
 										<th className="px-6 py-3 uppercase font-semibold tracking-wider">Priority</th>
 										<th className="px-6 py-3 uppercase font-semibold tracking-wider">Assigned To</th>
@@ -459,20 +460,22 @@ export default function Tickets() {
 														#{ticket.id}
 													</span>
 												</td>
-												<td
-													className="px-6 py-4 truncate font-medium text-gray-900 hover:text-blue-600 cursor-pointer"
-													onClick={() => setSelectedTicket(ticket)}
-													tabIndex={0}
-													role="button"
-													aria-label={`View ticket: ${ticket.subject}`}
-													onKeyDown={(e) => {
-														if (e.key === "Enter" || e.key === " ") {
-															e.preventDefault();
-															setSelectedTicket(ticket);
-														}
-													}}
-												>
-													{ticket.subject}
+												<td className="px-6 py-4 w-20 min-w-20">
+													<div
+														className="w-60 font-medium text-gray-900 hover:text-blue-600 cursor-pointer hover:underline overflow-x-auto whitespace-nowrap"
+														onClick={() => setSelectedTicket(ticket)}
+														tabIndex={0}
+														role="button"
+														aria-label={`View ticket: ${ticket.subject}`}
+														onKeyDown={(e) => {
+															if (e.key === "Enter" || e.key === " ") {
+																e.preventDefault();
+																setSelectedTicket(ticket);
+															}
+														}}
+													>
+														{ticket.subject}
+													</div>
 												</td>
 												<td className="px-6 py-4">
 													<span className={`inline-block px-3 py-1 text-xs font-semibold rounded-full ring-1 ${ticket.status === "NEW"

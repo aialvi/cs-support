@@ -252,7 +252,9 @@ export default function Dashboard({ navigate }) {
 				},
 			);
 			const data = await response.json();
-			setTicketReplies(data);
+			// Sort replies by created_at in ascending order (oldest to newest, latest at bottom)
+			const sortedReplies = data.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+			setTicketReplies(sortedReplies);
 		} catch (error) {
 			console.log("Error fetching replies:", error);
 		}
@@ -744,7 +746,7 @@ export default function Dashboard({ navigate }) {
 																	{ticket.status === "NEW"
 																		? "New"
 																		: ticket.status === "IN_PROGRESS"
-																			? "In Progress"
+																			? "WIP"
 																			: "Resolved"}
 																</div>
 																<div className="flex items-center space-x-2 text-xs text-gray-500">

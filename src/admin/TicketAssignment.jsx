@@ -114,7 +114,7 @@ export default function TicketAssignment({ ticket, onAssignmentChange }) {
 				ref={buttonRef}
 				onClick={() => setIsOpen(!isOpen)}
 				disabled={assigning}
-				className="flex items-center space-x-2 px-3 py-2 text-sm border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+				className="w-full flex items-center space-x-2 px-3 py-2 text-sm border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
 			>
 				<UserIcon className="h-4 w-4" />
 				<span>

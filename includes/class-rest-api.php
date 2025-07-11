@@ -603,12 +603,10 @@ class Rest_API
 
 		// Add system note for status change
 		if ($status_changed) {
-			$current_user = wp_get_current_user();
 			$system_note = sprintf(
-				'Status changed from %s to %s by %s',
+				'Status changed from %s to %s',
 				$old_status,
-				$update_data['status'],
-				$current_user->display_name
+				$update_data['status']
 			);
 
 			$wpdb->insert(

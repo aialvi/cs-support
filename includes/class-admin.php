@@ -512,9 +512,9 @@ class Admin
                 padding: 0;
                 overflow: hidden;
                 border: 1px solid #e5e7eb;
-                flex: 1 1 45%;
-                min-width: 340px;
-                max-width: 48%;
+                flex: 1 1 calc(50% - 16px);
+                min-width: 300px;
+                max-width: calc(50% - 110px);
                 display: flex;
                 flex-direction: column;
             }
@@ -579,33 +579,45 @@ class Admin
             .cs-modern-card_body ul li {
                 list-style: disc;
             }
-            @media (max-width: 900px) {
+            @media (max-width: 1024px) {
+                .cs-shortcodes-grid {
+                    gap: 20px;
+                }
+                .cs-modern-card {
+                    flex: 1 1 calc(50% - 10px);
+                    min-width: 280px;
+                    max-width: calc(50% - 10px);
+                }
+            }
+            @media (max-width: 768px) {
                 .cs-support-shortcodes-inner {
                     padding: 0 8px;
                 }
                 .cs-shortcodes-grid {
                     gap: 18px;
-                }
-                .cs-modern-card {
-                    min-width: 260px;
-                    max-width: 100%;
-                }
-            }
-            @media (max-width: 700px) {
-                .cs-support-shortcodes-modern {
-                    padding: 12px 0;
-                }
-                .cs-shortcodes-grid {
                     flex-direction: column;
-                    gap: 18px;
-                }
-                .cs-modern-card-title, .cs-modern-card-body {
-                    padding-left: 10px;
-                    padding-right: 10px;
                 }
                 .cs-modern-card {
                     min-width: 0;
                     max-width: 100%;
+                    flex: 1 1 auto;
+                }
+            }
+            @media (max-width: 480px) {
+                .cs-support-shortcodes-modern {
+                    padding: 12px 0;
+                }
+                .cs-modern-card-title, .cs-modern-card-body {
+                    padding-left: 12px;
+                    padding-right: 12px;
+                }
+                .cs-modern-card {
+                    margin: 0 auto;
+                    width: 100%;
+                }
+                .cs-modern-shortcode {
+                    font-size: 0.9rem;
+                    padding: 8px 10px;
                 }
             }
             </style>
