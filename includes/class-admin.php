@@ -175,6 +175,7 @@ class Admin
 				[
 					'nonce' => wp_create_nonce('wp_rest'),
 					'apiUrl' => rest_url('cs-support/v1/settings'),
+					'apiBaseUrl' => rest_url('cs-support/v1'),
 					'initialSettings' => get_option('cs_support_helpdesk_settings', [
 						'general' => [
 							'defaultPriority' => 'normal',

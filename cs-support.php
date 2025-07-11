@@ -46,3 +46,8 @@ function clientsync_cs_support_block_init()
 }
 
 \add_action('init', __NAMESPACE__ . '\\clientsync_cs_support_block_init');
+
+// Register deactivation hook to clean up scheduled events
+register_deactivation_hook(__FILE__, function() {
+    GDPR_Manager::deactivate();
+});

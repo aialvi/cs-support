@@ -53,13 +53,9 @@ For developers who want to build custom integrations or mobile apps.
 - 📚 **Educational Sites** - Student support and course assistance
 - 🏥 **Service Providers** - Client communication and service requests
 
-### 🔥 Latest Updates (v0.1.2)
+### 🔥 Latest Updates (v0.1.1)
 
 We're constantly improving your experience:
-- 🛡️ **GDPR Compliance** - Full data export, deletion, and retention management
-- 🔐 **Privacy Controls** - Users can export or delete their personal data
-- 📅 **Data Retention** - Automatic cleanup with configurable retention periods
-- 🔒 **WordPress Privacy Integration** - Works with WordPress privacy tools
 - ✅ **Enhanced Compatibility** - Works flawlessly with popular themes and page builders
 - 🐛 **Bug Fixes** - Resolved CSS loading issues and PHP warnings
 - 🚀 **Performance Boost** - Optimized asset loading with smart caching
@@ -269,28 +265,11 @@ Simply use the shortcodes `[cs_support]` and `[cs_support_tickets]`.
 
 = 📊 Can I export ticket data? =
 
-**Complete Data Control:**
-- ✅ Export your personal data to JSON format
-- ✅ One-click data export from user settings
-- ✅ Admin data export tools for all tickets
+**Data Control:**
+- ✅ Export tickets to CSV
 - ✅ Backup and restore functionality
 - ✅ Data migration tools
 - ✅ GDPR compliance features
-- ✅ WordPress privacy tools integration
-
-= 🛡️ Is my data secure and GDPR compliant? =
-
-**Bank-Level Security & Full GDPR Compliance:**
-- ✅ Built with WordPress security standards
-- ✅ Data sanitization and validation
-- ✅ SQL injection protection
-- ✅ XSS prevention
-- ✅ Regular security updates
-- ✅ **Personal data export** - Download your data anytime
-- ✅ **Right to be forgotten** - Delete or anonymize your data
-- ✅ **Data retention management** - Automatic cleanup of old data
-- ✅ **Privacy by design** - Minimal data collection
-- ✅ **Transparency** - Clear data usage policies
 
 = 🆘 Where do I get support? =
 
@@ -310,37 +289,6 @@ Simply use the shortcodes `[cs_support]` and `[cs_support_tickets]`.
 6. **Settings Panel** - Easy configuration with visual customization options
 
 == 📋 Changelog ==
-
-= 0.1.2 - The Privacy & GDPR Update =
-*Release Date: July 11, 2025*
-
-**🛡️ GDPR Compliance Features:**
-* Personal data export functionality for users
-* Right to be forgotten - data deletion and anonymization options
-* Automatic data retention management with configurable periods
-* WordPress privacy tools integration for admin exports/erasures
-* Privacy-first design with minimal data collection
-
-**🔐 Privacy Controls:**
-* User settings panel for data management
-* One-click personal data export to JSON
-* Choice between data deletion or anonymization
-* Admin data cleanup tools with retention policies
-* Scheduled automatic cleanup based on retention settings
-
-**⚖️ Legal Compliance:**
-* Full GDPR Article 20 (Data Portability) compliance
-* GDPR Article 17 (Right to Erasure) implementation
-* Transparent data usage and retention policies
-* Privacy by design principles throughout the system
-* Audit trail for data management actions
-
-**🔧 Technical Improvements:**
-* New REST API endpoints for privacy operations
-* Enhanced database structure for data retention
-* Improved error handling and validation
-* Better documentation for privacy features
-* Performance optimizations for large datasets
 
 = 0.1.1 - The Compatibility Update =
 *Release Date: July 11, 2025*
@@ -398,23 +346,6 @@ Simply use the shortcodes `[cs_support]` and `[cs_support_tickets]`.
 * Performance monitoring
 
 == 🔄 Upgrade Notice ==
-
-= 0.1.2 =
-**Major Privacy Update:** This version adds comprehensive GDPR compliance features including personal data export, deletion rights, and automatic data retention management. Essential for EU compliance and recommended for all users.
-
-**What's New:**
-- Personal data export and deletion tools
-- GDPR-compliant data retention management
-- WordPress privacy tools integration
-- Enhanced user privacy controls
-- Automatic data cleanup scheduling
-
-**Upgrade Process:**
-1. Backup your site (always recommended)
-2. Update through WordPress admin or download manually
-3. New database options will be created automatically
-4. All existing tickets and settings are preserved
-5. New privacy settings available in admin panel
 
 = 0.1.1 =
 **Important Update:** This version fixes critical compatibility issues with popular themes and page builders. If you're using shortcodes with Elementor, Divi, or experiencing CSS loading issues, this update is essential.

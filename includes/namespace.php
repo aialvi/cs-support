@@ -40,6 +40,7 @@ function bootstrap(): void {
 	new Notifications( get_plugin_instance() );
 	new AI_Assistant( get_plugin_instance() );
 	new Notification_Settings( get_plugin_instance() );
+	new GDPR_Manager(); // Initialize GDPR compliance features
 	
 	// Initialize shortcodes
 	$shortcodes = new Shortcodes();

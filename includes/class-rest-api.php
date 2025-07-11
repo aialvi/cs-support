@@ -171,6 +171,62 @@ class Rest_API
 				'permission_callback' => [$this, 'check_permission'],
 			]
 		);
+
+		// GDPR Compliance endpoints
+		// GET /gdpr/my-data - Export user's personal data
+		register_rest_route(
+			'cs-support/v1',
+			'/gdpr/my-data',
+			[
+				'methods' => 'GET',
+				'callback' => [$this, 'export_user_data'],
+				'permission_callback' => [$this, 'check_permission'],
+			]
+		);
+
+		// DELETE /gdpr/my-data - Delete user's personal data
+		register_rest_route(
+			'cs-support/v1',
+			'/gdpr/my-data',
+			[
+				'methods' => 'DELETE',
+				'callback' => [$this, 'delete_user_data'],
+				'permission_callback' => [$this, 'check_permission'],
+			]
+		);
+
+		// GET /gdpr/data-retention - Get data retention settings
+		register_rest_route(
+			'cs-support/v1',
+			'/gdpr/data-retention',
+			[
+				'methods' => 'GET',
+				'callback' => [$this, 'get_data_retention_settings'],
+				'permission_callback' => [$this, 'check_admin_permission'],
+			]
+		);
+
+		// POST /gdpr/data-retention - Update data retention settings
+		register_rest_route(
+			'cs-support/v1',
+			'/gdpr/data-retention',
+			[
+				'methods' => 'POST',
+				'callback' => [$this, 'update_data_retention_settings'],
+				'permission_callback' => [$this, 'check_admin_permission'],
+			]
+		);
+
+		// POST /gdpr/cleanup - Run data cleanup based on retention settings
+		register_rest_route(
+			'cs-support/v1',
+			'/gdpr/cleanup',
+			[
+				'methods' => 'POST',
+				'callback' => [$this, 'run_data_cleanup'],
+				'permission_callback' => [$this, 'check_admin_permission'],
+			]
+		);
 	}
 
 	/**
@@ -228,7 +284,21 @@ class Rest_API
 		// Recursively sanitize settings
 		$sanitized_settings = $this->sanitize_settings($settings);
 
+		// Get current settings to compare
+		$current_settings = get_option('cs_support_helpdesk_settings', []);
+		
+		// Update the option - update_option returns false if the value is the same
+		// So we need to check if it actually failed or if the values were just identical
 		$updated = update_option('cs_support_helpdesk_settings', $sanitized_settings);
+		
+		// If update_option returned false, check if it's because the values are the same
+		if (!$updated) {
+			$new_current_settings = get_option('cs_support_helpdesk_settings', []);
+			// If the settings match what we tried to save, then the update was successful
+			if ($new_current_settings === $sanitized_settings || json_encode($new_current_settings) === json_encode($sanitized_settings)) {
+				$updated = true;
+			}
+		}
 
 		if (!$updated) {
 			return new \WP_REST_Response([
@@ -941,5 +1011,296 @@ class Rest_API
 		$debug_info = $team_members->get_current_user_debug_info();
 
 		return new \WP_REST_Response($debug_info, 200);
+	}
+
+	/**
+	 * Export user's personal data.
+	 *
+	 * @param \WP_REST_Request $request Request object.
+	 * @return \WP_REST_Response
+	 */
+	public function export_user_data(\WP_REST_Request $request): \WP_REST_Response
+	{
+		global $wpdb;
+		$user_id = get_current_user_id();
+		$user = get_user_by('ID', $user_id);
+		
+		if (!$user) {
+			return new \WP_REST_Response([
+				'success' => false,
+				'message' => 'User not found'
+			], 404);
+		}
+
+		// Get user's tickets
+		$tickets = $wpdb->get_results(
+			$wpdb->prepare(
+				"SELECT * FROM {$wpdb->prefix}cs_support_tickets WHERE user_id = %d ORDER BY created_at DESC",
+				$user_id
+			),
+			ARRAY_A
+		);
+
+		// Get user's replies
+		$replies = $wpdb->get_results(
+			$wpdb->prepare(
+				"SELECT r.*, t.subject as ticket_subject 
+				FROM {$wpdb->prefix}cs_support_ticket_replies r 
+				JOIN {$wpdb->prefix}cs_support_tickets t ON r.ticket_id = t.id 
+				WHERE r.user_id = %d ORDER BY r.created_at DESC",
+				$user_id
+			),
+			ARRAY_A
+		);
+
+		$export_data = [
+			'user_info' => [
+				'user_id' => $user->ID,
+				'username' => $user->user_login,
+				'email' => $user->user_email,
+				'display_name' => $user->display_name,
+				'registration_date' => $user->user_registered
+			],
+			'tickets' => $tickets,
+			'replies' => $replies,
+			'export_date' => current_time('mysql'),
+			'export_format' => 'JSON'
+		];
+
+		// Set headers for file download
+		$filename = 'cs-support-data-export-' . $user_id . '-' . date('Y-m-d-H-i-s') . '.json';
+		
+		return new \WP_REST_Response([
+			'success' => true,
+			'data' => $export_data,
+			'filename' => $filename,
+			'message' => 'Data exported successfully'
+		], 200);
+	}
+
+	/**
+	 * Delete user's personal data.
+	 *
+	 * @param \WP_REST_Request $request Request object.
+	 * @return \WP_REST_Response
+	 */
+	public function delete_user_data(\WP_REST_Request $request): \WP_REST_Response
+	{
+		global $wpdb;
+		$user_id = get_current_user_id();
+		$deletion_type = $request->get_param('type') ?: 'anonymize'; // 'anonymize' or 'delete'
+		
+		$deletion_stats = [
+			'tickets_affected' => 0,
+			'replies_affected' => 0,
+			'action_taken' => $deletion_type
+		];
+
+		if ($deletion_type === 'anonymize') {
+			// Anonymize tickets (keep content but remove personal identifiers)
+			// Note: Only anonymize user_id since we don't have separate email/name fields in tickets table
+			$tickets_updated = $wpdb->update(
+				$wpdb->prefix . 'cs_support_tickets',
+				[
+					'user_id' => 0  // Set to 0 to anonymize
+				],
+				['user_id' => $user_id],
+				['%d'],
+				['%d']
+			);
+			$deletion_stats['tickets_affected'] = $tickets_updated;
+
+			// Anonymize replies - just set user_id to 0 since we don't have author_name/email fields
+			$replies_updated = $wpdb->update(
+				$wpdb->prefix . 'cs_support_ticket_replies',
+				[
+					'user_id' => 0
+				],
+				['user_id' => $user_id],
+				['%d'],
+				['%d']
+			);
+			$deletion_stats['replies_affected'] = $replies_updated;
+			
+		} else if ($deletion_type === 'delete') {
+			// Get user's tickets for reply deletion
+			$user_tickets = $wpdb->get_col(
+				$wpdb->prepare(
+					"SELECT id FROM {$wpdb->prefix}cs_support_tickets WHERE user_id = %d",
+					$user_id
+				)
+			);
+
+			// Delete replies first
+			foreach ($user_tickets as $ticket_id) {
+				$replies_deleted = $wpdb->delete(
+					$wpdb->prefix . 'cs_support_ticket_replies',
+					['ticket_id' => $ticket_id],
+					['%d']
+				);
+				$deletion_stats['replies_affected'] += $replies_deleted;
+			}
+
+			// Delete tickets
+			$tickets_deleted = $wpdb->delete(
+				$wpdb->prefix . 'cs_support_tickets',
+				['user_id' => $user_id],
+				['%d']
+			);
+			$deletion_stats['tickets_affected'] = $tickets_deleted;
+		}
+
+		return new \WP_REST_Response([
+			'success' => true,
+			'message' => ucfirst($deletion_type) . ' completed successfully',
+			'stats' => $deletion_stats
+		], 200);
+	}
+
+	/**
+	 * Get data retention settings.
+	 *
+	 * @return \WP_REST_Response
+	 */
+	public function get_data_retention_settings(): \WP_REST_Response
+	{
+		$settings = get_option('cs_support_helpdesk_data_retention', [
+			'enabled' => false,
+			'retention_days' => 730, // 2 years default
+			'auto_cleanup' => false,
+			'notify_before_days' => 30,
+			'anonymize_instead_delete' => true
+		]);
+		
+		// Convert to camelCase for frontend
+		$camelCaseSettings = [
+			'enabled' => $settings['enabled'],
+			'retentionDays' => $settings['retention_days'],
+			'autoCleanup' => $settings['auto_cleanup'],
+			'notifyBeforeDays' => $settings['notify_before_days'],
+			'anonymizeInsteadDelete' => $settings['anonymize_instead_delete']
+		];
+		
+		return new \WP_REST_Response($camelCaseSettings, 200);
+	}
+
+	/**
+	 * Update data retention settings.
+	 *
+	 * @param \WP_REST_Request $request Request object.
+	 * @return \WP_REST_Response
+	 */
+	public function update_data_retention_settings(\WP_REST_Request $request): \WP_REST_Response
+	{
+		$settings = $request->get_json_params();
+		$sanitized_settings = [];
+
+		// Sanitize settings - handle both camelCase (from frontend) and snake_case
+		if (isset($settings['enabled'])) {
+			$sanitized_settings['enabled'] = (bool) $settings['enabled'];
+		}
+		
+		if (isset($settings['retentionDays'])) {
+			$sanitized_settings['retention_days'] = max(30, intval($settings['retentionDays'])); // Minimum 30 days
+		} elseif (isset($settings['retention_days'])) {
+			$sanitized_settings['retention_days'] = max(30, intval($settings['retention_days'])); // Minimum 30 days
+		}
+		
+		if (isset($settings['autoCleanup'])) {
+			$sanitized_settings['auto_cleanup'] = (bool) $settings['autoCleanup'];
+		} elseif (isset($settings['auto_cleanup'])) {
+			$sanitized_settings['auto_cleanup'] = (bool) $settings['auto_cleanup'];
+		}
+		
+		if (isset($settings['notifyBeforeDays'])) {
+			$sanitized_settings['notify_before_days'] = max(1, intval($settings['notifyBeforeDays'])); // Minimum 1 day
+		} elseif (isset($settings['notify_before_days'])) {
+			$sanitized_settings['notify_before_days'] = max(1, intval($settings['notify_before_days'])); // Minimum 1 day
+		}
+		
+		if (isset($settings['anonymizeInsteadDelete'])) {
+			$sanitized_settings['anonymize_instead_delete'] = (bool) $settings['anonymizeInsteadDelete'];
+		} elseif (isset($settings['anonymize_instead_delete'])) {
+			$sanitized_settings['anonymize_instead_delete'] = (bool) $settings['anonymize_instead_delete'];
+		}
+
+		// Get current settings to compare
+		$current_settings = get_option('cs_support_helpdesk_data_retention', []);
+		
+		// Update the option - update_option returns false if the value is the same
+		$updated = update_option('cs_support_helpdesk_data_retention', $sanitized_settings);
+		
+		// If update_option returned false, check if it's because the values are the same
+		if (!$updated) {
+			$new_current_settings = get_option('cs_support_helpdesk_data_retention', []);
+			// If the settings match what we tried to save, then the update was successful
+			if ($new_current_settings === $sanitized_settings || json_encode($new_current_settings) === json_encode($sanitized_settings)) {
+				$updated = true;
+			}
+		}
+
+		return new \WP_REST_Response([
+			'success' => $updated,
+			'message' => $updated ? 'Data retention settings updated successfully' : 'Failed to update data retention settings'
+		], $updated ? 200 : 500);
+	}
+
+	/**
+	 * Run data cleanup based on retention settings.
+	 *
+	 * @param \WP_REST_Request $request Request object.
+	 * @return \WP_REST_Response
+	 */
+	public function run_data_cleanup(\WP_REST_Request $request): \WP_REST_Response
+	{
+		global $wpdb;
+		
+		$retention_settings = get_option('cs_support_helpdesk_data_retention', []);
+		$cleanup_stats = [
+			'tickets_deleted' => 0,
+			'replies_deleted' => 0,
+			'attachments_deleted' => 0
+		];
+
+		// Default retention period: 2 years
+		$retention_days = isset($retention_settings['retention_days']) ? intval($retention_settings['retention_days']) : 730;
+		
+		if ($retention_days > 0) {
+			$cutoff_date = date('Y-m-d H:i:s', strtotime("-{$retention_days} days"));
+			
+			// Delete old tickets
+			$old_tickets = $wpdb->get_results(
+				$wpdb->prepare(
+					"SELECT id FROM {$wpdb->prefix}cs_support_tickets WHERE created_at < %s",
+					$cutoff_date
+				)
+			);
+			
+			foreach ($old_tickets as $ticket) {
+				// Delete replies first
+				$replies_deleted = $wpdb->delete(
+					$wpdb->prefix . 'cs_support_ticket_replies',
+					['ticket_id' => $ticket->id],
+					['%d']
+				);
+				$cleanup_stats['replies_deleted'] += $replies_deleted;
+				
+				// Delete the ticket
+				$ticket_deleted = $wpdb->delete(
+					$wpdb->prefix . 'cs_support_tickets',
+					['id' => $ticket->id],
+					['%d']
+				);
+				if ($ticket_deleted) {
+					$cleanup_stats['tickets_deleted']++;
+				}
+			}
+		}
+
+		return new \WP_REST_Response([
+			'success' => true,
+			'message' => 'Data cleanup completed successfully',
+			'stats' => $cleanup_stats
+		], 200);
 	}
 }

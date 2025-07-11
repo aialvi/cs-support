@@ -253,7 +253,9 @@ export default function Dashboard({ navigate }) {
 			);
 			const data = await response.json();
 			// Sort replies by created_at in ascending order (oldest to newest, latest at bottom)
-			const sortedReplies = data.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+			const sortedReplies = data.sort(
+				(a, b) => new Date(a.created_at) - new Date(b.created_at),
+			);
 			setTicketReplies(sortedReplies);
 		} catch (error) {
 			console.log("Error fetching replies:", error);
@@ -270,20 +272,23 @@ export default function Dashboard({ navigate }) {
 		// Check if AI is enabled
 		const checkAISettings = async () => {
 			try {
-				const response = await fetch(CS_SUPPORT_HELPDESK_CONFIG.apiUrl + '/settings', {
-					method: 'GET',
-					headers: {
-						'Content-Type': 'application/json',
-						'X-WP-Nonce': CS_SUPPORT_HELPDESK_CONFIG.nonce,
+				const response = await fetch(
+					CS_SUPPORT_HELPDESK_CONFIG.apiUrl + "/settings",
+					{
+						method: "GET",
+						headers: {
+							"Content-Type": "application/json",
+							"X-WP-Nonce": CS_SUPPORT_HELPDESK_CONFIG.nonce,
+						},
 					},
-				});
+				);
 
 				if (response.ok) {
 					const data = await response.json();
 					setAiEnabled(data?.ai?.enabled && data?.ai?.apiKey);
 				}
 			} catch (error) {
-				console.error('Failed to check AI settings:', error);
+				console.error("Failed to check AI settings:", error);
 			}
 		};
 
@@ -292,25 +297,28 @@ export default function Dashboard({ navigate }) {
 
 	const generateAIReply = async () => {
 		if (!selectedTicket) {
-			toast.error('Please select a ticket first');
+			toast.error("Please select a ticket first");
 			return;
 		}
 
 		setIsGeneratingAIReply(true);
 		setShowAiReply(false);
-		setAiReply('');
+		setAiReply("");
 
 		try {
-			const response = await fetch(CS_SUPPORT_HELPDESK_CONFIG.apiUrl + '/ai/generate-reply', {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-					'X-WP-Nonce': CS_SUPPORT_HELPDESK_CONFIG.nonce,
+			const response = await fetch(
+				CS_SUPPORT_HELPDESK_CONFIG.apiUrl + "/ai/generate-reply",
+				{
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+						"X-WP-Nonce": CS_SUPPORT_HELPDESK_CONFIG.nonce,
+					},
+					body: JSON.stringify({
+						ticket_id: selectedTicket.id,
+					}),
 				},
-				body: JSON.stringify({
-					ticket_id: selectedTicket.id,
-				}),
-			});
+			);
 
 			const data = await response.json();
 
@@ -318,11 +326,11 @@ export default function Dashboard({ navigate }) {
 				setAiReply(data.reply);
 				setShowAiReply(true);
 			} else {
-				toast.error(data.message || 'Failed to generate AI reply');
+				toast.error(data.message || "Failed to generate AI reply");
 			}
 		} catch (error) {
-			toast.error('Error generating AI reply: ' + error.message);
-			console.error('AI reply error:', error);
+			toast.error("Error generating AI reply: " + error.message);
+			console.error("AI reply error:", error);
 		} finally {
 			setIsGeneratingAIReply(false);
 		}
@@ -331,12 +339,12 @@ export default function Dashboard({ navigate }) {
 	const acceptAIReply = () => {
 		setReply(aiReply);
 		setShowAiReply(false);
-		setAiReply('');
+		setAiReply("");
 	};
 
 	const rejectAIReply = () => {
 		setShowAiReply(false);
-		setAiReply('');
+		setAiReply("");
 	};
 
 	useEffect(() => {
@@ -505,8 +513,12 @@ export default function Dashboard({ navigate }) {
 											<LockClosedIcon className="h-6 w-6 text-white" />
 										</div>
 										<div className="text-white">
-											<p className="text-sm font-semibold mb-1">Premium Features</p>
-											<p className="text-xs opacity-90">More sections and reports available</p>
+											<p className="text-sm font-semibold mb-1">
+												Premium Features
+											</p>
+											<p className="text-xs opacity-90">
+												More sections and reports available
+											</p>
 										</div>
 										<button className="mt-2 bg-white bg-opacity-20 hover:bg-opacity-30 text-white text-xs font-medium py-2 px-4 rounded-lg transition-all duration-200 transform hover:-translate-y-0.5">
 											Upgrade Now
@@ -573,7 +585,6 @@ export default function Dashboard({ navigate }) {
 								)}
 							</nav>
 
-							{/* Pro Features Promotional Section - Desktop */}
 							<div className="mx-1 px-2 pb-4 mt-[100%]">
 								<div className="bg-gradient-to-br from-orange-50 to-red-50 rounded-xl p-4 text-center shadow-lg border border-orange-200">
 									<div className="flex flex-col items-center space-y-3">
@@ -585,11 +596,20 @@ export default function Dashboard({ navigate }) {
 												Unlock Premium Features
 											</p>
 											<p className="text-xs text-orange-700 leading-relaxed">
-												Advanced reporting, team collaboration tools, and priority support
+												Advanced reporting, team collaboration tools, and
+												priority support
 											</p>
 										</div>
-										<button className="mt-2 bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white text-xs font-semibold py-2 px-4 rounded-lg transition-all duration-200 shadow-md hover:shadow-lg transform hover:-translate-y-0.5">
-											Upgrade to Pro
+										<button
+											className="mt-2 bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white text-xs font-semibold py-2 px-4 rounded-lg transition-all duration-200 shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
+											onClick={() =>
+												window.open(
+													"https://featureshark.kit.com/b4909ddaaa",
+													"_blank",
+												)
+											}
+										>
+											Join Waitlist
 										</button>
 									</div>
 								</div>
@@ -722,12 +742,16 @@ export default function Dashboard({ navigate }) {
 																	{ticket.subject}
 																</span>
 																<div className="flex flex-col items-end space-y-1">
-																	<span className={classNames(
-																		"text-xs px-2 py-1 rounded-full font-medium",
-																		ticket.priority === "high" ? "bg-red-100 text-red-800" :
-																			ticket.priority === "normal" ? "bg-yellow-100 text-yellow-800" :
-																				"bg-gray-100 text-gray-800"
-																	)}>
+																	<span
+																		className={classNames(
+																			"text-xs px-2 py-1 rounded-full font-medium",
+																			ticket.priority === "high"
+																				? "bg-red-100 text-red-800"
+																				: ticket.priority === "normal"
+																				? "bg-yellow-100 text-yellow-800"
+																				: "bg-gray-100 text-gray-800",
+																		)}
+																	>
 																		{ticket.priority}
 																	</span>
 																</div>
@@ -739,21 +763,23 @@ export default function Dashboard({ navigate }) {
 																		ticket.status === "NEW"
 																			? "bg-rose-100 text-rose-800"
 																			: ticket.status === "IN_PROGRESS"
-																				? "bg-yellow-100 text-yellow-800"
-																				: "bg-emerald-100 text-emerald-800",
+																			? "bg-yellow-100 text-yellow-800"
+																			: "bg-emerald-100 text-emerald-800",
 																	)}
 																>
 																	{ticket.status === "NEW"
 																		? "New"
 																		: ticket.status === "IN_PROGRESS"
-																			? "WIP"
-																			: "Resolved"}
+																		? "WIP"
+																		: "Resolved"}
 																</div>
 																<div className="flex items-center space-x-2 text-xs text-gray-500">
 																	<span>{timeAgo(ticket.created_at)}</span>
 																	<div className="flex items-center">
 																		<UserCircleIcon className="h-4 w-4 mr-1" />
-																		<span className="text-green-600 font-medium">John Doe</span>
+																		<span className="text-green-600 font-medium">
+																			John Doe
+																		</span>
 																	</div>
 																</div>
 															</div>
@@ -785,9 +811,10 @@ export default function Dashboard({ navigate }) {
 												<ul className="space-y-3">
 													{recentActivity.map((activity) => {
 														// Determine if this activity is a ticket creation and has not been replied to
-														const isTicketCreated = activity.type === "ticket_created";
+														const isTicketCreated =
+															activity.type === "ticket_created";
 														const hasReplies = ticketReplies.some(
-															(reply) => reply.ticket_id === activity.ticketId
+															(reply) => reply.ticket_id === activity.ticketId,
 														);
 														const showOverlay = isTicketCreated && !hasReplies;
 
@@ -878,7 +905,9 @@ export default function Dashboard({ navigate }) {
 										</div>
 										<div className="grid grid-cols-3 gap-3">
 											<div className="bg-gradient-to-br from-red-50 to-red-100 border border-red-200 rounded-lg p-3 text-center">
-												<h3 className="text-sm font-semibold text-red-800">High</h3>
+												<h3 className="text-sm font-semibold text-red-800">
+													High
+												</h3>
 												<p className="text-2xl font-bold text-red-900">
 													{
 														supportTickets.filter(
@@ -888,7 +917,9 @@ export default function Dashboard({ navigate }) {
 												</p>
 											</div>
 											<div className="bg-gradient-to-br from-yellow-50 to-yellow-100 border border-yellow-200 rounded-lg p-3 text-center">
-												<h3 className="text-sm font-semibold text-yellow-800">Medium</h3>
+												<h3 className="text-sm font-semibold text-yellow-800">
+													Medium
+												</h3>
 												<p className="text-2xl font-bold text-yellow-900">
 													{
 														supportTickets.filter(
@@ -898,7 +929,9 @@ export default function Dashboard({ navigate }) {
 												</p>
 											</div>
 											<div className="bg-gradient-to-br from-gray-50 to-gray-100 border border-gray-200 rounded-lg p-3 text-center">
-												<h3 className="text-sm font-semibold text-gray-800">Low</h3>
+												<h3 className="text-sm font-semibold text-gray-800">
+													Low
+												</h3>
 												<p className="text-2xl font-bold text-gray-900">
 													{
 														supportTickets.filter(
@@ -925,9 +958,7 @@ export default function Dashboard({ navigate }) {
 									<div className="p-6">
 										<form
 											className="space-y-4"
-											onSubmit={(e) =>
-												handleReplySubmit(e, selectedTicket.id)
-											}
+											onSubmit={(e) => handleReplySubmit(e, selectedTicket.id)}
 										>
 											<div>
 												<label
@@ -974,7 +1005,9 @@ export default function Dashboard({ navigate }) {
 															className="inline-flex items-center px-3 py-1 text-xs font-medium rounded-full text-indigo-700 bg-indigo-100 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 transition-colors duration-200"
 														>
 															<SparklesIcon className="h-3 w-3 mr-1" />
-															{isGeneratingAIReply ? "Generating..." : "AI Suggestion"}
+															{isGeneratingAIReply
+																? "Generating..."
+																: "AI Suggestion"}
 														</button>
 													)}
 												</div>
@@ -1054,7 +1087,9 @@ export default function Dashboard({ navigate }) {
 															<div className="bg-blue-500 rounded-full p-1">
 																<UserCircleIcon className="h-4 w-4 text-white" />
 															</div>
-															<span className="font-medium text-blue-900">Original Ticket</span>
+															<span className="font-medium text-blue-900">
+																Original Ticket
+															</span>
 														</div>
 														<span className="text-sm text-blue-700">
 															{timeAgo(selectedTicket.created_at)}
@@ -1074,12 +1109,14 @@ export default function Dashboard({ navigate }) {
 														>
 															<div className="flex items-center justify-between mb-3">
 																<div className="flex items-center space-x-2">
-																	<div className={classNames(
-																		"rounded-full p-1",
-																		reply.user_id === selectedTicket.user_id
-																			? "bg-green-500"
-																			: "bg-purple-500"
-																	)}>
+																	<div
+																		className={classNames(
+																			"rounded-full p-1",
+																			reply.user_id === selectedTicket.user_id
+																				? "bg-green-500"
+																				: "bg-purple-500",
+																		)}
+																	>
 																		<UserCircleIcon className="h-4 w-4 text-white" />
 																	</div>
 																	<span className="font-medium text-gray-900">
@@ -1092,7 +1129,9 @@ export default function Dashboard({ navigate }) {
 																	{timeAgo(reply.created_at)}
 																</span>
 															</div>
-															<p className="text-gray-700 leading-relaxed">{reply.reply}</p>
+															<p className="text-gray-700 leading-relaxed">
+																{reply.reply}
+															</p>
 														</div>
 													))
 												) : (
@@ -1106,8 +1145,13 @@ export default function Dashboard({ navigate }) {
 											<div className="flex items-center justify-center h-full text-gray-500">
 												<div className="text-center">
 													<UserCircleIcon className="h-16 w-16 mx-auto text-gray-300 mb-4" />
-													<p className="text-lg font-medium mb-2">Select a ticket</p>
-													<p className="text-sm">Choose a ticket from the list or quick reply form to view the conversation</p>
+													<p className="text-lg font-medium mb-2">
+														Select a ticket
+													</p>
+													<p className="text-sm">
+														Choose a ticket from the list or quick reply form to
+														view the conversation
+													</p>
 												</div>
 											</div>
 										)}
