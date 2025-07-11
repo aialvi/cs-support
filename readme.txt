@@ -286,7 +286,7 @@ Simply use the shortcodes `[cs_support]` and `[cs_support_tickets]`.
 = 🆘 Where do I get support? =
 
 **We're Here to Help:**
-- 📧 Email: support@clientsync.com
+- 📧 Email: support@clientsync.tech
 - 💬 WordPress.org support forums
 - 📖 Comprehensive documentation
 - 🎥 Video tutorials
@@ -436,10 +436,10 @@ Simply use the shortcodes `[cs_support]` and `[cs_support_tickets]`.
 - 📖 Check our comprehensive documentation
 - 🎥 Watch our video tutorials
 - 💬 Visit WordPress.org support forums
-- 📧 Email: support@clientsync.com
+- 📧 Email: support@clientsync.tech
 
 **Stay Connected:**
-- 🌐 Website: https://clientsync.com
+- 🌐 Website: https://clientsync.tech
 - 🐦 Twitter: @ClientSyncWP
 - 📘 Facebook: ClientSync WordPress
 
