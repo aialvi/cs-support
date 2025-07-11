@@ -442,9 +442,9 @@ Simply use the shortcodes `[cs_support]` and `[cs_support_tickets]`.
 - 📧 Email: support@clientsync.com
 
 **Stay Connected:**
-- 🌐 Website: https://clientsync.com
-- 🐦 Twitter: @ClientSyncWP
-- 📘 Facebook: ClientSync WordPress
+- 🌐 Website: https://clientsync.tech
+- 🐦 Twitter: @ClientSync
+- 📘 Facebook: ClientSync
 
 ---
 
