@@ -1,4 +1,4 @@
-=== CS Support ===
+## CS Support
 
 Contributors: clientsync
 Donate link: https://www.buymeacoffee.com/aialvi
@@ -32,7 +32,6 @@ CS Support is the ultimate solution for businesses looking to provide exceptiona
 - 🎨 **Fully Customizable** - Match your brand with extensive styling options
 - 🔧 **Developer Friendly** - Built with modern PHP, React, and REST API
 - 📈 **Scalable Solution** - Grows with your business needs
-- 🆓 **Completely Free** - No hidden fees or premium upsells
 
 ### 🛠️ Flexible Integration Options
 
@@ -250,14 +249,6 @@ Simply use the shortcodes `[cs_support]` and `[cs_support_tickets]`.
 - ✅ SQL injection protection
 - ✅ XSS prevention
 - ✅ Regular security updates
-
-= 💰 Are there any hidden costs? =
-
-**Completely Free!** 
-- ✅ No premium versions
-- ✅ No feature limitations
-- ✅ No usage restrictions
-- ✅ Free updates and support
 
 = 🔌 Can I integrate with other plugins? =
 
