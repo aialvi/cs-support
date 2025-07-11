@@ -57,7 +57,6 @@ For developers who want to build custom integrations or mobile apps.
 We're constantly improving your experience:
 - 🛡️ **GDPR Compliance** - Full data export, deletion, and retention management
 - 🔐 **Privacy Controls** - Users can export or delete their personal data
-- 📅 **Data Retention** - Automatic cleanup with configurable retention periods
 - 🔒 **WordPress Privacy Integration** - Works with WordPress privacy tools
 - ✅ **Enhanced Compatibility** - Works flawlessly with popular themes and page builders
 - 🐛 **Bug Fixes** - Resolved CSS loading issues and PHP warnings
@@ -256,7 +255,6 @@ Simply use the shortcodes `[cs_support]` and `[cs_support_tickets]`.
 - ✅ REST API for custom integrations
 - ✅ WordPress hooks and filters
 - ✅ Compatible with membership plugins
-- ✅ WooCommerce integration ready
 
 = 📊 Can I export ticket data? =
 
@@ -265,9 +263,7 @@ Simply use the shortcodes `[cs_support]` and `[cs_support_tickets]`.
 - ✅ One-click data export from user settings
 - ✅ Admin data export tools for all tickets
 - ✅ Backup and restore functionality
-- ✅ Data migration tools
 - ✅ GDPR compliance features
-- ✅ WordPress privacy tools integration
 
 = 🛡️ Is my data secure and GDPR compliant? =
 
@@ -281,7 +277,6 @@ Simply use the shortcodes `[cs_support]` and `[cs_support_tickets]`.
 - ✅ **Right to be forgotten** - Delete or anonymize your data
 - ✅ **Data retention management** - Automatic cleanup of old data
 - ✅ **Privacy by design** - Minimal data collection
-- ✅ **Transparency** - Clear data usage policies
 
 = 🆘 Where do I get support? =
 
