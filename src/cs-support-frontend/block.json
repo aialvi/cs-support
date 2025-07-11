@@ -3,11 +3,11 @@
 	"apiVersion": 3,
 	"name": "clientsync/cs-support-frontend",
 	"version": "0.1.0",
-	"title": "CS Support Frontend",
+	"title": "CS Support - User Tickets",
 	"category": "widgets",
 	"icon": "admin-comments",
 	"keywords": ["support", "ticket", "help"],
-	"description": "CS Support plugin frontend block showing support ticket created by the user.",
+	"description": "CS Support plugin frontend block showing support tickets created by the user.",
 	"example": {},
 	"supports": {
 		"html": false
