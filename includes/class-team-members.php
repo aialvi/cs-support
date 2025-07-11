@@ -198,8 +198,8 @@ class Team_Members
 	{
 		global $wpdb;
 
-		$start_of_month = date('Y-m-01 00:00:00');
-		$end_of_month = date('Y-m-t 23:59:59');
+		$start_of_month = gmdate('Y-m-01 00:00:00');
+		$end_of_month = gmdate('Y-m-t 23:59:59');
 
 		$count = $wpdb->get_var(
 			$wpdb->prepare(

@@ -51,7 +51,6 @@ class Notifications
 
         $ticket = $this->get_ticket_details($ticket_id);
         if (!$ticket) {
-            error_log("CS Support: Cannot send assignment notification - ticket {$ticket_id} not found");
             return false;
         }
 
@@ -59,12 +58,11 @@ class Notifications
         $assigned_by = get_user_by('ID', $assigned_by_id);
 
         if (!$assignee || !$assigned_by) {
-            error_log("CS Support: Cannot send assignment notification - invalid user IDs (assignee: {$assignee_id}, assigned_by: {$assigned_by_id})");
             return false;
         }
 
-        // translators: %1$s: site name, %2$d: ticket ID
         $subject = sprintf(
+            // translators: %1$s: site name, %2$d: ticket ID
             __('[%1$s] Ticket #%2$d has been assigned to you', 'cs-support'),
             get_bloginfo('name'),
             $ticket_id
@@ -81,12 +79,6 @@ class Notifications
         $headers = $this->settings->get_email_headers();
 
         $result = wp_mail($assignee->user_email, $subject, $message, $headers);
-
-        if (!$result) {
-            error_log("CS Support: Failed to send assignment notification email to {$assignee->user_email} for ticket {$ticket_id}");
-        } else {
-            error_log("CS Support: Assignment notification sent successfully to {$assignee->user_email} for ticket {$ticket_id}");
-        }
 
         return $result;
     }
@@ -118,8 +110,8 @@ class Notifications
         $success = true;
 
         // Send notification to new assignee
-        // translators: %1$s: site name, %2$d: ticket ID
         $subject_new = sprintf(
+            // translators: %1$s: site name, %2$d: ticket ID
             __('[%1$s] Ticket #%2$d has been reassigned to you', 'cs-support'),
             get_bloginfo('name'),
             $ticket_id
@@ -144,8 +136,8 @@ class Notifications
 
         // Send notification to old assignee if different and exists
         if ($old_assignee && $old_assignee_id !== $new_assignee_id) {
-            // translators: %1$s: site name, %2$d: ticket ID
             $subject_old = sprintf(
+                // translators: %1$s: site name, %2$d: ticket ID
                 __('[%1$s] Ticket #%2$d has been reassigned', 'cs-support'),
                 get_bloginfo('name'),
                 $ticket_id
@@ -189,8 +181,8 @@ class Notifications
             return false;
         }
 
-        // translators: %1$s: site name, %2$d: ticket ID
         $subject = sprintf(
+            // translators: %1$s: site name, %2$d: ticket ID
             __('[%1$s] Your ticket #%2$d status has been updated', 'cs-support'),
             get_bloginfo('name'),
             $ticket_id
@@ -304,7 +296,7 @@ class Notifications
             '{customer_name}' => $data['ticket']['customer_name'],
             '{customer_email}' => $data['ticket']['customer_email'],
             '{status}' => $data['ticket']['status'],
-            '{created_at}' => date('F j, Y g:i A', strtotime($data['ticket']['created_at'])),
+            '{created_at}' => gmdate('F j, Y g:i A', strtotime($data['ticket']['created_at'])),
             '{description}' => wp_strip_all_tags($data['ticket']['description']),
             '{ticket_url}' => $data['ticket_url'],
             '{site_name}' => $data['site_name']

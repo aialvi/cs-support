@@ -73,9 +73,7 @@ $button_style_attr = sprintf(
 
 // Check if user is logged in
 $is_logged_in = is_user_logged_in();
-?>
-
-<div <?php echo $wrapper_attributes; ?>>
+?>	<div <?php echo esc_attr($wrapper_attributes); ?>>
     <?php if (!$is_logged_in) : ?>
         <div class="cs-support-login-required">
             <p><?php esc_html_e('You must be logged in to view your support tickets.', 'cs-support'); ?></p>

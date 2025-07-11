@@ -2,11 +2,11 @@
 
 Contributors: clientsync
 Donate link: https://www.buymeacoffee.com/aialvi
-Tags: support, help, customer support, helpdesk, tickets, contact form, customer service, support tickets, helpdesk system
-Requires at least: 5.0
-Tested up to: 6.7.2
+Tags: support, customer support, helpdesk, tickets, contact form
+Requires at least: 6.7
+Tested up to: 6.8
 Stable tag: 0.1.0
-Requires PHP: 5.6
+Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 

@@ -43,12 +43,12 @@ function cs_support_admin_notice_shortcodes() {
     if ($status['all_registered']) {
         echo '<div class="notice notice-success"><p>';
         echo '<strong>CS Support:</strong> All shortcodes are properly registered: ';
-        echo implode(', ', array_map(function($tag) { return "[$tag]"; }, $status['registered']));
+        echo esc_html(implode(', ', array_map(function($tag) { return "[$tag]"; }, $status['registered'])));
         echo '</p></div>';
     } else {
         echo '<div class="notice notice-error"><p>';
         echo '<strong>CS Support:</strong> Some shortcodes are missing: ';
-        echo implode(', ', array_map(function($tag) { return "[$tag]"; }, $status['missing']));
+        echo esc_html(implode(', ', array_map(function($tag) { return "[$tag]"; }, $status['missing'])));
         echo '</p></div>';
     }
 }
@@ -77,7 +77,7 @@ function cs_support_test_shortcode_rendering() {
         $output = do_shortcode($shortcode);
         if (!empty($output)) {
             echo '<div style="border: 1px solid #ddd; padding: 10px; margin: 10px 0;">';
-            echo $output;
+            echo wp_kses_post($output);
             echo '</div>';
         } else {
             echo '<p style="color: red;">No output generated</p>';

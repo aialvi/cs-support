@@ -250,13 +250,13 @@ class AI_Assistant
         ]);
 
         if (is_wp_error($response)) {
-            throw new \Exception($response->get_error_message());
+            throw new \Exception(esc_html($response->get_error_message()));
         }
 
         $body = json_decode(wp_remote_retrieve_body($response), true);
 
         if (isset($body['error'])) {
-            throw new \Exception($body['error']['message']);
+            throw new \Exception(esc_html($body['error']['message']));
         }
 
         if (empty($body['choices'][0]['message']['content'])) {
@@ -311,13 +311,13 @@ class AI_Assistant
         ]);
 
         if (is_wp_error($response)) {
-            throw new \Exception($response->get_error_message());
+            throw new \Exception(esc_html($response->get_error_message()));
         }
 
         $body = json_decode(wp_remote_retrieve_body($response), true);
 
         if (isset($body['error'])) {
-            throw new \Exception($body['error']['message']);
+            throw new \Exception(esc_html($body['error']['message']));
         }
 
         if (empty($body['candidates'][0]['content']['parts'][0]['text'])) {
@@ -365,13 +365,13 @@ class AI_Assistant
         ]);
 
         if (is_wp_error($response)) {
-            throw new \Exception($response->get_error_message());
+            throw new \Exception(esc_html($response->get_error_message()));
         }
 
         $body = json_decode(wp_remote_retrieve_body($response), true);
 
         if (isset($body['error'])) {
-            throw new \Exception($body['error']['message']);
+            throw new \Exception(esc_html($body['error']['message']));
         }
 
         if (empty($body['content'][0]['text'])) {

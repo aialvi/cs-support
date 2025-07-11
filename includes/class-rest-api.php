@@ -403,44 +403,68 @@ class Rest_API
 		$current_user_id = get_current_user_id();
 		$user_param = isset($request) ? $request->get_param('user_id') : null;
 
-		// Build WHERE clause based on user permissions
-		$where_conditions = [];
-		
+		// Execute query based on user permissions with proper preparation
 		if ($user_param && current_user_can('manage_options')) {
 			// Admin requesting specific user's tickets
-			$where_conditions[] = $wpdb->prepare("t.user_id = %d", $user_param);
+			$tickets = $wpdb->get_results(
+				$wpdb->prepare(
+					"SELECT t.*, u.display_name as user_name, u.user_email,
+					        a.display_name as assignee_name, a.user_email as assignee_email
+					 FROM {$wpdb->prefix}cs_support_tickets t
+					 LEFT JOIN {$wpdb->users} u ON t.user_id = u.ID
+					 LEFT JOIN {$wpdb->users} a ON t.assignee_id = a.ID
+					 WHERE t.user_id = %d
+					 ORDER BY t.created_at DESC",
+					$user_param
+				),
+				ARRAY_A
+			);
 		} elseif (current_user_can('manage_options')) {
 			// Admin can see all tickets (no additional filter)
+			$tickets = $wpdb->get_results(
+				"SELECT t.*, u.display_name as user_name, u.user_email,
+				        a.display_name as assignee_name, a.user_email as assignee_email
+				 FROM {$wpdb->prefix}cs_support_tickets t
+				 LEFT JOIN {$wpdb->users} u ON t.user_id = u.ID
+				 LEFT JOIN {$wpdb->users} a ON t.assignee_id = a.ID
+				 ORDER BY t.created_at DESC",
+				ARRAY_A
+			);
 		} elseif (current_user_can('view_all_tickets') || current_user_can('edit_tickets') || current_user_can('reply_to_tickets')) {
 			// Support team members can see:
 			// 1. Tickets assigned to them
 			// 2. Unassigned tickets 
 			// 3. Their own tickets (if they created any)
-			$where_conditions[] = $wpdb->prepare(
-				"(t.assignee_id = %d OR t.assignee_id IS NULL OR t.user_id = %d)",
-				$current_user_id,
-				$current_user_id
+			$tickets = $wpdb->get_results(
+				$wpdb->prepare(
+					"SELECT t.*, u.display_name as user_name, u.user_email,
+					        a.display_name as assignee_name, a.user_email as assignee_email
+					 FROM {$wpdb->prefix}cs_support_tickets t
+					 LEFT JOIN {$wpdb->users} u ON t.user_id = u.ID
+					 LEFT JOIN {$wpdb->users} a ON t.assignee_id = a.ID
+					 WHERE (t.assignee_id = %d OR t.assignee_id IS NULL OR t.user_id = %d)
+					 ORDER BY t.created_at DESC",
+					$current_user_id,
+					$current_user_id
+				),
+				ARRAY_A
 			);
 		} else {
 			// Regular users can only see their own tickets
-			$where_conditions[] = $wpdb->prepare("t.user_id = %d", $current_user_id);
+			$tickets = $wpdb->get_results(
+				$wpdb->prepare(
+					"SELECT t.*, u.display_name as user_name, u.user_email,
+					        a.display_name as assignee_name, a.user_email as assignee_email
+					 FROM {$wpdb->prefix}cs_support_tickets t
+					 LEFT JOIN {$wpdb->users} u ON t.user_id = u.ID
+					 LEFT JOIN {$wpdb->users} a ON t.assignee_id = a.ID
+					 WHERE t.user_id = %d
+					 ORDER BY t.created_at DESC",
+					$current_user_id
+				),
+				ARRAY_A
+			);
 		}
-
-		$where_clause = '';
-		if (!empty($where_conditions)) {
-			$where_clause = 'WHERE ' . implode(' AND ', $where_conditions);
-		}
-
-		$tickets = $wpdb->get_results(
-			"SELECT t.*, u.display_name as user_name, u.user_email,
-			        a.display_name as assignee_name, a.user_email as assignee_email
-			 FROM {$wpdb->prefix}cs_support_tickets t
-			 LEFT JOIN {$wpdb->users} u ON t.user_id = u.ID
-			 LEFT JOIN {$wpdb->users} a ON t.assignee_id = a.ID
-			 $where_clause
-			 ORDER BY t.created_at DESC",
-			ARRAY_A
-		);
 
 		if (is_null($tickets)) {
 			return new \WP_REST_Response([
@@ -539,11 +563,9 @@ class Rest_API
 		);
 
 		if (false === $inserted) {
-			// Log the actual database error
-			error_log('DB Error: ' . $wpdb->last_error);
 			return new \WP_REST_Response([
 				'success' => false,
-				'message' => 'Failed to add reply: ' . $wpdb->last_error
+				'message' => 'Failed to add reply'
 			], 500);
 		}
 
@@ -1068,7 +1090,7 @@ class Rest_API
 		];
 
 		// Set headers for file download
-		$filename = 'cs-support-data-export-' . $user_id . '-' . date('Y-m-d-H-i-s') . '.json';
+		$filename = 'cs-support-data-export-' . $user_id . '-' . gmdate('Y-m-d-H-i-s') . '.json';
 		
 		return new \WP_REST_Response([
 			'success' => true,
@@ -1266,7 +1288,7 @@ class Rest_API
 		$retention_days = isset($retention_settings['retention_days']) ? intval($retention_settings['retention_days']) : 730;
 		
 		if ($retention_days > 0) {
-			$cutoff_date = date('Y-m-d H:i:s', strtotime("-{$retention_days} days"));
+			$cutoff_date = gmdate('Y-m-d H:i:s', strtotime("-{$retention_days} days"));
 			
 			// Delete old tickets
 			$old_tickets = $wpdb->get_results(
