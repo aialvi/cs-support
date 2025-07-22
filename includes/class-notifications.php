@@ -63,7 +63,7 @@ class Notifications
 
         $subject = sprintf(
             // translators: %1$s: site name, %2$d: ticket ID
-            __('[%1$s] Ticket #%2$d has been assigned to you', 'cs-support'),
+            __('[%1$s] Ticket #%2$d has been assigned to you', 'clientsync-support'),
             get_bloginfo('name'),
             $ticket_id
         );
@@ -112,7 +112,7 @@ class Notifications
         // Send notification to new assignee
         $subject_new = sprintf(
             // translators: %1$s: site name, %2$d: ticket ID
-            __('[%1$s] Ticket #%2$d has been reassigned to you', 'cs-support'),
+            __('[%1$s] Ticket #%2$d has been reassigned to you', 'clientsync-support'),
             get_bloginfo('name'),
             $ticket_id
         );
@@ -138,7 +138,7 @@ class Notifications
         if ($old_assignee && $old_assignee_id !== $new_assignee_id) {
             $subject_old = sprintf(
                 // translators: %1$s: site name, %2$d: ticket ID
-                __('[%1$s] Ticket #%2$d has been reassigned', 'cs-support'),
+                __('[%1$s] Ticket #%2$d has been reassigned', 'clientsync-support'),
                 get_bloginfo('name'),
                 $ticket_id
             );
@@ -183,7 +183,7 @@ class Notifications
 
         $subject = sprintf(
             // translators: %1$s: site name, %2$d: ticket ID
-            __('[%1$s] Your ticket #%2$d status has been updated', 'cs-support'),
+            __('[%1$s] Your ticket #%2$d status has been updated', 'clientsync-support'),
             get_bloginfo('name'),
             $ticket_id
         );

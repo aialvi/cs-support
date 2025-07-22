@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Render the CS Support ticket form block on the frontend
+ * Render the ClientSync Support ticket form block on the frontend
  *
  * @see https://github.com/WordPress/gutenberg/blob/trunk/docs/reference-guides/block-api/block-metadata.md#render
  */
@@ -100,9 +100,9 @@ $is_logged_in = is_user_logged_in();
 		<?php endif; ?>
 		<?php if (!$is_logged_in): ?>
 			<div class="cs-support-login-required">
-				<p><?php esc_html_e('You must be logged in to create a support ticket.', 'cs-support'); ?></p>
+				<p><?php esc_html_e('You must be logged in to create a support ticket.', 'clientsync-support'); ?></p>
 				<a href="<?php echo esc_url(wp_login_url(get_permalink())); ?>" class="cs-support-login-link">
-					<?php esc_html_e('Log in', 'cs-support'); ?>
+					<?php esc_html_e('Log in', 'clientsync-support'); ?>
 				</a>
 			</div>
 		<?php else: ?>
@@ -119,7 +119,7 @@ $is_logged_in = is_user_logged_in();
 								<path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
 								<path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
 							</svg>
-							<label for="cs-subject"><?php esc_html_e('Subject', 'cs-support'); ?></label>
+							<label for="cs-subject"><?php esc_html_e('Subject', 'clientsync-support'); ?></label>
 						</div>
 						<input type="text" id="cs-subject" name="subject" required
 							style="<?php echo esc_attr($input_style); ?>">
@@ -132,13 +132,13 @@ $is_logged_in = is_user_logged_in();
 								<path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z">
 								</path>
 							</svg>
-							<label for="cs-category"><?php esc_html_e('Category', 'cs-support'); ?></label>
+							<label for="cs-category"><?php esc_html_e('Category', 'clientsync-support'); ?></label>
 						</div>
 						<select id="cs-category" name="category" required style="<?php echo esc_attr($input_style); ?>">
-							<option value=""><?php esc_html_e('Select a category', 'cs-support'); ?></option>
-							<option value="technical"><?php esc_html_e('Technical', 'cs-support'); ?></option>
-							<option value="billing"><?php esc_html_e('Billing', 'cs-support'); ?></option>
-							<option value="general"><?php esc_html_e('General', 'cs-support'); ?></option>
+							<option value=""><?php esc_html_e('Select a category', 'clientsync-support'); ?></option>
+							<option value="technical"><?php esc_html_e('Technical', 'clientsync-support'); ?></option>
+							<option value="billing"><?php esc_html_e('Billing', 'clientsync-support'); ?></option>
+							<option value="general"><?php esc_html_e('General', 'clientsync-support'); ?></option>
 						</select>
 					</div>
 
@@ -152,13 +152,13 @@ $is_logged_in = is_user_logged_in();
 								<line x1="12" y1="9" x2="12" y2="13"></line>
 								<line x1="12" y1="17" x2="12.01" y2="17"></line>
 							</svg>
-							<label for="cs-priority"><?php esc_html_e('Priority', 'cs-support'); ?></label>
+							<label for="cs-priority"><?php esc_html_e('Priority', 'clientsync-support'); ?></label>
 						</div>
 						<select id="cs-priority" name="priority" required style="<?php echo esc_attr($input_style); ?>">
-							<option value="low"><?php esc_html_e('Low', 'cs-support'); ?></option>
-							<option value="normal" selected><?php esc_html_e('Normal', 'cs-support'); ?></option>
-							<option value="high"><?php esc_html_e('High', 'cs-support'); ?></option>
-							<option value="urgent"><?php esc_html_e('Urgent', 'cs-support'); ?></option>
+							<option value="low"><?php esc_html_e('Low', 'clientsync-support'); ?></option>
+							<option value="normal" selected><?php esc_html_e('Normal', 'clientsync-support'); ?></option>
+							<option value="high"><?php esc_html_e('High', 'clientsync-support'); ?></option>
+							<option value="urgent"><?php esc_html_e('Urgent', 'clientsync-support'); ?></option>
 						</select>
 					</div>
 
@@ -172,7 +172,7 @@ $is_logged_in = is_user_logged_in();
 									<line x1="16" y1="17" x2="8" y2="17"></line>
 									<polyline points="10 9 9 9 8 9"></polyline>
 							</svg>
-							<label for="cs-description"><?php esc_html_e('Description', 'cs-support'); ?></label>
+							<label for="cs-description"><?php esc_html_e('Description', 'clientsync-support'); ?></label>
 						</div>
 						<textarea id="cs-description" name="description" required
 							style="<?php echo esc_attr($input_style); ?>"></textarea>

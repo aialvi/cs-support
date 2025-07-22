@@ -1,5 +1,5 @@
 /**
- * Frontend script for the CS Support Frontend block
+ * Frontend script for the ClientSync Support Frontend block
  */
 
 import { __ } from '@wordpress/i18n';
@@ -75,7 +75,7 @@ class CSSupportFrontendEnhancer {
         
         const searchInput = document.createElement('input');
         searchInput.type = 'search';
-        searchInput.placeholder = __('Search tickets...', 'cs-support');
+        searchInput.placeholder = __('Search tickets...', 'clientsync-support');
         searchInput.addEventListener('input', (e) => this.handleSearch(e.target.value));
         
         searchContainer.appendChild(searchInput);
@@ -87,10 +87,10 @@ class CSSupportFrontendEnhancer {
         filtersContainer.className = 'cs-support-filters';
         
         const filters = [
-            { label: __('All', 'cs-support'), value: 'all' },
-            { label: __('New', 'cs-support'), value: 'new' },
-            { label: __('In Progress', 'cs-support'), value: 'in-progress' },
-            { label: __('Resolved', 'cs-support'), value: 'resolved' }
+            { label: __('All', 'clientsync-support'), value: 'all' },
+            { label: __('New', 'clientsync-support'), value: 'new' },
+            { label: __('In Progress', 'clientsync-support'), value: 'in-progress' },
+            { label: __('Resolved', 'clientsync-support'), value: 'resolved' }
         ];
 
         filters.forEach(filter => {

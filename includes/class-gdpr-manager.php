@@ -171,8 +171,8 @@ class GDPR_Manager
 	 */
 	public function register_data_exporter(array $exporters): array
 	{
-		$exporters['cs-support'] = [
-			'exporter_friendly_name' => __('CS Support Data', 'cs-support'),
+		$exporters['clientsync-support'] = [
+			'exporter_friendly_name' => __('ClientSync Support Data', 'clientsync-support'),
 			'callback' => [$this, 'export_user_data_wp'],
 		];
 
@@ -187,8 +187,8 @@ class GDPR_Manager
 	 */
 	public function register_data_eraser(array $erasers): array
 	{
-		$erasers['cs-support'] = [
-			'eraser_friendly_name' => __('CS Support Data', 'cs-support'),
+		$erasers['clientsync-support'] = [
+			'eraser_friendly_name' => __('ClientSync Support Data', 'clientsync-support'),
 			'callback' => [$this, 'erase_user_data_wp'],
 		];
 
@@ -238,34 +238,34 @@ class GDPR_Manager
 		foreach ($tickets as $ticket) {
 			$item_data = [
 				[
-					'name' => __('Ticket ID', 'cs-support'),
+					'name' => __('Ticket ID', 'clientsync-support'),
 					'value' => $ticket->id,
 				],
 				[
-					'name' => __('Subject', 'cs-support'),
+					'name' => __('Subject', 'clientsync-support'),
 					'value' => $ticket->subject,
 				],
 				[
-					'name' => __('Message', 'cs-support'),
+					'name' => __('Message', 'clientsync-support'),
 					'value' => $ticket->message,
 				],
 				[
-					'name' => __('Status', 'cs-support'),
+					'name' => __('Status', 'clientsync-support'),
 					'value' => $ticket->status,
 				],
 				[
-					'name' => __('Priority', 'cs-support'),
+					'name' => __('Priority', 'clientsync-support'),
 					'value' => $ticket->priority,
 				],
 				[
-					'name' => __('Created At', 'cs-support'),
+					'name' => __('Created At', 'clientsync-support'),
 					'value' => $ticket->created_at,
 				],
 			];
 
 			$data_to_export[] = [
 				'group_id' => 'cs-support-tickets',
-				'group_label' => __('Support Tickets', 'cs-support'),
+				'group_label' => __('Support Tickets', 'clientsync-support'),
 				'item_id' => "ticket-{$ticket->id}",
 				'data' => $item_data,
 			];
@@ -288,22 +288,22 @@ class GDPR_Manager
 		foreach ($replies as $reply) {
 			$item_data = [
 				[
-					'name' => __('Ticket Subject', 'cs-support'),
+					'name' => __('Ticket Subject', 'clientsync-support'),
 					'value' => $reply->ticket_subject,
 				],
 				[
-					'name' => __('Reply Message', 'cs-support'),
+					'name' => __('Reply Message', 'clientsync-support'),
 					'value' => $reply->message,
 				],
 				[
-					'name' => __('Created At', 'cs-support'),
+					'name' => __('Created At', 'clientsync-support'),
 					'value' => $reply->created_at,
 				],
 			];
 
 			$data_to_export[] = [
 				'group_id' => 'cs-support-replies',
-				'group_label' => __('Support Replies', 'cs-support'),
+				'group_label' => __('Support Replies', 'clientsync-support'),
 				'item_id' => "reply-{$reply->id}",
 				'data' => $item_data,
 			];
@@ -369,9 +369,9 @@ class GDPR_Manager
 		}
 
 		if ($anonymize_instead_delete) {
-			$messages[] = __('Support tickets have been anonymized rather than deleted to maintain support quality records.', 'cs-support');
+			$messages[] = __('Support tickets have been anonymized rather than deleted to maintain support quality records.', 'clientsync-support');
 		} else {
-			$messages[] = __('Support tickets and replies have been permanently deleted.', 'cs-support');
+			$messages[] = __('Support tickets and replies have been permanently deleted.', 'clientsync-support');
 		}
 
 		return [

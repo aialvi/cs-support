@@ -117,229 +117,229 @@ export default function Edit({ attributes, setAttributes }) {
 		<div {...blockProps}>
 			<InspectorControls>
 				{/* Basic Settings */}
-				<PanelBody title={__("Basic Settings", "cs-support")} initialOpen={true}>
+				<PanelBody title={__("Basic Settings", "clientsync-support")} initialOpen={true}>
 					<RangeControl
-						label={__("Tickets Per Page", "cs-support")}
+						label={__("Tickets Per Page", "clientsync-support")}
 						value={ticketsPerPage}
 						onChange={(value) => setAttributes({ ticketsPerPage: value })}
 						min={1}
 						max={50}
-						help={__("Number of tickets to display per page", "cs-support")}
+						help={__("Number of tickets to display per page", "clientsync-support")}
 					/>
 					
 					<SelectControl
-						label={__("Font Size", "cs-support")}
+						label={__("Font Size", "clientsync-support")}
 						value={fontSize}
 						options={[
-							{ label: __("Small", "cs-support"), value: "small" },
-							{ label: __("Medium", "cs-support"), value: "medium" },
-							{ label: __("Large", "cs-support"), value: "large" },
-							{ label: __("Extra Large", "cs-support"), value: "x-large" },
+							{ label: __("Small", "clientsync-support"), value: "small" },
+							{ label: __("Medium", "clientsync-support"), value: "medium" },
+							{ label: __("Large", "clientsync-support"), value: "large" },
+							{ label: __("Extra Large", "clientsync-support"), value: "x-large" },
 						]}
 						onChange={(value) => setAttributes({ fontSize: value })}
 					/>
 
 					<SelectControl
-						label={__("Spacing", "cs-support")}
+						label={__("Spacing", "clientsync-support")}
 						value={spacing}
 						options={[
-							{ label: __("Tight", "cs-support"), value: "tight" },
-							{ label: __("Normal", "cs-support"), value: "normal" },
-							{ label: __("Loose", "cs-support"), value: "loose" },
+							{ label: __("Tight", "clientsync-support"), value: "tight" },
+							{ label: __("Normal", "clientsync-support"), value: "normal" },
+							{ label: __("Loose", "clientsync-support"), value: "loose" },
 						]}
 						onChange={(value) => setAttributes({ spacing: value })}
 					/>
 
 					<SelectControl
-						label={__("Max Width", "cs-support")}
+						label={__("Max Width", "clientsync-support")}
 						value={maxWidth}
 						options={[
-							{ label: __("None", "cs-support"), value: "none" },
-							{ label: __("Small (600px)", "cs-support"), value: "600px" },
-							{ label: __("Medium (800px)", "cs-support"), value: "800px" },
-							{ label: __("Large (1200px)", "cs-support"), value: "1200px" },
+							{ label: __("None", "clientsync-support"), value: "none" },
+							{ label: __("Small (600px)", "clientsync-support"), value: "600px" },
+							{ label: __("Medium (800px)", "clientsync-support"), value: "800px" },
+							{ label: __("Large (1200px)", "clientsync-support"), value: "1200px" },
 						]}
 						onChange={(value) => setAttributes({ maxWidth: value })}
-						help={__("Maximum width of the support ticket container", "cs-support")}
+						help={__("Maximum width of the support ticket container", "clientsync-support")}
 					/>
 				</PanelBody>
 
 				{/* Layout & Display */}
-				<PanelBody title={__("Layout & Display", "cs-support")} initialOpen={false}>
+				<PanelBody title={__("Layout & Display", "clientsync-support")} initialOpen={false}>
 					<SelectControl
-						label={__("Card Style", "cs-support")}
+						label={__("Card Style", "clientsync-support")}
 						value={cardStyle}
 						options={[
-							{ label: __("Default", "cs-support"), value: "default" },
-							{ label: __("Modern", "cs-support"), value: "modern" },
-							{ label: __("Minimal", "cs-support"), value: "minimal" },
+							{ label: __("Default", "clientsync-support"), value: "default" },
+							{ label: __("Modern", "clientsync-support"), value: "modern" },
+							{ label: __("Minimal", "clientsync-support"), value: "minimal" },
 						]}
 						onChange={(value) => setAttributes({ cardStyle: value })}
-						help={__("Overall visual style of the support interface", "cs-support")}
+						help={__("Overall visual style of the support interface", "clientsync-support")}
 					/>
 
 					<Divider />
 
 					<ToggleControl
-						label={__("Compact View", "cs-support")}
+						label={__("Compact View", "clientsync-support")}
 						checked={compactView}
 						onChange={(value) => setAttributes({ compactView: value })}
-						help={__("Use tighter spacing for a more compact layout", "cs-support")}
+						help={__("Use tighter spacing for a more compact layout", "clientsync-support")}
 					/>
 
 					<ToggleControl
-						label={__("Show Search Bar", "cs-support")}
+						label={__("Show Search Bar", "clientsync-support")}
 						checked={showSearch}
 						onChange={(value) => setAttributes({ showSearch: value })}
-						help={__("Allow users to search through their tickets", "cs-support")}
+						help={__("Allow users to search through their tickets", "clientsync-support")}
 					/>
 
 					<ToggleControl
-						label={__("Show Status Filters", "cs-support")}
+						label={__("Show Status Filters", "clientsync-support")}
 						checked={showFilters}
 						onChange={(value) => setAttributes({ showFilters: value })}
-						help={__("Display filter buttons for ticket status", "cs-support")}
+						help={__("Display filter buttons for ticket status", "clientsync-support")}
 					/>
 
 					<ToggleControl
-						label={__("Enable Column Sorting", "cs-support")}
+						label={__("Enable Column Sorting", "clientsync-support")}
 						checked={enableSorting}
 						onChange={(value) => setAttributes({ enableSorting: value })}
-						help={__("Allow users to sort tickets by clicking column headers", "cs-support")}
+						help={__("Allow users to sort tickets by clicking column headers", "clientsync-support")}
 					/>
 				</PanelBody>
 
 				{/* Table Settings */}
-				<PanelBody title={__("Table Settings", "cs-support")} initialOpen={false}>
+				<PanelBody title={__("Table Settings", "clientsync-support")} initialOpen={false}>
 					<ToggleControl
-						label={__("Striped Rows", "cs-support")}
+						label={__("Striped Rows", "clientsync-support")}
 						checked={tableStriped}
 						onChange={(value) => setAttributes({ tableStriped: value })}
-						help={__("Alternate row background colors for better readability", "cs-support")}
+						help={__("Alternate row background colors for better readability", "clientsync-support")}
 					/>
 
 					<ToggleControl
-						label={__("Table Borders", "cs-support")}
+						label={__("Table Borders", "clientsync-support")}
 						checked={tableBordered}
 						onChange={(value) => setAttributes({ tableBordered: value })}
-						help={__("Add borders around table cells", "cs-support")}
+						help={__("Add borders around table cells", "clientsync-support")}
 					/>
 
 					<ToggleControl
-						label={__("Row Hover Effect", "cs-support")}
+						label={__("Row Hover Effect", "clientsync-support")}
 						checked={rowHoverEffect}
 						onChange={(value) => setAttributes({ rowHoverEffect: value })}
-						help={__("Highlight table rows on hover", "cs-support")}
+						help={__("Highlight table rows on hover", "clientsync-support")}
 					/>
 				</PanelBody>
 
 				{/* Visual Effects */}
-				<PanelBody title={__("Visual Effects", "cs-support")} initialOpen={false}>
+				<PanelBody title={__("Visual Effects", "clientsync-support")} initialOpen={false}>
 					<RangeControl
-						label={__("Border Radius", "cs-support")}
+						label={__("Border Radius", "clientsync-support")}
 						value={borderRadius}
 						onChange={(value) => setAttributes({ borderRadius: value })}
 						min={0}
 						max={24}
-						help={__("Roundness of corners in pixels", "cs-support")}
+						help={__("Roundness of corners in pixels", "clientsync-support")}
 					/>
 
 					<ToggleControl
-						label={__("Enable Box Shadow", "cs-support")}
+						label={__("Enable Box Shadow", "clientsync-support")}
 						checked={boxShadow}
 						onChange={(value) => setAttributes({ boxShadow: value })}
-						help={__("Add subtle shadow for depth", "cs-support")}
+						help={__("Add subtle shadow for depth", "clientsync-support")}
 					/>
 
 					<Divider />
 
 					<SelectControl
-						label={__("Button Style", "cs-support")}
+						label={__("Button Style", "clientsync-support")}
 						value={buttonStyle}
 						options={[
-							{ label: __("Rounded", "cs-support"), value: "rounded" },
-							{ label: __("Square", "cs-support"), value: "square" },
-							{ label: __("Pill", "cs-support"), value: "pill" },
-							{ label: __("Outlined", "cs-support"), value: "outlined" },
+							{ label: __("Rounded", "clientsync-support"), value: "rounded" },
+							{ label: __("Square", "clientsync-support"), value: "square" },
+							{ label: __("Pill", "clientsync-support"), value: "pill" },
+							{ label: __("Outlined", "clientsync-support"), value: "outlined" },
 						]}
 						onChange={(value) => setAttributes({ buttonStyle: value })}
-						help={__("Style for buttons and interactive elements", "cs-support")}
+						help={__("Style for buttons and interactive elements", "clientsync-support")}
 					/>
 				</PanelBody>
 
 				{/* Color Settings */}
 				<PanelColorSettings
-					title={__("Primary Colors", "cs-support")}
+					title={__("Primary Colors", "clientsync-support")}
 					initialOpen={false}
 					colorSettings={[
 						{
 							value: backgroundColor,
 							onChange: (value) => setAttributes({ backgroundColor: value }),
-							label: __("Background Color", "cs-support"),
+							label: __("Background Color", "clientsync-support"),
 						},
 						{
 							value: textColor,
 							onChange: (value) => setAttributes({ textColor: value }),
-							label: __("Text Color", "cs-support"),
+							label: __("Text Color", "clientsync-support"),
 						},
 						{
 							value: accentColor,
 							onChange: (value) => setAttributes({ accentColor: value }),
-							label: __("Accent Color", "cs-support"),
+							label: __("Accent Color", "clientsync-support"),
 						},
 						{
 							value: primaryColor,
 							onChange: (value) => setAttributes({ primaryColor: value }),
-							label: __("Primary Color", "cs-support"),
+							label: __("Primary Color", "clientsync-support"),
 						},
 					]}
 				/>
 
 				<PanelColorSettings
-					title={__("Status Colors", "cs-support")}
+					title={__("Status Colors", "clientsync-support")}
 					initialOpen={false}
 					colorSettings={[
 						{
 							value: successColor,
 							onChange: (value) => setAttributes({ successColor: value }),
-							label: __("Success Color (Resolved)", "cs-support"),
+							label: __("Success Color (Resolved)", "clientsync-support"),
 						},
 						{
 							value: warningColor,
 							onChange: (value) => setAttributes({ warningColor: value }),
-							label: __("Warning Color (In Progress)", "cs-support"),
+							label: __("Warning Color (In Progress)", "clientsync-support"),
 						},
 						{
 							value: errorColor,
 							onChange: (value) => setAttributes({ errorColor: value }),
-							label: __("Error Color (New/Open)", "cs-support"),
+							label: __("Error Color (New/Open)", "clientsync-support"),
 						},
 						{
 							value: secondaryColor,
 							onChange: (value) => setAttributes({ secondaryColor: value }),
-							label: __("Secondary Color", "cs-support"),
+							label: __("Secondary Color", "clientsync-support"),
 						},
 					]}
 				/>
 
 				{/* Advanced Settings */}
-				<PanelBody title={__("Advanced", "cs-support")} initialOpen={false}>
+				<PanelBody title={__("Advanced", "clientsync-support")} initialOpen={false}>
 					<Text variant="muted" style={{ marginBottom: '16px' }}>
-						{__("Add custom CSS to override default styles. Use carefully!", "cs-support")}
+						{__("Add custom CSS to override default styles. Use carefully!", "clientsync-support")}
 					</Text>
 					
 					<TextareaControl
-						label={__("Custom CSS", "cs-support")}
+						label={__("Custom CSS", "clientsync-support")}
 						value={customCSS}
 						onChange={(value) => setAttributes({ customCSS: value })}
-						placeholder={__("/* Custom CSS rules */\n.cs-support-frontend {\n  /* Your styles here */\n}", "cs-support")}
+						placeholder={__("/* Custom CSS rules */\n.cs-support-frontend {\n  /* Your styles here */\n}", "clientsync-support")}
 						rows={8}
-						help={__("Advanced users can add custom CSS here", "cs-support")}
+						help={__("Advanced users can add custom CSS here", "clientsync-support")}
 					/>
 
 					{customCSS && (
 						<Notice status="warning" isDismissible={false}>
-							{__("Custom CSS is active. Preview may not reflect all changes until saved.", "cs-support")}
+							{__("Custom CSS is active. Preview may not reflect all changes until saved.", "clientsync-support")}
 						</Notice>
 					)}
 				</PanelBody>
@@ -355,7 +355,7 @@ export default function Edit({ attributes, setAttributes }) {
 					tagName="h2"
 					value={title}
 					onChange={(value) => setAttributes({ title: value })}
-					placeholder={__("Block Title", "cs-support")}
+					placeholder={__("Block Title", "clientsync-support")}
 					className="cs-support-frontend-title"
 				/>
 				
@@ -365,7 +365,7 @@ export default function Edit({ attributes, setAttributes }) {
 						{showSearch && (
 							<input 
 								type="search" 
-								placeholder={__("Search tickets...", "cs-support")}
+								placeholder={__("Search tickets...", "clientsync-support")}
 								style={{
 									padding: '8px 12px',
 									borderRadius: `${borderRadius}px`,
@@ -386,7 +386,7 @@ export default function Edit({ attributes, setAttributes }) {
 									border: 'none',
 									borderRadius: `${borderRadius}px`,
 								}} disabled>
-									{__("All", "cs-support")}
+									{__("All", "clientsync-support")}
 								</button>
 								<button style={{
 									padding: compactView ? '4px 8px' : '6px 12px',
@@ -396,7 +396,7 @@ export default function Edit({ attributes, setAttributes }) {
 									border: `1px solid ${primaryColor}`,
 									borderRadius: `${borderRadius}px`,
 								}} disabled>
-									{__("Open", "cs-support")}
+									{__("Open", "clientsync-support")}
 								</button>
 							</div>
 						)}
@@ -411,37 +411,37 @@ export default function Edit({ attributes, setAttributes }) {
 									<th style={rowStyle}>
 										{enableSorting ? (
 											<span style={{ cursor: 'pointer' }}>
-												{__("Ticket ID", "cs-support")} ↕
+												{__("Ticket ID", "clientsync-support")} ↕
 											</span>
 										) : (
-											__("Ticket ID", "cs-support")
+											__("Ticket ID", "clientsync-support")
 										)}
 									</th>
 									<th style={rowStyle}>
 										{enableSorting ? (
 											<span style={{ cursor: 'pointer' }}>
-												{__("Subject", "cs-support")} ↕
+												{__("Subject", "clientsync-support")} ↕
 											</span>
 										) : (
-											__("Subject", "cs-support")
+											__("Subject", "clientsync-support")
 										)}
 									</th>
 									<th style={rowStyle}>
 										{enableSorting ? (
 											<span style={{ cursor: 'pointer' }}>
-												{__("Status", "cs-support")} ↕
+												{__("Status", "clientsync-support")} ↕
 											</span>
 										) : (
-											__("Status", "cs-support")
+											__("Status", "clientsync-support")
 										)}
 									</th>
 									<th style={rowStyle}>
 										{enableSorting ? (
 											<span style={{ cursor: 'pointer' }}>
-												{__("Date", "cs-support")} ↕
+												{__("Date", "clientsync-support")} ↕
 											</span>
 										) : (
-											__("Date", "cs-support")
+											__("Date", "clientsync-support")
 										)}
 									</th>
 								</tr>
@@ -452,7 +452,7 @@ export default function Edit({ attributes, setAttributes }) {
 									backgroundColor: tableStriped ? secondaryColor : 'transparent'
 								}}>
 									<td style={rowStyle}>#001</td>
-									<td style={rowStyle}>{__("Example Support Ticket", "cs-support")}</td>
+									<td style={rowStyle}>{__("Example Support Ticket", "clientsync-support")}</td>
 									<td style={rowStyle}>
 										<span style={{
 											backgroundColor: errorColor,
@@ -461,14 +461,14 @@ export default function Edit({ attributes, setAttributes }) {
 											borderRadius: '12px',
 											fontSize: '0.8em'
 										}}>
-											{__("Open", "cs-support")}
+											{__("Open", "clientsync-support")}
 										</span>
 									</td>
-									<td style={rowStyle}>{__("2025-07-11", "cs-support")}</td>
+									<td style={rowStyle}>{__("2025-07-11", "clientsync-support")}</td>
 								</tr>
 								<tr style={rowStyle}>
 									<td style={rowStyle}>#002</td>
-									<td style={rowStyle}>{__("Another Example Ticket", "cs-support")}</td>
+									<td style={rowStyle}>{__("Another Example Ticket", "clientsync-support")}</td>
 									<td style={rowStyle}>
 										<span style={{
 											backgroundColor: successColor,
@@ -477,17 +477,17 @@ export default function Edit({ attributes, setAttributes }) {
 											borderRadius: '12px',
 											fontSize: '0.8em'
 										}}>
-											{__("Resolved", "cs-support")}
+											{__("Resolved", "clientsync-support")}
 										</span>
 									</td>
-									<td style={rowStyle}>{__("2025-07-10", "cs-support")}</td>
+									<td style={rowStyle}>{__("2025-07-10", "clientsync-support")}</td>
 								</tr>
 								<tr style={{
 									...rowStyle,
 									backgroundColor: tableStriped ? secondaryColor : 'transparent'
 								}}>
 									<td style={rowStyle}>#003</td>
-									<td style={rowStyle}>{__("In Progress Example", "cs-support")}</td>
+									<td style={rowStyle}>{__("In Progress Example", "clientsync-support")}</td>
 									<td style={rowStyle}>
 										<span style={{
 											backgroundColor: warningColor,
@@ -496,10 +496,10 @@ export default function Edit({ attributes, setAttributes }) {
 											borderRadius: '12px',
 											fontSize: '0.8em'
 										}}>
-											{__("In Progress", "cs-support")}
+											{__("In Progress", "clientsync-support")}
 										</span>
 									</td>
-									<td style={rowStyle}>{__("2025-07-09", "cs-support")}</td>
+									<td style={rowStyle}>{__("2025-07-09", "clientsync-support")}</td>
 								</tr>
 							</tbody>
 						</table>
@@ -511,7 +511,7 @@ export default function Edit({ attributes, setAttributes }) {
 							marginTop: getSpacingValue(spacing),
 							fontSize: getFontSizeValue(fontSize)
 						}}>
-							{__("✨ This is a preview. Actual tickets will appear here on the frontend.", "cs-support")}
+							{__("✨ This is a preview. Actual tickets will appear here on the frontend.", "clientsync-support")}
 						</p>
 					</div>
 				</div>

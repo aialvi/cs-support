@@ -1,6 +1,6 @@
-# CS Support Frontend Block - Enhanced Styling Options
+# ClientSync Support Frontend Block - Enhanced Styling Options
 
-This document outlines the enhanced styling and customization options available for the CS Support Frontend block.
+This document outlines the enhanced styling and customization options available for the ClientSync Support Frontend block.
 
 ## Enhanced Sidebar Options
 

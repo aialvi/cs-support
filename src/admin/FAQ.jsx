@@ -9,16 +9,16 @@ const DEFAULT_FAQS = [
 	{
 		id: 1,
 		category: "general",
-		question: "What is CS Support plugin?",
+		question: "What is ClientSync Support plugin?",
 		answer:
-			"CS Support is a WordPress plugin that provides a complete helpdesk and ticket management system for your website. It allows your users to submit support tickets directly from your site.",
+			"ClientSync Support is a WordPress plugin that provides a complete helpdesk and ticket management system for your website. It allows your users to submit support tickets directly from your site.",
 	},
 	{
 		id: 2,
 		category: "setup",
-		question: "How do I install the CS Support plugin?",
+		question: "How do I install the ClientSync Support plugin?",
 		answer:
-			"Upload the plugin to your WordPress site, activate it from the Plugins menu, and configure the basic settings from the CS Support menu in your WordPress admin dashboard.",
+			"Upload the plugin to your WordPress site, activate it from the Plugins menu, and configure the basic settings from the ClientSync Support menu in your WordPress admin dashboard.",
 	},
 	{
 		id: 3,
@@ -32,7 +32,7 @@ const DEFAULT_FAQS = [
 		category: "tickets",
 		question: "How do I manage incoming support tickets?",
 		answer:
-			"All tickets can be managed from the CS Support dashboard. You can view, assign, respond to, and update the status of tickets from this central location.",
+			"All tickets can be managed from the ClientSync Support dashboard. You can view, assign, respond to, and update the status of tickets from this central location.",
 	},
 	{
 		id: 5,

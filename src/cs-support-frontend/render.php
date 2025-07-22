@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Render the CS Support Frontend block on the frontend
+ * Render the ClientSync Support Frontend block on the frontend
  */
 
 // Exit if accessed directly.
@@ -136,9 +136,9 @@ $is_logged_in = is_user_logged_in();
 <div <?php echo $wrapper_attributes; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>>
     <?php if (!$is_logged_in) : ?>
         <div class="cs-support-login-required">
-            <p><?php esc_html_e('You must be logged in to view your support tickets.', 'cs-support'); ?></p>
+            <p><?php esc_html_e('You must be logged in to view your support tickets.', 'clientsync-support'); ?></p>
             <a href="<?php echo esc_url(wp_login_url(get_permalink())); ?>" class="cs-support-login-link">
-                <?php esc_html_e('Log in', 'cs-support'); ?>
+                <?php esc_html_e('Log in', 'clientsync-support'); ?>
             </a>
         </div>
     <?php else : ?>
@@ -159,7 +159,7 @@ $is_logged_in = is_user_logged_in();
             <!-- Initial loading state -->
             <div id="cs-support-frontend-content" class="cs-support-frontend-content">
                 <div class="cs-support-loading">
-                    <?php esc_html_e('Loading your tickets...', 'cs-support'); ?>
+                    <?php esc_html_e('Loading your tickets...', 'clientsync-support'); ?>
                 </div>
             </div>
 
@@ -168,10 +168,10 @@ $is_logged_in = is_user_logged_in();
                 <table class="cs-support-tickets-table">
                     <thead>
                         <tr style="<?php echo esc_attr($table_header_style); ?>">
-                            <th><?php esc_html_e('Ticket ID', 'cs-support'); ?></th>
-                            <th><?php esc_html_e('Subject', 'cs-support'); ?></th>
-                            <th><?php esc_html_e('Status', 'cs-support'); ?></th>
-                            <th><?php esc_html_e('Date', 'cs-support'); ?></th>
+                            <th><?php esc_html_e('Ticket ID', 'clientsync-support'); ?></th>
+                            <th><?php esc_html_e('Subject', 'clientsync-support'); ?></th>
+                            <th><?php esc_html_e('Status', 'clientsync-support'); ?></th>
+                            <th><?php esc_html_e('Date', 'clientsync-support'); ?></th>
                         </tr>
                     </thead>
                     <tbody id="cs-support-tickets-list"></tbody>
@@ -181,9 +181,9 @@ $is_logged_in = is_user_logged_in();
 
             <template id="cs-support-no-tickets-template">
                 <div class="cs-support-no-tickets">
-                    <p><?php esc_html_e('You have not created any support tickets yet.', 'cs-support'); ?></p>
+                    <p><?php esc_html_e('You have not created any support tickets yet.', 'clientsync-support'); ?></p>
                     <?php
-                    // Get ID of page with CS Support block, if any exists
+                    // Get ID of page with ClientSync Support block, if any exists
                     $support_page_id = get_option('cs_support_page_id');
                     if ($support_page_id) {
                         $support_page_url = get_permalink($support_page_id);
@@ -192,7 +192,7 @@ $is_logged_in = is_user_logged_in();
                     }
                     ?>
                     <a href="<?php echo esc_url($support_page_url); ?>" class="cs-support-create-ticket-link" style="<?php echo esc_attr($button_style_attr); ?>">
-                        <?php esc_html_e('Create a Support Ticket', 'cs-support'); ?>
+                        <?php esc_html_e('Create a Support Ticket', 'clientsync-support'); ?>
                     </a>
                 </div>
             </template>
@@ -202,26 +202,26 @@ $is_logged_in = is_user_logged_in();
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M19 12H5M12 19l-7-7 7-7"/>
                     </svg>
-                    <?php esc_html_e('Back to tickets', 'cs-support'); ?>
+                    <?php esc_html_e('Back to tickets', 'clientsync-support'); ?>
                 </a>
                 
                 <div class="cs-support-ticket-details">
                     <h3 id="cs-ticket-subject"></h3>
                     <div class="cs-ticket-meta">
                         <div class="cs-ticket-meta-item">
-                            <span class="label"><?php esc_html_e('Status', 'cs-support'); ?></span>
+                            <span class="label"><?php esc_html_e('Status', 'clientsync-support'); ?></span>
                             <span id="cs-ticket-status"></span>
                         </div>
                         <div class="cs-ticket-meta-item">
-                            <span class="label"><?php esc_html_e('Priority', 'cs-support'); ?></span>
+                            <span class="label"><?php esc_html_e('Priority', 'clientsync-support'); ?></span>
                             <span id="cs-ticket-priority"></span>
                         </div>
                         <div class="cs-ticket-meta-item">
-                            <span class="label"><?php esc_html_e('Category', 'cs-support'); ?></span>
+                            <span class="label"><?php esc_html_e('Category', 'clientsync-support'); ?></span>
                             <span id="cs-ticket-category"></span>
                         </div>
                         <div class="cs-ticket-meta-item">
-                            <span class="label"><?php esc_html_e('Created', 'cs-support'); ?></span>
+                            <span class="label"><?php esc_html_e('Created', 'clientsync-support'); ?></span>
                             <span id="cs-ticket-created"></span>
                         </div>
                     </div>
@@ -229,22 +229,22 @@ $is_logged_in = is_user_logged_in();
                 </div>
                 
                 <div class="cs-support-replies">
-                    <h3><?php esc_html_e('Conversation', 'cs-support'); ?></h3>
+                    <h3><?php esc_html_e('Conversation', 'clientsync-support'); ?></h3>
                     <div id="cs-support-replies-list"></div>
                 </div>
                 
                 <div class="cs-support-reply-form">
-                    <h3><?php esc_html_e('Add a Reply', 'cs-support'); ?></h3>
+                    <h3><?php esc_html_e('Add a Reply', 'clientsync-support'); ?></h3>
                     <form id="cs-support-reply-form">
-                        <label for="cs-reply-message" class="sr-only"><?php esc_html_e('Your reply', 'cs-support'); ?></label>
+                        <label for="cs-reply-message" class="sr-only"><?php esc_html_e('Your reply', 'clientsync-support'); ?></label>
                         <textarea 
                             id="cs-reply-message" 
-                            placeholder="<?php esc_attr_e('Type your reply here...', 'cs-support'); ?>"
-                            aria-label="<?php esc_attr_e('Type your reply here', 'cs-support'); ?>"
+                            placeholder="<?php esc_attr_e('Type your reply here...', 'clientsync-support'); ?>"
+                            aria-label="<?php esc_attr_e('Type your reply here', 'clientsync-support'); ?>"
                             required
                         ></textarea>
                         <button type="submit" id="cs-submit-reply" style="<?php echo esc_attr($button_style_attr); ?>">
-                            <?php esc_html_e('Send Reply', 'cs-support'); ?>
+                            <?php esc_html_e('Send Reply', 'clientsync-support'); ?>
                         </button>
                     </form>
                 </div>

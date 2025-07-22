@@ -1,6 +1,6 @@
-# CS Support Shortcode Examples
+# ClientSync Support Shortcode Examples
 
-This document provides examples of how to use the CS Support shortcodes in your WordPress content.
+This document provides examples of how to use the ClientSync Support shortcodes in your WordPress content.
 
 ## Support Form Shortcode (`[cs_support]`)
 

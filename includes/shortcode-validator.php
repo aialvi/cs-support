@@ -74,7 +74,7 @@ class ShortcodeValidator
         }
 
         // Check for block CSS files
-        $blocks = ['cs-support', 'cs-support-frontend'];
+        $blocks = ['clientsync-support', 'cs-support-frontend'];
         foreach ($blocks as $block) {
             $handle = 'cs-support-' . $block . '-style';
             $status['block_css'][$block] = isset($wp_styles->registered[$handle]);
@@ -184,7 +184,7 @@ if (defined('WP_DEBUG') && WP_DEBUG) {
     add_action('wp_footer', function () {
         if (current_user_can('manage_options')) {
             echo '<div id="cs-support-debug" style="background: #f1f1f1; padding: 20px; margin: 20px 0; border: 1px solid #ccc; font-family: monospace; font-size: 12px;">';
-            echo '<h3>CS Support Debug Info</h3>';
+            echo '<h3>ClientSync Support Debug Info</h3>';
 
             $assets = ShortcodeValidator::check_assets_loaded();
             echo '<h4>Asset Loading Status:</h4>';

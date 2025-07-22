@@ -1,7 +1,7 @@
 {
-	"name": "cs-support",
-	"version": "0.1.0",
-	"description": "CS Support plugin",
+	"name": "clientsync-support",
+	"version": "1.0.0",
+	"description": "ClientSync Support plugin",
 	"author": "Aminul Islam Alvi",
 	"license": "GPL-2.0-or-later",
 	"main": "build/index.js",

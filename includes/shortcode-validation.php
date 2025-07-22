@@ -10,7 +10,7 @@ if (!defined('ABSPATH')) {
 }
 
 /**
- * Check if CS Support shortcodes are registered
+ * Check if ClientSync Support shortcodes are registered
  */
 function cs_support_validate_shortcodes() {
     global $shortcode_tags;
@@ -42,12 +42,12 @@ function cs_support_admin_notice_shortcodes() {
     
     if ($status['all_registered']) {
         echo '<div class="notice notice-success"><p>';
-        echo '<strong>CS Support:</strong> All shortcodes are properly registered: ';
+        echo '<strong>ClientSync Support:</strong> All shortcodes are properly registered: ';
         echo esc_html(implode(', ', array_map(function($tag) { return "[$tag]"; }, $status['registered'])));
         echo '</p></div>';
     } else {
         echo '<div class="notice notice-error"><p>';
-        echo '<strong>CS Support:</strong> Some shortcodes are missing: ';
+        echo '<strong>ClientSync Support:</strong> Some shortcodes are missing: ';
         echo esc_html(implode(', ', array_map(function($tag) { return "[$tag]"; }, $status['missing'])));
         echo '</p></div>';
     }
@@ -68,7 +68,7 @@ function cs_support_test_shortcode_rendering() {
     ];
     
     echo '<div style="margin: 20px; padding: 20px; border: 1px solid #ccc;">';
-    echo '<h3>CS Support Shortcode Tests</h3>';
+    echo '<h3>ClientSync Support Shortcode Tests</h3>';
     
     foreach ($tests as $shortcode => $description) {
         echo '<h4>' . esc_html($description) . '</h4>';

@@ -129,53 +129,53 @@ export default function Edit({ attributes, setAttributes }) {
 	return (
 		<div {...blockProps}>
 			<InspectorControls>
-				<PanelBody title={__("Form Content", "cs-support")} initialOpen={true}>
+				<PanelBody title={__("Form Content", "clientsync-support")} initialOpen={true}>
 					<ToggleControl
-						label={__("Show Title", "cs-support")}
+						label={__("Show Title", "clientsync-support")}
 						checked={showTitle}
 						onChange={(value) => setAttributes({ showTitle: value })}
 					/>
 					<TextControl
-						label={__("Form Title", "cs-support")}
+						label={__("Form Title", "clientsync-support")}
 						value={title}
 						onChange={(value) => setAttributes({ title: value })}
 					/>
 					<TextControl
-						label={__("Submit Button Text", "cs-support")}
+						label={__("Submit Button Text", "clientsync-support")}
 						value={submitButtonText}
 						onChange={(value) => setAttributes({ submitButtonText: value })}
 					/>
 					<TextControl
-						label={__("Success Message", "cs-support")}
+						label={__("Success Message", "clientsync-support")}
 						value={successMessage}
 						onChange={(value) => setAttributes({ successMessage: value })}
 					/>
 					<TextControl
-						label={__("Error Message", "cs-support")}
+						label={__("Error Message", "clientsync-support")}
 						value={errorMessage}
 						onChange={(value) => setAttributes({ errorMessage: value })}
 					/>
 				</PanelBody>
 
-				<PanelBody title={__("Behavior", "cs-support")} initialOpen={false}>
+				<PanelBody title={__("Behavior", "clientsync-support")} initialOpen={false}>
 					<SelectControl
-						label={__("Redirect Page After Ticket Creation", "cs-support")}
+						label={__("Redirect Page After Ticket Creation", "clientsync-support")}
 						value={redirectPage}
 						options={[
-							{ label: __("No redirect (stay on current page)", "cs-support"), value: "" },
+							{ label: __("No redirect (stay on current page)", "clientsync-support"), value: "" },
 							...(pages || []).map((page) => ({
 								label: page.title.rendered,
 								value: page.id.toString(),
 							})),
 						]}
 						onChange={(value) => setAttributes({ redirectPage: value })}
-						help={__("Select a page where users will be redirected after creating a ticket. This page should contain the cs-support-frontend block to display their tickets.", "cs-support")}
+						help={__("Select a page where users will be redirected after creating a ticket. This page should contain the cs-support-frontend block to display their tickets.", "clientsync-support")}
 					/>
 				</PanelBody>
 
-				<PanelBody title={__("Form Layout", "cs-support")} initialOpen={false}>
+				<PanelBody title={__("Form Layout", "clientsync-support")} initialOpen={false}>
 					<UnitControl
-						label={__("Form Width", "cs-support")}
+						label={__("Form Width", "clientsync-support")}
 						value={formWidth}
 						onChange={(value) => setAttributes({ formWidth: value })}
 						units={[
@@ -186,7 +186,7 @@ export default function Edit({ attributes, setAttributes }) {
 						]}
 					/>
 					<UnitControl
-						label={__("Maximum Width", "cs-support")}
+						label={__("Maximum Width", "clientsync-support")}
 						value={maxWidth}
 						onChange={(value) => setAttributes({ maxWidth: value })}
 						units={[
@@ -197,7 +197,7 @@ export default function Edit({ attributes, setAttributes }) {
 						]}
 					/>
 					<UnitControl
-						label={__("Padding", "cs-support")}
+						label={__("Padding", "clientsync-support")}
 						value={padding}
 						onChange={(value) => setAttributes({ padding: value })}
 						units={[
@@ -208,9 +208,9 @@ export default function Edit({ attributes, setAttributes }) {
 					/>
 				</PanelBody>
 
-				<PanelBody title={__("Form Border", "cs-support")} initialOpen={false}>
+				<PanelBody title={__("Form Border", "clientsync-support")} initialOpen={false}>
 					<UnitControl
-						label={__("Border Width", "cs-support")}
+						label={__("Border Width", "clientsync-support")}
 						value={borderWidth}
 						onChange={(value) => setAttributes({ borderWidth: value })}
 						units={[
@@ -220,7 +220,7 @@ export default function Edit({ attributes, setAttributes }) {
 						]}
 					/>
 					<UnitControl
-						label={__("Border Radius", "cs-support")}
+						label={__("Border Radius", "clientsync-support")}
 						value={borderRadius}
 						onChange={(value) => setAttributes({ borderRadius: value })}
 						units={[
@@ -232,13 +232,13 @@ export default function Edit({ attributes, setAttributes }) {
 					/>
 
 					<PanelColorSettings
-						title={__("Border Color", "cs-support")}
+						title={__("Border Color", "clientsync-support")}
 						initialOpen={false}
 						colorSettings={[
 							{
 								value: borderColor,
 								onChange: (value) => setAttributes({ borderColor: value }),
-								label: __("Border Color", "cs-support"),
+								label: __("Border Color", "clientsync-support"),
 								disableCustomColors: false,
 								clearable: true,
 							},
@@ -247,20 +247,20 @@ export default function Edit({ attributes, setAttributes }) {
 					/>
 
 					<ToggleControl
-						label={__("Box Shadow", "cs-support")}
+						label={__("Box Shadow", "clientsync-support")}
 						checked={boxShadow}
 						onChange={(value) => setAttributes({ boxShadow: value })}
 					/>
 
 					{boxShadow && (
 						<PanelColorSettings
-							title={__("Shadow Color", "cs-support")}
+							title={__("Shadow Color", "clientsync-support")}
 							initialOpen={false}
 							colorSettings={[
 								{
 									value: boxShadowColor,
 									onChange: (value) => setAttributes({ boxShadowColor: value }),
-									label: __("Shadow Color", "cs-support"),
+									label: __("Shadow Color", "clientsync-support"),
 									disableCustomColors: false,
 									clearable: true,
 								},
@@ -270,9 +270,9 @@ export default function Edit({ attributes, setAttributes }) {
 					)}
 				</PanelBody>
 
-				<PanelBody title={__("Input Fields", "cs-support")} initialOpen={false}>
+				<PanelBody title={__("Input Fields", "clientsync-support")} initialOpen={false}>
 					<UnitControl
-						label={__("Input Border Radius", "cs-support")}
+						label={__("Input Border Radius", "clientsync-support")}
 						value={inputBorderRadius}
 						onChange={(value) => setAttributes({ inputBorderRadius: value })}
 						units={[
@@ -284,13 +284,13 @@ export default function Edit({ attributes, setAttributes }) {
 					/>
 
 					<PanelColorSettings
-						title={__("Input Border Color", "cs-support")}
+						title={__("Input Border Color", "clientsync-support")}
 						initialOpen={false}
 						colorSettings={[
 							{
 								value: inputBorderColor,
 								onChange: (value) => setAttributes({ inputBorderColor: value }),
-								label: __("Input Border Color", "cs-support"),
+								label: __("Input Border Color", "clientsync-support"),
 								disableCustomColors: false,
 								clearable: true,
 							},
@@ -300,27 +300,27 @@ export default function Edit({ attributes, setAttributes }) {
 				</PanelBody>
 
 				<PanelBody
-					title={__("Button Styling", "cs-support")}
+					title={__("Button Styling", "clientsync-support")}
 					initialOpen={false}
 				>
 					<SelectControl
-						label={__("Button Alignment", "cs-support")}
+						label={__("Button Alignment", "clientsync-support")}
 						value={buttonAlign}
 						options={[
-							{ label: __("Left", "cs-support"), value: "left" },
-							{ label: __("Center", "cs-support"), value: "center" },
-							{ label: __("Right", "cs-support"), value: "right" },
+							{ label: __("Left", "clientsync-support"), value: "left" },
+							{ label: __("Center", "clientsync-support"), value: "center" },
+							{ label: __("Right", "clientsync-support"), value: "right" },
 						]}
 						onChange={(value) => setAttributes({ buttonAlign: value })}
 					/>
 
 					<ToggleControl
-						label={__("Full Width Button", "cs-support")}
+						label={__("Full Width Button", "clientsync-support")}
 						checked={buttonFullWidth}
 						onChange={(value) => setAttributes({ buttonFullWidth: value })}
 					/>
 					<UnitControl
-						label={__("Button Border Radius", "cs-support")}
+						label={__("Button Border Radius", "clientsync-support")}
 						value={buttonBorderRadius}
 						onChange={(value) => setAttributes({ buttonBorderRadius: value })}
 						units={[
@@ -332,45 +332,45 @@ export default function Edit({ attributes, setAttributes }) {
 					/>
 
 					<TextControl
-						label={__("Button Padding", "cs-support")}
+						label={__("Button Padding", "clientsync-support")}
 						value={buttonPadding}
 						onChange={(value) => setAttributes({ buttonPadding: value })}
 						help={__(
 							"Format: vertical horizontal (e.g. 10px 15px)",
-							"cs-support",
+							"clientsync-support",
 						)}
 					/>
 				</PanelBody>
 
 				<PanelColorSettings
-					title={__("Color Settings", "cs-support")}
+					title={__("Color Settings", "clientsync-support")}
 					initialOpen={false}
 					colorSettings={[
 						{
 							value: backgroundColor,
 							onChange: (value) => setAttributes({ backgroundColor: value }),
-							label: __("Background Color", "cs-support"),
+							label: __("Background Color", "clientsync-support"),
 							disableCustomColors: false,
 							clearable: true,
 						},
 						{
 							value: textColor,
 							onChange: (value) => setAttributes({ textColor: value }),
-							label: __("Text Color", "cs-support"),
+							label: __("Text Color", "clientsync-support"),
 							disableCustomColors: false,
 							clearable: true,
 						},
 						{
 							value: buttonColor,
 							onChange: (value) => setAttributes({ buttonColor: value }),
-							label: __("Button Color", "cs-support"),
+							label: __("Button Color", "clientsync-support"),
 							disableCustomColors: false,
 							clearable: true,
 						},
 						{
 							value: buttonTextColor,
 							onChange: (value) => setAttributes({ buttonTextColor: value }),
-							label: __("Button Text Color", "cs-support"),
+							label: __("Button Text Color", "clientsync-support"),
 							disableCustomColors: false,
 							clearable: true,
 						},
@@ -385,50 +385,50 @@ export default function Edit({ attributes, setAttributes }) {
 						tagName="h2"
 						value={title}
 						onChange={(value) => setAttributes({ title: value })}
-						placeholder={__("Form Title", "cs-support")}
+						placeholder={__("Form Title", "clientsync-support")}
 						style={{ marginBottom: "20px" }}
 					/>
 				)}
 
 				<div className="cs-form-field">
-					<label htmlFor="cs-subject">{__("Subject", "cs-support")}</label>
+					<label htmlFor="cs-subject">{__("Subject", "clientsync-support")}</label>
 					<input
 						type="text"
 						id="cs-subject"
-						placeholder={__("Enter subject", "cs-support")}
+						placeholder={__("Enter subject", "clientsync-support")}
 						disabled
 						style={inputStyle}
 					/>
 				</div>
 
 				<div className="cs-form-field">
-					<label htmlFor="cs-category">{__("Category", "cs-support")}</label>
+					<label htmlFor="cs-category">{__("Category", "clientsync-support")}</label>
 					<select id="cs-category" disabled style={inputStyle}>
-						<option>{__("Select a category", "cs-support")}</option>
-						<option>{__("Technical", "cs-support")}</option>
-						<option>{__("Billing", "cs-support")}</option>
-						<option>{__("General", "cs-support")}</option>
+						<option>{__("Select a category", "clientsync-support")}</option>
+						<option>{__("Technical", "clientsync-support")}</option>
+						<option>{__("Billing", "clientsync-support")}</option>
+						<option>{__("General", "clientsync-support")}</option>
 					</select>
 				</div>
 
 				<div className="cs-form-field">
-					<label htmlFor="cs-priority">{__("Priority", "cs-support")}</label>
+					<label htmlFor="cs-priority">{__("Priority", "clientsync-support")}</label>
 					<select id="cs-priority" disabled style={inputStyle}>
-						<option>{__("Low", "cs-support")}</option>
-						<option>{__("Normal", "cs-support")}</option>
-						<option>{__("High", "cs-support")}</option>
-						<option>{__("Urgent", "cs-support")}</option>
+						<option>{__("Low", "clientsync-support")}</option>
+						<option>{__("Normal", "clientsync-support")}</option>
+						<option>{__("High", "clientsync-support")}</option>
+						<option>{__("Urgent", "clientsync-support")}</option>
 					</select>
 				</div>
 
 				<div className="cs-form-field">
 					<label htmlFor="cs-description">
-						{__("Description", "cs-support")}
+						{__("Description", "clientsync-support")}
 					</label>
 					<textarea
 						id="cs-description"
 						rows="4"
-						placeholder={__("Describe your issue", "cs-support")}
+						placeholder={__("Describe your issue", "clientsync-support")}
 						disabled
 						style={inputStyle}
 					></textarea>
@@ -441,7 +441,7 @@ export default function Edit({ attributes, setAttributes }) {
 						<em>
 							{__(
 								"This is a preview. The form will be functional on the frontend.",
-								"cs-support",
+								"clientsync-support",
 							)}
 						</em>
 					</p>

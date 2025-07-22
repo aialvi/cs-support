@@ -1,5 +1,5 @@
 /**
- * Frontend script for the CS Support ticket form
+ * Frontend script for the ClientSync Support ticket form
  */
 
 import { __ } from '@wordpress/i18n';

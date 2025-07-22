@@ -38,7 +38,7 @@ class Plugin {
      *
      * @var string
      */
-    public string $version = '0.1.0';
+    public string $version = '1.0.0';
 
     /**
      * Plugin text domain for translations.
@@ -102,9 +102,9 @@ class Plugin {
         $plugin_file_data = get_file_data(
             $file,
             [
-                'display_name' => 'CS Support',
-                'version'      => '0.1.0',
-                'text_domain'  => 'cs-support',
+                'display_name' => 'ClientSync Support',
+                'version'      => '1.0.0',
+                'text_domain'  => 'clientsync-support',
             ]
         );
 
@@ -126,7 +126,7 @@ class Plugin {
         // Add Admin role
         add_role(
             'support_admin',
-            __('Support Admin', 'cs-support'),
+            __('Support Admin', 'clientsync-support'),
             [
                 'read' => true,
                 'edit_tickets' => true,

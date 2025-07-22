@@ -1,11 +1,11 @@
-=== CS Support ===
+=== ClientSync Support - Customer Support Ticket System ===
 
 Contributors: clientsync, aialvi, mugniul
 Donate link: https://www.buymeacoffee.com/aialvi
 Tags: support, customer support, helpdesk, tickets, contact form
 Requires at least: 6.7
 Tested up to: 6.8
-Stable tag: 0.1.0
+Stable tag: 1.0.0
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -16,9 +16,9 @@ Transform your WordPress site into a professional customer support hub with beau
 
 🚀 **Turn Your WordPress Site Into a Customer Support Powerhouse!**
 
-CS Support is the ultimate solution for businesses looking to provide exceptional customer service directly through their WordPress website. Built with modern web standards and user experience in mind, this plugin transforms your site into a professional support hub that both you and your customers will love.
+ClientSync Support is the ultimate solution for businesses looking to provide exceptional customer service directly through their WordPress website. Built with modern web standards and user experience in mind, this plugin transforms your site into a professional support hub that both you and your customers will love.
 
-### ✨ Why Choose CS Support?
+### ✨ Why Choose ClientSync Support?
 
 **For Your Customers:**
 - 🎯 **Effortless Ticket Creation** - Beautiful, intuitive forms that work on any device
@@ -73,7 +73,7 @@ We're constantly improving your experience:
 
 ### Step 2: Add Support Form
 **Using Gutenberg (Recommended):**
-1. Edit any page/post → Add Block → Search "CS Support"
+1. Edit any page/post → Add Block → Search "ClientSync Support"
 2. Customize appearance with live preview
 3. Publish!
 
@@ -81,7 +81,7 @@ We're constantly improving your experience:
 Simply add `[cs_support]` anywhere in your content.
 
 ### Step 3: Display User Tickets
-**Gutenberg:** Add "CS Support Frontend" block
+**Gutenberg:** Add "ClientSync Support Frontend" block
 **Shortcode:** Use `[cs_support_tickets]`
 
 ### Step 4: Manage Tickets
@@ -168,7 +168,7 @@ Display user's support tickets with advanced filtering and styling.
 
 ### Automatic Installation (Recommended)
 1. **WordPress Admin** → **Plugins** → **Add New**
-2. Search for "CS Support"
+2. Search for "ClientSync Support"
 3. Click **Install Now** → **Activate**
 4. Navigate to **Support Tickets** in your admin sidebar
 
@@ -181,7 +181,7 @@ Display user's support tickets with advanced filtering and styling.
 ### FTP Installation (Advanced)
 1. Unzip the plugin files
 2. Upload `cs-support` folder to `/wp-content/plugins/`
-3. **WordPress Admin** → **Plugins** → **Activate** CS Support
+3. **WordPress Admin** → **Plugins** → **Activate** ClientSync Support
 
 **🎉 That's it! Your support system is ready to go.**
 
@@ -196,7 +196,7 @@ Display user's support tickets with advanced filtering and styling.
 
 = 🎨 Can I customize the appearance? =
 
-**Absolutely!** CS Support offers extensive customization:
+**Absolutely!** ClientSync Support offers extensive customization:
 - **Colors**: Background, text, buttons, accents
 - **Layout**: Width, padding, border radius
 - **Styling**: Modern or classic designs
@@ -206,7 +206,7 @@ Use shortcode attributes or Gutenberg block settings for live preview.
 
 = 📱 Is it mobile-friendly? =
 
-**100% Responsive!** CS Support is built mobile-first:
+**100% Responsive!** ClientSync Support is built mobile-first:
 - ✅ Works perfectly on phones and tablets
 - ✅ Touch-friendly interface
 - ✅ Optimized for all screen sizes
@@ -214,7 +214,7 @@ Use shortcode attributes or Gutenberg block settings for live preview.
 
 = 🔧 Does it work with page builders? =
 
-**Yes!** CS Support works with:
+**Yes!** ClientSync Support works with:
 - ✅ Elementor
 - ✅ Divi Builder
 - ✅ Beaver Builder
@@ -419,7 +419,7 @@ Simply use the shortcodes `[cs_support]` and `[cs_support_tickets]`.
 
 == 💝 Support & Feedback ==
 
-**Love CS Support?** Help us make it even better:
+**Love ClientSync Support?** Help us make it even better:
 
 - ⭐ **Rate us** on WordPress.org (5 stars appreciated!)
 - 💬 **Share feedback** in the support forums

@@ -1,8 +1,8 @@
-# CS Support Plugin - Team Assignment System
+# ClientSync Support Plugin - Team Assignment System
 
 ## Overview
 
-The CS Support plugin now includes a comprehensive ticket assignment system that allows administrators to:
+The ClientSync Support plugin now includes a comprehensive ticket assignment system that allows administrators to:
 
 1. **Assign tickets to support team members**
 2. **Manage team member roles and permissions**
@@ -74,14 +74,14 @@ Automatic system notes are created for:
 
 ### Assigning a Ticket
 
-1. Navigate to **CS Support > Tickets**
+1. Navigate to **ClientSync Support > Tickets**
 2. In the "Assigned To" column, click the dropdown
 3. Select a team member from the list
 4. The assignee will receive an email notification
 
 ### Managing Team Members
 
-1. Go to **CS Support > Team Management**
+1. Go to **ClientSync Support > Team Management**
 2. View team statistics and workload distribution
 3. Monitor team performance metrics
 

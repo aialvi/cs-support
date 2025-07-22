@@ -38,7 +38,7 @@ class Team_Members
 		// Support Agent role - can handle tickets, reply to them
 		add_role(
 			'support_agent',
-			__('Support Agent', 'cs-support'),
+			__('Support Agent', 'clientsync-support'),
 			[
 				'read' => true,
 				'edit_tickets' => true,
@@ -51,7 +51,7 @@ class Team_Members
 		// Support Manager role - can do everything agents can plus assign tickets
 		add_role(
 			'support_manager',
-			__('Support Manager', 'cs-support'),
+			__('Support Manager', 'clientsync-support'),
 			[
 				'read' => true,
 				'edit_tickets' => true,

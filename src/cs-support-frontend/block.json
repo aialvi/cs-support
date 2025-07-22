@@ -2,12 +2,12 @@
 	"$schema": "https://schemas.wp.org/trunk/block.json",
 	"apiVersion": 3,
 	"name": "clientsync/cs-support-frontend",
-	"version": "0.1.0",
-	"title": "CS Support - User Tickets",
+	"version": "1.0.0",
+	"title": "ClientSync Support - User Tickets",
 	"category": "widgets",
 	"icon": "admin-comments",
 	"keywords": ["support", "ticket", "help"],
-	"description": "CS Support plugin frontend block showing support tickets created by the user.",
+	"description": "ClientSync Support plugin frontend block showing support tickets created by the user.",
 	"example": {},
 	"supports": {
 		"html": false
@@ -114,7 +114,7 @@
 			"default": "none"
 		}
 	},
-	"textdomain": "cs-support",
+	"textdomain": "clientsync-support",
 	"editorScript": "file:./index.js",
 	"editorStyle": "file:./index.css",
 	"style": "file:./style-index.css",

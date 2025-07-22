@@ -9,5 +9,5 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Plugin constants
  */
-define( __NAMESPACE__ . '\PLUGIN_VERSION', '0.1.0' );
-define( __NAMESPACE__ . '\PLUGIN_NAME', 'cs-support' );
+define( __NAMESPACE__ . '\PLUGIN_VERSION', '1.0.0' );
+define( __NAMESPACE__ . '\PLUGIN_NAME', 'clientsync-support' );

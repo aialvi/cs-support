@@ -4,7 +4,7 @@ const { exec } = require("child_process");
 
 const pluginDir = path.resolve(__dirname, "..");
 const buildDir = path.resolve(pluginDir, "dist");
-const pluginSlug = "cs-support";
+const pluginSlug = "clientsync-support";
 
 // Create build directory if it doesn't exist
 if (!fs.existsSync(buildDir)) {

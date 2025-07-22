@@ -19,7 +19,7 @@ class API_Schema {
     public static function ai_generate_reply_schema(): array {
         return [
             'ticket_id' => [
-                'description' => __('Ticket ID to generate AI reply for', 'cs-support'),
+                'description' => __('Ticket ID to generate AI reply for', 'clientsync-support'),
                 'type' => 'integer',
                 'required' => true,
             ],
@@ -34,18 +34,18 @@ class API_Schema {
     public static function ai_settings_schema(): array {
         return [
             'enabled' => [
-                'description' => __('Enable AI assistant', 'cs-support'),
+                'description' => __('Enable AI assistant', 'clientsync-support'),
                 'type' => 'boolean',
                 'default' => false,
             ],
             'provider' => [
-                'description' => __('AI provider', 'cs-support'),
+                'description' => __('AI provider', 'clientsync-support'),
                 'type' => 'string',
                 'enum' => ['openai', 'gemini', 'anthropic'],
                 'default' => 'openai',
             ],
             'apiKey' => [
-                'description' => __('API key for AI provider', 'cs-support'),
+                'description' => __('API key for AI provider', 'clientsync-support'),
                 'type' => 'string',
                 'default' => '',
                 'sanitize_callback' => function ($value) {
@@ -53,7 +53,7 @@ class API_Schema {
                 }
             ],
             'model' => [
-                'description' => __('AI model to use', 'cs-support'),
+                'description' => __('AI model to use', 'clientsync-support'),
                 'type' => 'string',
                 'default' => 'gpt-4o-mini',
                 'sanitize_callback' => function ($value) {
@@ -61,14 +61,14 @@ class API_Schema {
                 }
             ],
             'maxTokens' => [
-                'description' => __('Maximum tokens (length) for AI response', 'cs-support'),
+                'description' => __('Maximum tokens (length) for AI response', 'clientsync-support'),
                 'type' => 'integer',
                 'default' => 500,
                 'minimum' => 100,
                 'maximum' => 2000,
             ],
             'temperature' => [
-                'description' => __('Temperature (creativity) for AI response', 'cs-support'),
+                'description' => __('Temperature (creativity) for AI response', 'clientsync-support'),
                 'type' => 'number',
                 'default' => 0.7,
                 'minimum' => 0,

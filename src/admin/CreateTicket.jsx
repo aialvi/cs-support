@@ -37,7 +37,7 @@ export default function CreateTicket() {
       console.log(data);
 
       if (data.success) {
-        setMessage(__('Ticket created successfully!', 'cs-support'));
+        setMessage(__('Ticket created successfully!', 'clientsync-support'));
         setFormData({
           subject: '',
           category: '',
@@ -45,10 +45,10 @@ export default function CreateTicket() {
           description: '',
         });
       } else {
-        setMessage(__('Failed to create ticket. Please try again.', 'cs-support'));
+        setMessage(__('Failed to create ticket. Please try again.', 'clientsync-support'));
       }
     } catch (error) {
-      setMessage(__('An error occurred. Please try again.', 'cs-support'), error);
+      setMessage(__('An error occurred. Please try again.', 'clientsync-support'), error);
     } finally {
       setIsSubmitting(false);
     }
@@ -68,11 +68,11 @@ export default function CreateTicket() {
           onSubmit={handleSubmit}
           className='max-w-3xl h-fit space-y-1 p-8 mt-3 rounded-md flex flex-col gap-1 bg-white shadow-md'
         >
-          <h1 className='text-2xl font-semibold pb-2'>{__('Create a new ticket', 'cs-support')}</h1>
+          <h1 className='text-2xl font-semibold pb-2'>{__('Create a new ticket', 'clientsync-support')}</h1>
           <div className='flex items-center w-full space-x-2 mt-3 my-2'>
             <PencilSquareIcon className='h-5 w-5' />
             <label htmlFor='subject' className='block text-sm font-medium'>
-              {__('Subject', 'cs-support')}
+              {__('Subject', 'clientsync-support')}
             </label>
           </div>
           <input
@@ -88,7 +88,7 @@ export default function CreateTicket() {
           <div className='flex items-center space-x-2 mt-5 mb-2 w-full'>
             <FolderIcon className='h-5 w-5' />
             <label htmlFor='category' className='block text-sm font-medium'>
-              {__('Category', 'cs-support')}
+              {__('Category', 'clientsync-support')}
             </label>
           </div>
           <select
@@ -99,16 +99,16 @@ export default function CreateTicket() {
             onChange={handleChange}
             className='block min-w-full min-h-12 h-12 grow py-1.5 pl-1 pr-3 text-base text-gray-900 placeholder:text-gray-400 focus:outline focus:outline-0 sm:text-sm/6 rounded-md shadow-sm border-gray-300'
           >
-            <option value=''>{__('Select a category', 'cs-support')}</option>
-            <option value='technical'>{__('Technical', 'cs-support')}</option>
-            <option value='billing'>{__('Billing', 'cs-support')}</option>
-            <option value='general'>{__('General', 'cs-support')}</option>
+            <option value=''>{__('Select a category', 'clientsync-support')}</option>
+            <option value='technical'>{__('Technical', 'clientsync-support')}</option>
+            <option value='billing'>{__('Billing', 'clientsync-support')}</option>
+            <option value='general'>{__('General', 'clientsync-support')}</option>
           </select>
 
           <div className='flex items-center space-x-2 mt-5 mb-1 w-full'>
             <ExclamationTriangleIcon className='h-5 w-5' />
             <label htmlFor='priority' className='block text-sm font-medium'>
-              {__('Priority', 'cs-support')}
+              {__('Priority', 'clientsync-support')}
             </label>
           </div>
           <select
@@ -119,16 +119,16 @@ export default function CreateTicket() {
             onChange={handleChange}
             className='block min-w-full min-h-12 h-12 grow py-1.5 pl-1 pr-3 text-base text-gray-900 placeholder:text-gray-400 focus:outline focus:outline-0 sm:text-sm/6 rounded-md shadow-sm border-gray-300'
           >
-            <option value='low'>{__('Low', 'cs-support')}</option>
-            <option value='normal'>{__('Normal', 'cs-support')}</option>
-            <option value='high'>{__('High', 'cs-support')}</option>
-            <option value='urgent'>{__('Urgent', 'cs-support')}</option>
+            <option value='low'>{__('Low', 'clientsync-support')}</option>
+            <option value='normal'>{__('Normal', 'clientsync-support')}</option>
+            <option value='high'>{__('High', 'clientsync-support')}</option>
+            <option value='urgent'>{__('Urgent', 'clientsync-support')}</option>
           </select>
 
           <div className='flex items-center w-full space-x-2 mt-5 mb-2'>
             <DocumentTextIcon className='h-5 w-5' />
             <label htmlFor='description' className='block text-sm font-medium'>
-              {__('Description', 'cs-support')}
+              {__('Description', 'clientsync-support')}
             </label>
           </div>
           <textarea
@@ -158,7 +158,7 @@ export default function CreateTicket() {
             disabled={isSubmitting}
             className='inline-flex justify-center rounded-md border border-transparent bg-gray-800 py-2 px-4 mt-5 mb-2 text-sm font-medium shadow-sm hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 disabled:opacity-50 text-white'
           >
-            {isSubmitting ? __('Creating...', 'cs-support') : __('Create Ticket', 'cs-support')}
+            {isSubmitting ? __('Creating...', 'clientsync-support') : __('Create Ticket', 'clientsync-support')}
           </button>
         </form>
       </div>

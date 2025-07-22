@@ -1,6 +1,6 @@
 {
     "name": "clientsync/cs-support",
-    "description": "CS Support plugin",
+    "description": "ClientSync Support plugin",
     "type": "wordpress-plugin",
     "license": "GPL-2.0-or-later",
     "authors": [

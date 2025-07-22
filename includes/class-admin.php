@@ -69,7 +69,7 @@ class Admin
 				__METHOD__,
 				sprintf(
 					// Translators: %s Plugin directory path.
-					__('Please run `pnpm build` or `pnpm `dev` inside %s directory.', 'cs-support'),
+					__('Please run `pnpm build` or `pnpm `dev` inside %s directory.', 'clientsync-support'),
 					$this->plugin->dir
 				)
 			);
@@ -82,7 +82,7 @@ class Admin
 		if (empty($asset) || ! is_array($asset)) {
 			wp_trigger_error(
 				__METHOD__,
-				__('Invalid asset file.', 'cs-support')
+				__('Invalid asset file.', 'clientsync-support')
 			);
 
 			return;
@@ -284,8 +284,8 @@ class Admin
 	protected function register_page(): void
 	{
 		$this->hook = add_menu_page(
-			__('CS Support', 'cs-support'),
-			__('CS Support', 'cs-support'),
+			__('CS Support', 'clientsync-support'),
+			__('CS Support', 'clientsync-support'),
 			'manage_options',
 			'clientsync-support-helpdesk',
 			$this->render_page(...),
@@ -295,8 +295,8 @@ class Admin
 
 		// add_submenu_page(
 		// 	'clientsync-support-helpdesk',
-		// 	__('Create Ticket', 'cs-support'),
-		// 	__('Create Ticket', 'cs-support'),
+		// 	__('Create Ticket', 'clientsync-support'),
+		// 	__('Create Ticket', 'clientsync-support'),
 		// 	'manage_options',
 		// 	'clientsync-support-helpdesk-create-ticket',
 		// 	[$this, 'render_create_ticket_page']
@@ -304,8 +304,8 @@ class Admin
 
 		add_submenu_page(
 			'clientsync-support-helpdesk',
-			__('Tickets', 'cs-support'),
-			__('Tickets', 'cs-support'),
+			__('Tickets', 'clientsync-support'),
+			__('Tickets', 'clientsync-support'),
 			'read', // Allow any logged-in user, but we'll do detailed permission check in the page
 			'clientsync-support-helpdesk-tickets',
 			[$this, 'render_tickets_page']
@@ -313,8 +313,8 @@ class Admin
 
 		add_submenu_page(
 			'clientsync-support-helpdesk',
-			__('Team Management', 'cs-support'),
-			__('Team Management', 'cs-support'),
+			__('Team Management', 'clientsync-support'),
+			__('Team Management', 'clientsync-support'),
 			'assign_tickets',
 			'clientsync-support-helpdesk-team',
 			[$this, 'render_team_management_page']
@@ -322,8 +322,8 @@ class Admin
 
 		add_submenu_page(
 			'clientsync-support-helpdesk',
-			__('Settings', 'cs-support'),
-			__('Settings', 'cs-support'),
+			__('Settings', 'clientsync-support'),
+			__('Settings', 'clientsync-support'),
 			'manage_options',
 			'clientsync-support-helpdesk-settings',
 			[$this, 'render_settings_page']
@@ -331,8 +331,8 @@ class Admin
 
 		add_submenu_page(
 			'clientsync-support-helpdesk',
-			__('FAQ', 'cs-support'),
-			__('FAQ', 'cs-support'),
+			__('FAQ', 'clientsync-support'),
+			__('FAQ', 'clientsync-support'),
 			'manage_options',
 			'clientsync-support-helpdesk-help',
 			[$this, 'render_faq_page']
@@ -340,8 +340,8 @@ class Admin
 
 		add_submenu_page(
 			'clientsync-support-helpdesk',
-			__('Shortcodes', 'cs-support'),
-			__('Shortcodes', 'cs-support'),
+			__('Shortcodes', 'clientsync-support'),
+			__('Shortcodes', 'clientsync-support'),
 			'manage_options',
 			'clientsync-support-helpdesk-shortcodes',
 			[$this, 'render_shortcodes_page']
@@ -379,7 +379,7 @@ class Admin
 	{
 		// Check if user has permission to view tickets
 		if (!$this->can_user_access_tickets()) {
-			wp_die(esc_html__('Sorry, you are not allowed to access this page.', 'cs-support'));
+			wp_die(esc_html__('Sorry, you are not allowed to access this page.', 'clientsync-support'));
 		}
 	?>
 		<div class="wrap">
@@ -421,17 +421,17 @@ class Admin
         <div class="wrap cs-support-shortcodes-modern cs-support-shortcodes-fullwidth">
             <div class="cs-support-shortcodes-inner">
                 <h1 class="cs-shortcodes-title">
-                    <?php esc_html_e('CS Support Shortcodes', 'cs-support'); ?>
+                    <?php esc_html_e('ClientSync Support Shortcodes', 'clientsync-support'); ?>
                 </h1>
                 <div class="cs-support-shortcodes-help cs-shortcodes-grid">
                     <div class="cs-modern-card">
-                        <h2 class="cs-modern-card-title"><?php esc_html_e('Support Form Shortcode', 'cs-support'); ?></h2>
+                        <h2 class="cs-modern-card-title"><?php esc_html_e('Support Form Shortcode', 'clientsync-support'); ?></h2>
                         <div class="cs-modern-card-body">
-                            <p class="cs-shortcodes-desc"><?php esc_html_e('Display a support ticket creation form:', 'cs-support'); ?></p>
+                            <p class="cs-shortcodes-desc"><?php esc_html_e('Display a support ticket creation form:', 'clientsync-support'); ?></p>
                             <code class="cs-modern-shortcode">[cs_support]</code>
-                            <h4 class="cs-shortcodes-subtitle"><?php esc_html_e('With Custom Attributes:', 'cs-support'); ?></h4>
+                            <h4 class="cs-shortcodes-subtitle"><?php esc_html_e('With Custom Attributes:', 'clientsync-support'); ?></h4>
                             <code class="cs-modern-shortcode">[cs_support title="Contact Us" submit_button_text="Send Message" background_color="#f8f9fa"]</code>
-                            <h4 class="cs-shortcodes-subtitle"><?php esc_html_e('Available Attributes:', 'cs-support'); ?></h4>
+                            <h4 class="cs-shortcodes-subtitle"><?php esc_html_e('Available Attributes:', 'clientsync-support'); ?></h4>
                             <ul class="cs-modern-attributes">
                                 <li><strong>title</strong> - Form title (default: "Create a new support ticket")</li>
                                 <li><strong>show_title</strong> - Show/hide title: "true" or "false" (default: "true")</li>
@@ -449,13 +449,13 @@ class Admin
                         </div>
                     </div>
                     <div class="cs-modern-card">
-                        <h2 class="cs-modern-card-title"><?php esc_html_e('Tickets List Shortcode', 'cs-support'); ?></h2>
+                        <h2 class="cs-modern-card-title"><?php esc_html_e('Tickets List Shortcode', 'clientsync-support'); ?></h2>
                         <div class="cs-modern-card-body">
-                            <p class="cs-shortcodes-desc"><?php esc_html_e('Display the current user\'s support tickets:', 'cs-support'); ?></p>
+                            <p class="cs-shortcodes-desc"><?php esc_html_e('Display the current user\'s support tickets:', 'clientsync-support'); ?></p>
                             <code class="cs-modern-shortcode">[cs_support_tickets]</code>
-                            <h4 class="cs-shortcodes-subtitle"><?php esc_html_e('With Custom Attributes:', 'cs-support'); ?></h4>
+                            <h4 class="cs-shortcodes-subtitle"><?php esc_html_e('With Custom Attributes:', 'clientsync-support'); ?></h4>
                             <code class="cs-modern-shortcode">[cs_support_tickets title="Your Tickets" tickets_per_page="5" accent_color="#007cba"]</code>
-                            <h4 class="cs-shortcodes-subtitle"><?php esc_html_e('Available Attributes:', 'cs-support'); ?></h4>
+                            <h4 class="cs-shortcodes-subtitle"><?php esc_html_e('Available Attributes:', 'clientsync-support'); ?></h4>
                             <ul class="cs-modern-attributes">
                                 <li><strong>title</strong> - List title (default: "My Support Tickets")</li>
                                 <li><strong>tickets_per_page</strong> - Number of tickets per page (default: "10")</li>
@@ -469,24 +469,24 @@ class Admin
                         </div>
                     </div>
                     <div class="cs-modern-card">
-                        <h2 class="cs-modern-card-title"><?php esc_html_e('Usage Examples', 'cs-support'); ?></h2>
+                        <h2 class="cs-modern-card-title"><?php esc_html_e('Usage Examples', 'clientsync-support'); ?></h2>
                         <div class="cs-modern-card-body">
-                            <h4 class="cs-shortcodes-subtitle"><?php esc_html_e('Contact Page:', 'cs-support'); ?></h4>
+                            <h4 class="cs-shortcodes-subtitle"><?php esc_html_e('Contact Page:', 'clientsync-support'); ?></h4>
                             <code class="cs-modern-shortcode">[cs_support title="Contact Us" submit_button_text="Send Message" background_color="#f8f9fa" button_color="#007cba"]</code>
-                            <h4 class="cs-shortcodes-subtitle"><?php esc_html_e('User Dashboard:', 'cs-support'); ?></h4>
+                            <h4 class="cs-shortcodes-subtitle"><?php esc_html_e('User Dashboard:', 'clientsync-support'); ?></h4>
                             <code class="cs-modern-shortcode">[cs_support_tickets title="My Tickets" tickets_per_page="5"]</code>
-                            <h4 class="cs-shortcodes-subtitle"><?php esc_html_e('Widget Area (Sidebar):', 'cs-support'); ?></h4>
+                            <h4 class="cs-shortcodes-subtitle"><?php esc_html_e('Widget Area (Sidebar):', 'clientsync-support'); ?></h4>
                             <code class="cs-modern-shortcode">[cs_support show_title="false" max_width="100%" submit_button_text="Get Help"]</code>
                         </div>
                     </div>
                     <div class="cs-modern-card">
-                        <h2 class="cs-modern-card-title"><?php esc_html_e('Notes', 'cs-support'); ?></h2>
+                        <h2 class="cs-modern-card-title"><?php esc_html_e('Notes', 'clientsync-support'); ?></h2>
                         <div class="cs-modern-card-body">
                             <ul>
-                                <li><?php esc_html_e('Shortcodes work in any editor: Classic Editor, Gutenberg, page builders, and widget areas.', 'cs-support'); ?></li>
-                                <li><?php esc_html_e('The ticket list shortcode only shows tickets for the currently logged-in user.', 'cs-support'); ?></li>
-                                <li><?php esc_html_e('Colors can be specified using hex values (#ffffff) or CSS color names (white).', 'cs-support'); ?></li>
-                                <li><?php esc_html_e('All forms are responsive and include accessibility features.', 'cs-support'); ?></li>
+                                <li><?php esc_html_e('Shortcodes work in any editor: Classic Editor, Gutenberg, page builders, and widget areas.', 'clientsync-support'); ?></li>
+                                <li><?php esc_html_e('The ticket list shortcode only shows tickets for the currently logged-in user.', 'clientsync-support'); ?></li>
+                                <li><?php esc_html_e('Colors can be specified using hex values (#ffffff) or CSS color names (white).', 'clientsync-support'); ?></li>
+                                <li><?php esc_html_e('All forms are responsive and include accessibility features.', 'clientsync-support'); ?></li>
                             </ul>
                         </div>
                     </div>
@@ -682,7 +682,7 @@ class Admin
 			
 			// If nonce is provided but invalid, deny access
 			if (isset($_GET['_wpnonce']) && !$nonce_ok) {
-				wp_die(esc_html__('Security check failed. Please try again.', 'cs-support'));
+				wp_die(esc_html__('Security check failed. Please try again.', 'clientsync-support'));
 			}
 			
 			return $this->can_user_access_ticket($ticket_id, $current_user_id);

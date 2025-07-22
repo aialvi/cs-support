@@ -121,7 +121,7 @@ class Shortcodes {
         ];
 
         // Enqueue block styles and scripts
-        $this->enqueue_block_assets('cs-support');
+        $this->enqueue_block_assets('clientsync-support');
 
         // Start output buffering
         ob_start();
