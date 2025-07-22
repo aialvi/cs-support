@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       ClientSync Support - Customer Support Ticket System
  * Description:       ClientSync Support plugin for managing customer support tickets, AI-generated replies, and assign tickets to support staff.
- * Plugin URI:        https://github.com/aialvi/cs-support
+ * Plugin URI:        https://github.com/aialvi/clientsync-support
  * Version:           1.0.0
  * Requires at least: 6.7
  * Requires PHP:      7.4
@@ -10,8 +10,7 @@
  * Author URI:        https://clientsync.tech
  * License:           GPL-2.0-or-later
  * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
- * Text Domain:       cs-support
- * Domain Path:       /languages
+ * Text Domain:       clientsync-support
  *
  * @package Clientsync
  */
@@ -39,10 +38,10 @@ bootstrap();
 function clientsync_cs_support_block_init()
 {
     // Register the main support form block
-    \register_block_type(__DIR__ . '/build/cs-support');
+    \register_block_type(__DIR__ . '/build/clientsync-support');
 
     // Register the frontend display block
-    \register_block_type(__DIR__ . '/build/cs-support-frontend');
+    \register_block_type(__DIR__ . '/build/clientsync-support-frontend');
 }
 
 \add_action('init', __NAMESPACE__ . '\\clientsync_cs_support_block_init');
