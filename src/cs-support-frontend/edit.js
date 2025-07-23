@@ -74,7 +74,6 @@ export default function Edit( { attributes, setAttributes } ) {
 		successColor,
 		warningColor,
 		errorColor,
-		customCSS,
 		fontSize,
 		spacing,
 		maxWidth,
@@ -516,38 +515,7 @@ export default function Edit( { attributes, setAttributes } ) {
 					title={ __( 'Advanced', 'clientsync-support' ) }
 					initialOpen={ false }
 				>
-					<Text variant="muted" style={ { marginBottom: '16px' } }>
-						{ __(
-							'Add custom CSS to override default styles. Use carefully!',
-							'clientsync-support'
-						) }
-					</Text>
-
-					<TextareaControl
-						label={ __( 'Custom CSS', 'clientsync-support' ) }
-						value={ customCSS }
-						onChange={ ( value ) =>
-							setAttributes( { customCSS: value } )
-						}
-						placeholder={ __(
-							'/* Custom CSS rules */\n.cs-support-frontend {\n  /* Your styles here */\n}',
-							'clientsync-support'
-						) }
-						rows={ 8 }
-						help={ __(
-							'Advanced users can add custom CSS here',
-							'clientsync-support'
-						) }
-					/>
-
-					{ customCSS && (
-						<Notice status="warning" isDismissible={ false }>
-							{ __(
-								'Custom CSS is active. Preview may not reflect all changes until saved.',
-								'clientsync-support'
-							) }
-						</Notice>
-					) }
+					{/* Removed Custom CSS textarea and notice */}
 				</PanelBody>
 			</InspectorControls>
 
@@ -555,10 +523,6 @@ export default function Edit( { attributes, setAttributes } ) {
 				className="cs-support-frontend-preview"
 				style={ containerStyle }
 			>
-				{ /* Custom CSS Style Tag */ }
-				{ customCSS && (
-					<style dangerouslySetInnerHTML={ { __html: customCSS } } />
-				) }
 
 				<RichText
 					tagName="h2"
