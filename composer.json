@@ -1,19 +1,19 @@
 {
-    "name": "clientsync/cs-support",
-    "description": "ClientSync Support plugin",
-    "type": "wordpress-plugin",
-    "license": "GPL-2.0-or-later",
-    "authors": [
-        {
-            "name": "Aminul Islam Alvi",
-            "email": "aminulialvi@gmail.com"
-        }
-    ],
-    "minimum-stability": "dev",
-    "require": {},
-    "autoload": {
+	"name": "clientsync/cs-support",
+	"description": "ClientSync Support plugin",
+	"type": "wordpress-plugin",
+	"license": "GPL-2.0-or-later",
+	"authors": [
+		{
+			"name": "Aminul Islam Alvi",
+			"email": "aminulialvi@gmail.com"
+		}
+	],
+	"minimum-stability": "dev",
+	"require": {},
+	"autoload": {
 		"classmap": [
-            "includes/"
-        ]
-    }
+			"includes/"
+		]
+	}
 }

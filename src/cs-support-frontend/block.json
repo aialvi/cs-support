@@ -6,7 +6,7 @@
 	"title": "ClientSync Support - User Tickets",
 	"category": "widgets",
 	"icon": "admin-comments",
-	"keywords": ["support", "ticket", "help"],
+	"keywords": [ "support", "ticket", "help" ],
 	"description": "ClientSync Support plugin frontend block showing support tickets created by the user.",
 	"example": {},
 	"supports": {

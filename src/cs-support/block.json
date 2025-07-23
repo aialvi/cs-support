@@ -6,7 +6,7 @@
 	"title": "ClientSync Support",
 	"category": "widgets",
 	"icon": "admin-comments",
-	"keywords": ["support", "ticket", "help"],
+	"keywords": [ "support", "ticket", "help" ],
 	"description": "ClientSync Support plugin for WordPress websites.",
 	"example": {},
 	"supports": {
