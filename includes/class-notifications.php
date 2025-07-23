@@ -238,17 +238,17 @@ class Notifications
      */
     private function get_assignment_email_template(array $data): string
     {
+        // Get CSS content from external file
+        $css_file = plugin_dir_path(__FILE__) . '../assets/email-template.css';
+        $email_styles = '';
+        if (file_exists($css_file)) {
+            $email_styles = file_get_contents($css_file);
+        }
+
         $template = '
 		<html>
 		<head>
-			<style>
-				body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
-				.header { background-color: #f8f9fa; padding: 20px; border-bottom: 3px solid #007cba; }
-				.content { padding: 20px; }
-				.ticket-details { background-color: #f8f9fa; padding: 15px; border-radius: 5px; margin: 15px 0; }
-				.btn { background-color: #007cba; color: white; padding: 10px 20px; text-decoration: none; border-radius: 3px; display: inline-block; }
-				.footer { margin-top: 30px; padding-top: 20px; border-top: 1px solid #ddd; font-size: 12px; color: #666; }
-			</style>
+			<style>' . $email_styles . '</style>
 		</head>
 		<body>
 			<div class="header">
@@ -332,14 +332,7 @@ class Notifications
         $template = '
 		<html>
 		<head>
-			<style>
-				body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
-				.header { background-color: #f8f9fa; padding: 20px; border-bottom: 3px solid #007cba; }
-				.content { padding: 20px; }
-				.ticket-details { background-color: #f8f9fa; padding: 15px; border-radius: 5px; margin: 15px 0; }
-				.btn { background-color: #007cba; color: white; padding: 10px 20px; text-decoration: none; border-radius: 3px; display: inline-block; }
-				.footer { margin-top: 30px; padding-top: 20px; border-top: 1px solid #ddd; font-size: 12px; color: #666; }
-			</style>
+			<style>' . $email_styles . '</style>
 		</head>
 		<body>
 			<div class="header">
@@ -410,13 +403,7 @@ class Notifications
         $template = '
 		<html>
 		<head>
-			<style>
-				body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
-				.header { background-color: #fff3cd; padding: 20px; border-bottom: 3px solid #ffc107; }
-				.content { padding: 20px; }
-				.ticket-details { background-color: #f8f9fa; padding: 15px; border-radius: 5px; margin: 15px 0; }
-				.footer { margin-top: 30px; padding-top: 20px; border-top: 1px solid #ddd; font-size: 12px; color: #666; }
-			</style>
+			<style>' . $email_styles . '</style>
 		</head>
 		<body>
 			<div class="header">
@@ -467,14 +454,7 @@ class Notifications
         $template = '
 		<html>
 		<head>
-			<style>
-				body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
-				.header { background-color: #d4edda; padding: 20px; border-bottom: 3px solid #28a745; }
-				.content { padding: 20px; }
-				.status-change { background-color: #f8f9fa; padding: 15px; border-radius: 5px; margin: 15px 0; text-align: center; }
-				.btn { background-color: #007cba; color: white; padding: 10px 20px; text-decoration: none; border-radius: 3px; display: inline-block; }
-				.footer { margin-top: 30px; padding-top: 20px; border-top: 1px solid #ddd; font-size: 12px; color: #666; }
-			</style>
+			<style>' . $email_styles . '</style>
 		</head>
 		<body>
 			<div class="header">

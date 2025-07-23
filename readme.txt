@@ -100,10 +100,10 @@ Create beautiful, customizable support forms anywhere on your site.
 
 **Advanced Customization:**
 ```
-[cs_support 
-    title="Get Help Now" 
+[cs_support
+    title="Get Help Now"
     submit_button_text="Send Request"
-    background_color="#f8f9fa" 
+    background_color="#f8f9fa"
     button_color="#007cba"
     max_width="600px"
     box_shadow="true"
@@ -140,8 +140,8 @@ Display user's support tickets with advanced filtering and styling.
 
 **Advanced Customization:**
 ```
-[cs_support_tickets 
-    title="My Support History" 
+[cs_support_tickets
+    title="My Support History"
     tickets_per_page="5"
     accent_color="#007cba"
     card_style="modern"
@@ -443,3 +443,35 @@ Simply use the shortcodes `[cs_support]` and `[cs_support_tickets]`.
 **Built with ❤️ by ClientSync Team**
 
 *Making WordPress support systems simple, beautiful, and effective.*
+
+== External Services ==
+
+This plugin connects to external AI services to provide automated support ticket responses when the AI Assistant feature is enabled. These services are only used when explicitly configured by the administrator and are optional features.
+
+**OpenAI API (api.openai.com)**
+- **Purpose**: Generate AI-powered responses to support tickets using GPT models
+- **Data Sent**: Support ticket content, conversation history, and configured system prompts
+- **When**: Only when admin enables AI assistant and manually triggers AI response generation
+- **Terms of Service**: https://openai.com/terms/
+- **Privacy Policy**: https://openai.com/privacy/
+
+**Google Gemini API (generativelanguage.googleapis.com)**
+- **Purpose**: Generate AI-powered responses to support tickets using Gemini models
+- **Data Sent**: Support ticket content, conversation history, and configured system prompts
+- **When**: Only when admin enables AI assistant and manually triggers AI response generation
+- **Terms of Service**: https://ai.google.dev/terms
+- **Privacy Policy**: https://policies.google.com/privacy
+
+**Anthropic Claude API (api.anthropic.com)**
+- **Purpose**: Generate AI-powered responses to support tickets using Claude models
+- **Data Sent**: Support ticket content, conversation history, and configured system prompts
+- **When**: Only when admin enables AI assistant and manually triggers AI response generation
+- **Terms of Service**: https://www.anthropic.com/terms
+- **Privacy Policy**: https://www.anthropic.com/privacy
+
+**Important Notes:**
+- No external services are contacted unless the AI Assistant feature is explicitly enabled
+- No data is sent automatically - AI responses are only generated when manually triggered by administrators
+- All external API communications use secure HTTPS connections
+- API keys are stored securely in your WordPress database and are never transmitted to third parties
+- You can disable these features at any time from the plugin settings

@@ -28,24 +28,6 @@ require_once __DIR__ . '/includes/api-schema.php';
 
 bootstrap();
 
-/**
- * Registers the block using the metadata loaded from the `block.json` file.
- * Behind the scenes, it registers also all assets so they can be enqueued
- * through the block editor in the corresponding context.
- *
- * @see https://developer.wordpress.org/reference/functions/register_block_type/
- */
-function clientsync_cs_support_block_init()
-{
-    // Register the main support form block
-    \register_block_type(__DIR__ . '/build/clientsync-support');
-
-    // Register the frontend display block
-    \register_block_type(__DIR__ . '/build/clientsync-support-frontend');
-}
-
-\add_action('init', __NAMESPACE__ . '\\clientsync_cs_support_block_init');
-
 // Register deactivation hook to clean up scheduled events
 register_deactivation_hook(__FILE__, function() {
     GDPR_Manager::deactivate();

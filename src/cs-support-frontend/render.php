@@ -114,7 +114,7 @@ if ($button_style === 'rounded') {
     $btn_border_radius = 24;
 }
 
-$btn_style_css = $button_style === 'outlined' 
+$btn_style_css = $button_style === 'outlined'
     ? sprintf('background-color: transparent; color: %1$s; border: 1px solid %1$s;', esc_attr($accent_color))
     : sprintf('background-color: %s; color: #ffffff;', esc_attr($accent_color));
 
@@ -124,14 +124,14 @@ $button_style_attr = sprintf(
     $btn_border_radius
 );
 
+// Enqueue custom styles instead of inline CSS
+if (!empty($custom_css)) {
+    wp_add_inline_style('clientsync-cs-support-frontend-style', $custom_css);
+}
+
 // Check if user is logged in
 $is_logged_in = is_user_logged_in();
 ?>
-<?php if (!empty($custom_css)) : ?>
-    <style>
-        <?php echo esc_html($custom_css); ?>
-    </style>
-<?php endif; ?>
 
 <div <?php echo $wrapper_attributes; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>>
     <?php if (!$is_logged_in) : ?>
@@ -142,8 +142,8 @@ $is_logged_in = is_user_logged_in();
             </a>
         </div>
     <?php else : ?>
-        <div class="cs-support-frontend-container" 
-             style="<?php echo esc_attr($container_style); ?>" 
+        <div class="cs-support-frontend-container"
+             style="<?php echo esc_attr($container_style); ?>"
              data-tickets-per-page="<?php echo esc_attr($tickets_per_page); ?>"
              data-show-search="<?php echo esc_attr($show_search ? 'true' : 'false'); ?>"
              data-show-filters="<?php echo esc_attr($show_filters ? 'true' : 'false'); ?>"
@@ -153,7 +153,7 @@ $is_logged_in = is_user_logged_in();
              data-warning-color="<?php echo esc_attr($warning_color); ?>"
              data-error-color="<?php echo esc_attr($error_color); ?>"
              data-primary-color="<?php echo esc_attr($primary_color); ?>">
-            
+
             <h2 class="cs-support-frontend-title"><?php echo esc_html($title); ?></h2>
 
             <!-- Initial loading state -->
@@ -204,7 +204,7 @@ $is_logged_in = is_user_logged_in();
                     </svg>
                     <?php esc_html_e('Back to tickets', 'clientsync-support'); ?>
                 </a>
-                
+
                 <div class="cs-support-ticket-details">
                     <h3 id="cs-ticket-subject"></h3>
                     <div class="cs-ticket-meta">
@@ -227,18 +227,18 @@ $is_logged_in = is_user_logged_in();
                     </div>
                     <div class="cs-ticket-description" id="cs-ticket-description"></div>
                 </div>
-                
+
                 <div class="cs-support-replies">
                     <h3><?php esc_html_e('Conversation', 'clientsync-support'); ?></h3>
                     <div id="cs-support-replies-list"></div>
                 </div>
-                
+
                 <div class="cs-support-reply-form">
                     <h3><?php esc_html_e('Add a Reply', 'clientsync-support'); ?></h3>
                     <form id="cs-support-reply-form">
                         <label for="cs-reply-message" class="sr-only"><?php esc_html_e('Your reply', 'clientsync-support'); ?></label>
-                        <textarea 
-                            id="cs-reply-message" 
+                        <textarea
+                            id="cs-reply-message"
                             placeholder="<?php esc_attr_e('Type your reply here...', 'clientsync-support'); ?>"
                             aria-label="<?php esc_attr_e('Type your reply here', 'clientsync-support'); ?>"
                             required
@@ -258,4 +258,3 @@ $is_logged_in = is_user_logged_in();
         </div>
     <?php endif; ?>
 </div>
-

@@ -229,7 +229,7 @@ class Admin
 
 	/**
 	 * Generate a nonced URL for ticket viewing
-	 * 
+	 *
 	 * @param int $ticket_id The ticket ID to view
 	 * @return string The URL with nonce
 	 */
@@ -492,151 +492,15 @@ class Admin
                     </div>
                 </div>
             </div>
-            <style>
-            .cs-support-shortcodes-modern {
-                background: linear-gradient(120deg, #f8fafc 0%, #e0e7ef 100%);
-                padding: 32px 0 24px 0;
-                border-radius: 0;
-                box-shadow: 0 4px 32px 0 rgba(60,72,100,0.10);
-                max-width: none;
-                width: 100vw;
-                margin: 0;
-            }
-            .cs-support-shortcodes-fullwidth {
-                width: 100vw !important;
-                max-width: 100vw !important;
-                margin-left: 0 !important;
-                margin-right: 0 !important;
-                border-radius: 0 !important;
-            }
-            .cs-support-shortcodes-inner {
-                max-width: 1650px;
-                margin: 0 0 auto 0;
-                padding: 0 32px;
-            }
-            .cs-shortcodes-title {
-                font-size: 3rem;
-                font-weight: 900;
-                color: #2d3748;
-                margin-bottom: 3rem !important;
-                letter-spacing: -0.01em;
-            }
-            .cs-shortcodes-grid {
-                display: flex;
-                flex-wrap: wrap;
-                gap: 32px;
-            }
-            .cs-modern-card {
-                background: #fff;
-                border-radius: 16px;
-                box-shadow: 0 2px 16px 0 rgba(60,72,100,0.08);
-                margin-bottom: 0;
-                padding: 0;
-                overflow: hidden;
-                border: 1px solid #e5e7eb;
-                flex: 1 1 calc(50% - 16px);
-                min-width: 300px;
-                max-width: calc(50% - 110px);
-                display: flex;
-                flex-direction: column;
-            }
-            .cs-modern-card-title {
-                background: linear-gradient(90deg,rgb(59, 59, 59) 0%,rgb(27, 27, 27) 100%);
-                color: #fff;
-                font-size: 1.08rem;
-                font-weight: 600;
-                padding: 14px 22px;
-                margin: 0;
-                letter-spacing: 0.01em;
-            }
-            .cs-modern-card-body {
-                padding: 18px 22px 16px 22px;
-                font-size: 0.98rem;
-            }
-            .cs-modern-shortcode {
-                display: block;
-                background: #f1f5f9;
-                color: #6b6b6b;
-                padding: 10px 12px;
-                margin: 10px 0 14px 0;
-                border-left: 4px solid #333333;
-                font-family: 'Fira Mono', 'Consolas', 'Menlo', monospace;
-                font-size: 0.97rem;
-                border-radius: 6px;
-                overflow-x: auto;
-                white-space: pre;
-            }
-            .cs-modern-attributes {
-                margin-left: 12px;
-                margin-bottom: 0;
-                color: #475569;
-                font-size: 0.97rem;
-            }
-            .cs-modern-attributes li {
-                margin-bottom: 4px;
-            }
-            .cs-modern-attributes strong {
-                color: #000000;
-            }
-            .cs-shortcodes-desc {
-                font-size: 0.97rem;
-                color: #475569;
-                margin-bottom: 0.5rem;
-            }
-            .cs-shortcodes-subtitle {
-                font-size: 1.01rem;
-                color: #0f0f0f !important;
-                margin: 12px 0 6px 0;
-                font-weight: 600;
-            }
-            .cs-modern-card_body ul {
-                padding-left: 14px;
-            }
-            .cs-modern-card_body ul li {
-                list-style: disc;
-            }
-            @media (max-width: 1024px) {
-                .cs-shortcodes-grid {
-                    gap: 20px;
-                }
-                .cs-modern-card {
-                    flex: 1 1 calc(50% - 10px);
-                    min-width: 280px;
-                    max-width: calc(50% - 10px);
-                }
-            }
-            @media (max-width: 768px) {
-                .cs-support-shortcodes-inner {
-                    padding: 0 8px;
-                }
-                .cs-shortcodes-grid {
-                    gap: 18px;
-                    flex-direction: column;
-                }
-                .cs-modern-card {
-                    min-width: 0;
-                    max-width: 100%;
-                    flex: 1 1 auto;
-                }
-            }
-            @media (max-width: 480px) {
-                .cs-support-shortcodes-modern {
-                    padding: 12px 0;
-                }
-                .cs-modern-card-title, .cs-modern-card-body {
-                    padding-left: 12px;
-                    padding-right: 12px;
-                }
-                .cs-modern-card {
-                    margin: 0 auto;
-                    width: 100%;
-                }
-                .cs-modern-shortcode {
-                    font-size: 0.9rem;
-                    padding: 8px 10px;
-                }
-            }
-            </style>
+            <?php
+            // Enqueue admin shortcodes styles
+            wp_enqueue_style(
+                'clientsync-cs-support-admin-shortcodes',
+                plugin_dir_url(__FILE__) . '../assets/admin-shortcodes.css',
+                [],
+                '1.0.0'
+            );
+            ?>
         </div>
         <?php
 	}
@@ -661,33 +525,33 @@ class Admin
 	protected function can_user_access_tickets(): bool
 	{
 		$current_user_id = get_current_user_id();
-		
+
 		// Admins can access all tickets
 		if (current_user_can('manage_options')) {
 			return true;
 		}
-		
+
 		// Support team members can access tickets
 		if (current_user_can('view_all_tickets') || current_user_can('edit_tickets') || current_user_can('reply_to_tickets')) {
 			return true;
 		}
-		
+
 		// If accessing a specific ticket, check if user is assigned to it or owns it
 		if (isset($_GET['ticket_id'])) {
 			$ticket_id = (int) $_GET['ticket_id'];
-			
+
 			// Check nonce when viewing specific tickets
 			$nonce_action = 'view_ticket_' . $ticket_id;
 			$nonce_ok = isset($_GET['_wpnonce']) && wp_verify_nonce(sanitize_text_field(wp_unslash($_GET['_wpnonce'])), $nonce_action);
-			
+
 			// If nonce is provided but invalid, deny access
 			if (isset($_GET['_wpnonce']) && !$nonce_ok) {
 				wp_die(esc_html__('Security check failed. Please try again.', 'clientsync-support'));
 			}
-			
+
 			return $this->can_user_access_ticket($ticket_id, $current_user_id);
 		}
-		
+
 		// Regular users can access their own tickets
 		return is_user_logged_in();
 	}
@@ -702,17 +566,17 @@ class Admin
 	protected function can_user_access_ticket(int $ticket_id, int $user_id): bool
 	{
 		global $wpdb;
-		
+
 		// Admins can access all tickets
 		if (current_user_can('manage_options')) {
 			return true;
 		}
-		
+
 		// Support team members can access tickets
 		if (current_user_can('view_all_tickets') || current_user_can('edit_tickets') || current_user_can('reply_to_tickets')) {
 			return true;
 		}
-		
+
 		// Check if user is the ticket owner or assignee
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Access control check, not worth caching
 		$ticket = $wpdb->get_row(
@@ -722,11 +586,11 @@ class Admin
 			),
 			ARRAY_A
 		);
-		
+
 		if (!$ticket) {
 			return false;
 		}
-		
+
 		// User owns the ticket or is assigned to it
 		return ($ticket['user_id'] == $user_id) || ($ticket['assignee_id'] == $user_id);
 	}

@@ -1,0 +1,40 @@
+/* ClientSync Support Email Template Styles */
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    color: #333;
+}
+
+.header {
+    background-color: #f8f9fa;
+    padding: 20px;
+    border-bottom: 3px solid #007cba;
+}
+
+.content {
+    padding: 20px;
+}
+
+.ticket-details {
+    background-color: #f8f9fa;
+    padding: 15px;
+    border-radius: 5px;
+    margin: 15px 0;
+}
+
+.btn {
+    background-color: #007cba;
+    color: white;
+    padding: 10px 20px;
+    text-decoration: none;
+    border-radius: 3px;
+    display: inline-block;
+}
+
+.footer {
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid #ddd;
+    font-size: 12px;
+    color: #666;
+}

@@ -9,6 +9,7 @@ vendor
 node_modules
 .DS_Store
 dist
+.idea
 
 
 # Coverage directory used by tools like istanbul
