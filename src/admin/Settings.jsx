@@ -1,9 +1,6 @@
 import { useState, useEffect } from 'react';
 import {
 	Cog6ToothIcon,
-	EnvelopeIcon,
-	UserGroupIcon,
-	BellIcon,
 	SparklesIcon,
 	ShieldCheckIcon,
 	DocumentArrowDownIcon,
@@ -878,36 +875,6 @@ export default function Settings() {
 											{ gdprMessage }
 										</div>
 									) }
-								</div>
-							</div>
-
-							{ /* Admin Data Management */ }
-							<div>
-								<h3 className="text-lg font-medium mb-3 flex items-center">
-									<TrashIcon className="h-5 w-5 mr-2 text-gray-500" />
-									Admin Data Management
-								</h3>
-
-								<div className="space-y-4">
-									<div className="bg-yellow-50 p-4 rounded-lg">
-										<p className="text-sm text-yellow-800 mb-3">
-											⚠️ <strong>Admin Only:</strong> Run
-											data cleanup based on retention
-											settings. This will permanently
-											remove old data.
-										</p>
-
-										<button
-											onClick={ handleRunCleanup }
-											disabled={ isRunningCleanup }
-											className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-yellow-600 hover:bg-yellow-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500 disabled:opacity-50"
-										>
-											<TrashIcon className="h-4 w-4 mr-2" />
-											{ isRunningCleanup
-												? 'Running Cleanup...'
-												: 'Run Data Cleanup' }
-										</button>
-									</div>
 								</div>
 							</div>
 						</div>

@@ -62,6 +62,17 @@ class Admin
 			return;
 		}
 
+		// Load shortcodes page assets
+		if ($hook === 'cs-support_page_clientsync-support-helpdesk-shortcodes') {
+			wp_enqueue_style(
+				"{$this->plugin->prefix}-admin-shortcodes",
+				"{$this->plugin->url}assets/admin-shortcodes.css",
+				[],
+				$this->plugin->version
+			);
+			return;
+		}
+
 		$asset_filepath = "{$this->plugin->dir}build/admin/admin.asset.php";
 
 		if (! file_exists($asset_filepath)) {
@@ -492,15 +503,6 @@ class Admin
                     </div>
                 </div>
             </div>
-            <?php
-            // Enqueue admin shortcodes styles
-            wp_enqueue_style(
-                'clientsync-cs-support-admin-shortcodes',
-                plugin_dir_url(__FILE__) . '../assets/admin-shortcodes.css',
-                [],
-                '1.0.0'
-            );
-            ?>
         </div>
         <?php
 	}
