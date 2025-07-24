@@ -665,7 +665,7 @@ export default function Tickets() {
 							}
 						} }
 					>
-						<div className="bg-white rounded-2xl max-w-4xl w-full max-h-[80vh] my-5 overflow-hidden shadow-2xl transform transition-all">
+						<div className="bg-white rounded-2xl max-w-4xl w-full max-h-[80vh] my-5 overflow-hidden shadow-2xl transform transition-all flex flex-col">
 							<div className="px-6 py-4 bg-gradient-to-r from-blue-50 to-indigo-50 border-b border-gray-200 flex justify-between items-center">
 								<div className="flex items-center space-x-4">
 									<h2
@@ -746,7 +746,7 @@ export default function Tickets() {
 								</button>
 							</div>
 
-							<div className="p-4 overflow-y-auto max-h-[60vh]">
+							<div className="flex-1 p-4 overflow-y-auto min-h-0">
 								<div className="mb-4">
 									<h3 className="font-medium text-gray-900">
 										‟{ selectedTicket.subject }”
