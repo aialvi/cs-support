@@ -55,19 +55,6 @@ For developers who want to build custom integrations or mobile apps.
 - 📚 **Educational Sites** - Student support and course assistance
 - 🏥 **Service Providers** - Client communication and service requests
 
-### 🔥 Latest Updates (v0.1.2)
-
-We're constantly improving your experience:
-- 🛡️ **GDPR Compliance** - Full data export, deletion, and retention management
-- 🔐 **Privacy Controls** - Users can export or delete their personal data
-- 📅 **Data Retention** - Automatic cleanup with configurable retention periods
-- 🔒 **WordPress Privacy Integration** - Works with WordPress privacy tools
-- ✅ **Enhanced Compatibility** - Works flawlessly with popular themes and page builders
-- 🐛 **Bug Fixes** - Resolved CSS loading issues and PHP warnings
-- 🚀 **Performance Boost** - Optimized asset loading with smart caching
-- 🔍 **Advanced Debugging** - Comprehensive validation and error handling
-- 📱 **Mobile Improvements** - Enhanced responsive design across all devices
-
 == 🚀 Quick Start Guide ==
 
 ### Step 1: Installation
@@ -104,34 +91,15 @@ Create beautiful, customizable support forms anywhere on your site.
 
 **Advanced Customization:**
 ```
-[cs_support 
-    title="Get Help Now" 
+[cs_support
+    title="Get Help Now"
     submit_button_text="Send Request"
-    background_color="#f8f9fa" 
+    background_color="#f8f9fa"
     button_color="#007cba"
     max_width="600px"
     box_shadow="true"
 ]
 ```
-
-**📋 Complete Attribute List:**
-
-| Attribute | Default | Description |
-|-----------|---------|-------------|
-| `title` | "Create a new support ticket" | Form heading text |
-| `show_title` | "true" | Show/hide the title |
-| `submit_button_text` | "Create Ticket" | Button text |
-| `success_message` | "Ticket created successfully!" | Success notification |
-| `error_message` | "Failed to create ticket. Please try again." | Error notification |
-| `background_color` | "#ffffff" | Form background color |
-| `text_color` | "#000000" | Text color |
-| `button_color` | "#2c3338" | Button background |
-| `button_text_color` | "#ffffff" | Button text color |
-| `form_width` | "100%" | Form width |
-| `max_width` | "800px" | Maximum width |
-| `padding` | "20px" | Internal spacing |
-| `border_radius` | "8px" | Corner rounding |
-| `box_shadow` | "false" | Drop shadow effect |
 
 ### Tickets List: `[cs_support_tickets]`
 
@@ -144,29 +112,14 @@ Display user's support tickets with advanced filtering and styling.
 
 **Advanced Customization:**
 ```
-[cs_support_tickets 
-    title="My Support History" 
+[cs_support_tickets
+    title="My Support History"
     tickets_per_page="5"
     accent_color="#007cba"
     card_style="modern"
     button_style="rounded"
 ]
 ```
-
-**📋 Complete Attribute List:**
-
-| Attribute | Default | Description |
-|-----------|---------|-------------|
-| `title` | "My Support Tickets" | List heading |
-| `tickets_per_page` | "10" | Pagination limit |
-| `background_color` | "#ffffff" | Background color |
-| `text_color` | "#000000" | Text color |
-| `accent_color` | "#2c3338" | Accent color for UI elements |
-| `border_radius` | "8" | Corner rounding (px) |
-| `box_shadow` | "true" | Drop shadow effect |
-| `row_hover_effect` | "true" | Hover animations |
-| `button_style` | "rounded" | "rounded" or "square" |
-| `card_style` | "default" | "default" or "modern" |
 
 == ⚡ Installation ==
 
@@ -303,129 +256,7 @@ Simply use the shortcodes `[cs_support]` and `[cs_support_tickets]`.
 5. **Mobile Experience** - Responsive design that works perfectly on all devices
 6. **Settings Panel** - Easy configuration with visual customization options
 
-== 📋 Changelog ==
 
-= 0.1.2 - The Privacy & GDPR Update =
-*Release Date: July 11, 2025*
-
-**🛡️ GDPR Compliance Features:**
-* Personal data export functionality for users
-* Right to be forgotten - data deletion and anonymization options
-* Automatic data retention management with configurable periods
-* WordPress privacy tools integration for admin exports/erasures
-* Privacy-first design with minimal data collection
-
-**🔐 Privacy Controls:**
-* User settings panel for data management
-* One-click personal data export to JSON
-* Choice between data deletion or anonymization
-* Admin data cleanup tools with retention policies
-* Scheduled automatic cleanup based on retention settings
-
-**⚖️ Legal Compliance:**
-* Full GDPR Article 20 (Data Portability) compliance
-* GDPR Article 17 (Right to Erasure) implementation
-* Transparent data usage and retention policies
-* Privacy by design principles throughout the system
-* Audit trail for data management actions
-
-**🔧 Technical Improvements:**
-* New REST API endpoints for privacy operations
-* Enhanced database structure for data retention
-* Improved error handling and validation
-* Better documentation for privacy features
-* Performance optimizations for large datasets
-
-= 0.1.1 - The Compatibility Update =
-*Release Date: July 11, 2025*
-
-**🔧 Bug Fixes:**
-* Fixed CSS loading issues affecting shortcode styling
-* Resolved undefined array key warnings in PHP 8.0+
-* Corrected asset loading conflicts with popular themes
-
-**🚀 Improvements:**
-* Enhanced shortcode compatibility with Elementor, Divi, and other page builders
-* Implemented smart asset loading with duplicate prevention
-* Added comprehensive validation and debugging tools
-* Improved mobile responsiveness across all devices
-* Optimized database queries for better performance
-
-**🎯 Developer Enhancements:**
-* Added new WordPress hooks for custom integrations
-* Improved REST API documentation and examples
-* Enhanced error handling and logging
-* Better code documentation and inline comments
-
-= 0.1.0 - The Genesis Release =
-*Release Date: June 15, 2025*
-
-**🎉 Initial Features:**
-* Support ticket creation form with Gutenberg block
-* Frontend ticket display with user dashboard
-* Complete admin panel for ticket management
-* RESTful API for programmatic access
-* Shortcode support for universal compatibility
-* Full accessibility compliance (WCAG 2.1)
-* Responsive design for all devices
-* Multi-language ready (translation ready)
-
-**🎨 Design Features:**
-* Modern, clean interface design
-* Customizable colors and styling
-* Multiple layout options
-* Professional email templates
-* Mobile-first responsive design
-
-**🔐 Security Features:**
-* WordPress security standards compliance
-* Input sanitization and validation
-* SQL injection prevention
-* XSS protection
-* Secure file uploads
-
-**🛠️ Technical Features:**
-* Built with modern React and PHP
-* REST API with authentication
-* Database optimization
-* Caching compatibility
-* Performance monitoring
-
-== 🔄 Upgrade Notice ==
-
-= 0.1.2 =
-**Major Privacy Update:** This version adds comprehensive GDPR compliance features including personal data export, deletion rights, and automatic data retention management. Essential for EU compliance and recommended for all users.
-
-**What's New:**
-- Personal data export and deletion tools
-- GDPR-compliant data retention management
-- WordPress privacy tools integration
-- Enhanced user privacy controls
-- Automatic data cleanup scheduling
-
-**Upgrade Process:**
-1. Backup your site (always recommended)
-2. Update through WordPress admin or download manually
-3. New database options will be created automatically
-4. All existing tickets and settings are preserved
-5. New privacy settings available in admin panel
-
-= 0.1.1 =
-**Important Update:** This version fixes critical compatibility issues with popular themes and page builders. If you're using shortcodes with Elementor, Divi, or experiencing CSS loading issues, this update is essential.
-
-**What's New:**
-- Enhanced theme compatibility
-- Improved shortcode performance
-- Better error handling
-- Mobile experience improvements
-
-**Upgrade Process:**
-1. Backup your site (always recommended)
-2. Update through WordPress admin or download manually
-3. No database changes required
-4. Existing tickets and settings are preserved
-
-== 💝 Support & Feedback ==
 
 **Love ClientSync Support?** Help us make it even better:
 

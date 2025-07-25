@@ -23,6 +23,7 @@ class Notification_Settings
         'assignment_notifications' => true,
         'reassignment_notifications' => true,
         'status_change_notifications' => true,
+        'customer_reply_notifications' => true,
         'notify_admins_on_assignment' => false,
         'email_template_style' => 'default',
         'custom_from_email' => '',
@@ -117,6 +118,7 @@ class Notification_Settings
             'assignment_notifications',
             'reassignment_notifications',
             'status_change_notifications',
+            'customer_reply_notifications',
             'notify_admins_on_assignment'
         ];
 
@@ -148,6 +150,7 @@ class Notification_Settings
             'assignment_notifications' => 0,
             'reassignment_notifications' => 0,
             'status_change_notifications' => 0,
+            'customer_reply_notifications' => 0,
             'failed_notifications' => 0,
         ];
     }

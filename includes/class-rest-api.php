@@ -65,7 +65,7 @@ class Rest_API
 				'permission_callback' => [$this, 'check_ticket_access_permission'],
 			]
 		);
-		
+
 		// PATCH /tickets/{id} - Update ticket status
 		register_rest_route(
 			'cs-support/v1',
@@ -82,7 +82,7 @@ class Rest_API
 			'cs-support/v1',
 			'/tickets/(?P<ticket_id>\d+)/replies',
 			[
-				'methods'  => 'POST',
+				'methods' => 'POST',
 				'callback' => [$this, 'create_reply'],
 				'permission_callback' => [$this, 'check_permission'],
 			]
@@ -93,7 +93,7 @@ class Rest_API
 			'cs-support/v1',
 			'/tickets/(?P<ticket_id>\d+)/replies',
 			[
-				'methods'  => 'GET',
+				'methods' => 'GET',
 				'callback' => [$this, 'get_replies'],
 				'permission_callback' => [$this, 'check_permission'],
 			]
@@ -252,18 +252,18 @@ class Rest_API
 		if (current_user_can('manage_options')) {
 			return true;
 		}
-		
+
 		// Support team members can access all tickets
 		if (current_user_can('view_all_tickets') || current_user_can('edit_tickets') || current_user_can('reply_to_tickets')) {
 			return true;
 		}
-		
+
 		// Get ticket details
 		$ticket_id = (int) $request->get_param('id');
 		if (!$ticket_id) {
 			return false;
 		}
-		
+
 		global $wpdb;
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Permission check for custom table, caching not worth overhead for access control
 		$ticket = $wpdb->get_row(
@@ -272,17 +272,17 @@ class Rest_API
 				$ticket_id
 			)
 		);
-		
+
 		if (!$ticket) {
 			return false;
 		}
-		
+
 		$current_user_id = get_current_user_id();
-		
+
 		// User owns the ticket or is assigned to it
 		return ($ticket->user_id == $current_user_id) || ($ticket->assignee_id == $current_user_id);
 	}
-	
+
 	/**
 	 * Check admin permissions.
 	 *
@@ -332,11 +332,11 @@ class Rest_API
 
 		// Get current settings to compare
 		$current_settings = get_option('cs_support_helpdesk_settings', []);
-		
+
 		// Update the option - update_option returns false if the value is the same
 		// So we need to check if it actually failed or if the values were just identical
 		$updated = update_option('cs_support_helpdesk_settings', $sanitized_settings);
-		
+
 		// If update_option returned false, check if it's because the values are the same
 		if (!$updated) {
 			$new_current_settings = get_option('cs_support_helpdesk_settings', []);
@@ -483,7 +483,7 @@ class Rest_API
 		} elseif (current_user_can('view_all_tickets') || current_user_can('edit_tickets') || current_user_can('reply_to_tickets')) {
 			// Support team members can see:
 			// 1. Tickets assigned to them
-			// 2. Unassigned tickets 
+			// 2. Unassigned tickets
 			// 3. Their own tickets (if they created any)
 			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom table query for support team access, caching would add overhead
 			$tickets = $wpdb->get_results(
@@ -543,7 +543,7 @@ class Rest_API
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom table query to get single ticket, caching not necessary
 		$ticket = $wpdb->get_row(
 			$wpdb->prepare(
-				"SELECT t.*, u.display_name as user_name, u.user_email 
+				"SELECT t.*, u.display_name as user_name, u.user_email
 				 FROM {$wpdb->prefix}cs_support_tickets t
 				 LEFT JOIN {$wpdb->users} u ON t.user_id = u.ID
 				 WHERE t.id = %d",
@@ -600,12 +600,13 @@ class Rest_API
 
 		// Check if this is a system note
 		$is_system_note = (bool) $request->get_param('is_system_note');
-		
+
 		// 3. Insert with error logging
+		$current_user_id = get_current_user_id();
 		$data = [
 			'ticket_id' => $ticket_id,
-			'user_id'   => get_current_user_id(),
-			'reply'     => sanitize_text_field($reply),
+			'user_id' => $current_user_id,
+			'reply' => sanitize_text_field($reply),
 			'created_at' => current_time('mysql'),
 			'is_system_note' => $is_system_note ? 1 : 0,
 		];
@@ -624,9 +625,43 @@ class Rest_API
 			], 500);
 		}
 
+		$reply_id = $wpdb->insert_id;
+
+		// 4. Trigger customer notification (only for non-system notes)
+		if (!$is_system_note && $current_user_id > 0) {
+			try {
+				// Get the notifications instance and trigger customer notification
+				$notifications = $this->plugin->get_notifications();
+				if ($notifications) {
+					// Create a mock comment object for compatibility with existing notification system
+					$mock_comment = (object) [
+						'comment_ID' => $reply_id,
+						'comment_post_ID' => $ticket_id,
+						'comment_author' => '',
+						'comment_author_email' => '',
+						'comment_content' => $reply,
+						'comment_date' => $data['created_at'],
+						'user_id' => $current_user_id
+					];
+
+					// Get user details to populate comment author info
+					$user = get_user_by('ID', $current_user_id);
+					if ($user) {
+						$mock_comment->comment_author = $user->display_name;
+						$mock_comment->comment_author_email = $user->user_email;
+					}
+
+					// Trigger the notification directly
+					$notifications->send_customer_reply_notification($ticket_id, $reply_id, $current_user_id);
+				}
+			} catch (Exception $e) {
+				// error_log removed
+			}
+		}
+
 		return new \WP_REST_Response([
 			'success' => true,
-			'reply_id' => $wpdb->insert_id
+			'reply_id' => $reply_id
 		], 201);
 	}
 
@@ -694,18 +729,18 @@ class Rest_API
 		if (isset($params['status'])) {
 			$valid_statuses = ['NEW', 'IN_PROGRESS', 'RESOLVED'];
 			$status = strtoupper(sanitize_text_field($params['status']));
-			
+
 			if (!in_array($status, $valid_statuses)) {
 				return new \WP_REST_Response([
 					'success' => false,
 					'message' => 'Invalid status value'
 				], 400);
 			}
-			
+
 			if ($status !== $old_status) {
 				$status_changed = true;
 			}
-			
+
 			$update_data['status'] = $status;
 			$update_format[] = '%s';
 		}
@@ -714,14 +749,14 @@ class Rest_API
 		if (isset($params['priority'])) {
 			$valid_priorities = ['low', 'normal', 'high', 'urgent'];
 			$priority = sanitize_text_field($params['priority']);
-			
+
 			if (!in_array($priority, $valid_priorities)) {
 				return new \WP_REST_Response([
 					'success' => false,
 					'message' => 'Invalid priority value'
 				], 400);
 			}
-			
+
 			$update_data['priority'] = $priority;
 			$update_format[] = '%s';
 		}
@@ -871,7 +906,7 @@ class Rest_API
 		// Add system note about assignment
 		$assignee = get_user_by('ID', $assignee_id);
 		$assigner = get_user_by('ID', $current_user_id);
-		
+
 		$system_note = '';
 		if ($old_assignee_id && $old_assignee_id != $assignee_id) {
 			$old_assignee = get_user_by('ID', $old_assignee_id);
@@ -904,7 +939,7 @@ class Rest_API
 
 		// Send notification emails
 		$notifications = new Notifications(get_plugin_instance());
-		
+
 		if ($old_assignee_id && $old_assignee_id != $assignee_id) {
 			// This is a reassignment
 			$notifications->send_reassignment_notification(
@@ -1010,7 +1045,7 @@ class Rest_API
 	}
 
 	// The check_ticket_access_permission method is already defined earlier in this class
-	
+
 	/**
 	 * Assign role to user.
 	 *
@@ -1031,7 +1066,7 @@ class Rest_API
 
 		$role = sanitize_text_field($params['role']);
 		$team_members = new Team_Members(get_plugin_instance());
-		
+
 		$success = $team_members->assign_role_to_user($user_id, $role);
 
 		if (!$success) {
@@ -1072,7 +1107,7 @@ class Rest_API
 		global $wpdb;
 		$user_id = get_current_user_id();
 		$user = get_user_by('ID', $user_id);
-		
+
 		if (!$user) {
 			return new \WP_REST_Response([
 				'success' => false,
@@ -1090,13 +1125,13 @@ class Rest_API
 			ARRAY_A
 		);
 
-		// Get user's replies - custom table query for GDPR export, no WordPress equivalent  
+		// Get user's replies - custom table query for GDPR export, no WordPress equivalent
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 		$replies = $wpdb->get_results(
 			$wpdb->prepare(
-				"SELECT r.*, t.subject as ticket_subject 
-				FROM {$wpdb->prefix}cs_support_ticket_replies r 
-				JOIN {$wpdb->prefix}cs_support_tickets t ON r.ticket_id = t.id 
+				"SELECT r.*, t.subject as ticket_subject
+				FROM {$wpdb->prefix}cs_support_ticket_replies r
+				JOIN {$wpdb->prefix}cs_support_tickets t ON r.ticket_id = t.id
 				WHERE r.user_id = %d ORDER BY r.created_at DESC",
 				$user_id
 			),
@@ -1119,7 +1154,7 @@ class Rest_API
 
 		// Set headers for file download
 		$filename = 'cs-support-data-export-' . $user_id . '-' . gmdate('Y-m-d-H-i-s') . '.json';
-		
+
 		return new \WP_REST_Response([
 			'success' => true,
 			'data' => $export_data,
@@ -1139,7 +1174,7 @@ class Rest_API
 		global $wpdb;
 		$user_id = get_current_user_id();
 		$deletion_type = $request->get_param('type') ?: 'anonymize'; // 'anonymize' or 'delete'
-		
+
 		$deletion_stats = [
 			'tickets_affected' => 0,
 			'replies_affected' => 0,
@@ -1173,7 +1208,7 @@ class Rest_API
 				['%d']
 			);
 			$deletion_stats['replies_affected'] = $replies_updated;
-			
+
 		} else if ($deletion_type === 'delete') {
 			// Get user's tickets for reply deletion
 			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom table query for user data deletion, caching not necessary
@@ -1226,7 +1261,7 @@ class Rest_API
 			'notify_before_days' => 30,
 			'anonymize_instead_delete' => true
 		]);
-		
+
 		// Convert to camelCase for frontend
 		$camelCaseSettings = [
 			'enabled' => $settings['enabled'],
@@ -1235,7 +1270,7 @@ class Rest_API
 			'notifyBeforeDays' => $settings['notify_before_days'],
 			'anonymizeInsteadDelete' => $settings['anonymize_instead_delete']
 		];
-		
+
 		return new \WP_REST_Response($camelCaseSettings, 200);
 	}
 
@@ -1254,25 +1289,25 @@ class Rest_API
 		if (isset($settings['enabled'])) {
 			$sanitized_settings['enabled'] = (bool) $settings['enabled'];
 		}
-		
+
 		if (isset($settings['retentionDays'])) {
 			$sanitized_settings['retention_days'] = max(30, intval($settings['retentionDays'])); // Minimum 30 days
 		} elseif (isset($settings['retention_days'])) {
 			$sanitized_settings['retention_days'] = max(30, intval($settings['retention_days'])); // Minimum 30 days
 		}
-		
+
 		if (isset($settings['autoCleanup'])) {
 			$sanitized_settings['auto_cleanup'] = (bool) $settings['autoCleanup'];
 		} elseif (isset($settings['auto_cleanup'])) {
 			$sanitized_settings['auto_cleanup'] = (bool) $settings['auto_cleanup'];
 		}
-		
+
 		if (isset($settings['notifyBeforeDays'])) {
 			$sanitized_settings['notify_before_days'] = max(1, intval($settings['notifyBeforeDays'])); // Minimum 1 day
 		} elseif (isset($settings['notify_before_days'])) {
 			$sanitized_settings['notify_before_days'] = max(1, intval($settings['notify_before_days'])); // Minimum 1 day
 		}
-		
+
 		if (isset($settings['anonymizeInsteadDelete'])) {
 			$sanitized_settings['anonymize_instead_delete'] = (bool) $settings['anonymizeInsteadDelete'];
 		} elseif (isset($settings['anonymize_instead_delete'])) {
@@ -1281,10 +1316,10 @@ class Rest_API
 
 		// Get current settings to compare
 		$current_settings = get_option('cs_support_helpdesk_data_retention', []);
-		
+
 		// Update the option - update_option returns false if the value is the same
 		$updated = update_option('cs_support_helpdesk_data_retention', $sanitized_settings);
-		
+
 		// If update_option returned false, check if it's because the values are the same
 		if (!$updated) {
 			$new_current_settings = get_option('cs_support_helpdesk_data_retention', []);
@@ -1309,7 +1344,7 @@ class Rest_API
 	public function run_data_cleanup(\WP_REST_Request $request): \WP_REST_Response
 	{
 		global $wpdb;
-		
+
 		$retention_settings = get_option('cs_support_helpdesk_data_retention', []);
 		$cleanup_stats = [
 			'tickets_deleted' => 0,
@@ -1319,10 +1354,10 @@ class Rest_API
 
 		// Default retention period: 2 years
 		$retention_days = isset($retention_settings['retention_days']) ? intval($retention_settings['retention_days']) : 730;
-		
+
 		if ($retention_days > 0) {
 			$cutoff_date = gmdate('Y-m-d H:i:s', strtotime("-{$retention_days} days"));
-			
+
 			// Delete old tickets - custom table query for data retention cleanup
 			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 			$old_tickets = $wpdb->get_results(
@@ -1331,7 +1366,7 @@ class Rest_API
 					$cutoff_date
 				)
 			);
-			
+
 			foreach ($old_tickets as $ticket) {
 				// Delete replies first - custom table delete for data retention cleanup
 				// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom table delete for data retention cleanup, no caching needed for deletes
@@ -1341,7 +1376,7 @@ class Rest_API
 					['%d']
 				);
 				$cleanup_stats['replies_deleted'] += $replies_deleted;
-				
+
 				// Delete the ticket - custom table delete for data retention cleanup
 				// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom table delete for data retention cleanup, no caching needed for deletes
 				$ticket_deleted = $wpdb->delete(

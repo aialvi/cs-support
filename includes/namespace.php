@@ -41,10 +41,14 @@ function bootstrap(): void {
 	new Rest_API( $plugin_instance );
 	new DB_Updater( $plugin_instance );
 	new Team_Members( $plugin_instance );
-	new Notifications( $plugin_instance );
 	new AI_Assistant( $plugin_instance );
 	new Notification_Settings( $plugin_instance );
-	new GDPR_Manager(); // Initialize GDPR compliance features
+	new GDPR_Manager();
+
+	// Initialize notifications
+	$notifications = new Notifications( $plugin_instance );
+	$plugin_instance->set_notifications( $notifications );
+
 
 	// Initialize shortcodes
 	$shortcodes = new Shortcodes();

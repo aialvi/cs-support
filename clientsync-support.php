@@ -1,6 +1,6 @@
 <?php
 /**
- * Plugin Name:       ClientSync Support - Customer Support Ticket System
+ * Plugin Name:       ClientSync Support - AI Powered Customer Support Ticket System
  * Description:       ClientSync Support plugin for managing customer support tickets, AI-generated replies, and assign tickets to support staff.
  * Plugin URI:        https://github.com/aialvi/clientsync-support
  * Version:           1.0.1

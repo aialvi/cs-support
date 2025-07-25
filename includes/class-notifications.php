@@ -32,6 +32,119 @@ class Notifications
     {
         $this->plugin = $plugin;
         $this->settings = new Notification_Settings($plugin);
+
+        // Hook into WordPress comment system to trigger customer notifications
+        add_action('wp_insert_comment', [$this, 'maybe_send_customer_reply_notification'], 10, 2);
+        add_action('comment_post', [$this, 'handle_new_comment_notification'], 10, 3);
+    }
+
+    /**
+     * Handle new comment notification for ticket replies.
+     *
+     * @param int $comment_id Comment ID.
+     * @param int|string $comment_approved Comment approval status.
+     * @param array $commentdata Comment data.
+     * @return void
+     */
+    public function handle_new_comment_notification(int $comment_id, $comment_approved, array $commentdata): void
+    {
+        // Only proceed if comment is approved
+        if ($comment_approved !== 1 && $comment_approved !== 'approve') {
+            return;
+        }
+
+        $this->maybe_send_customer_reply_notification($comment_id, $commentdata);
+    }
+
+    /**
+     * Maybe send customer notification for new reply.
+     *
+     * @param int $comment_id Comment ID.
+     * @param array|object $comment Comment data.
+     * @return void
+     */
+    public function maybe_send_customer_reply_notification(int $comment_id, $comment = null): void
+    {
+        // Get comment object if not provided
+        if (!$comment) {
+            $comment = get_comment($comment_id);
+        }
+
+        if (!$comment) {
+            // error_log("CS Support: Could not retrieve comment with ID {$comment_id}");
+            return;
+        }
+
+        // Convert array to object if needed
+        if (is_array($comment)) {
+            $comment = (object) $comment;
+        }
+
+        $post_id = $comment->comment_post_ID ?? 0;
+        if (!$post_id) {
+            // error_log("CS Support: No post ID found for comment {$comment_id}");
+            return;
+        }
+
+        // First check if this is a valid ticket by checking our custom table
+        $ticket = $this->get_ticket_details($post_id);
+        if (!$ticket) {
+            // If not found in custom table, check if it's a WordPress post with ticket metadata
+            $post = get_post($post_id);
+            if (!$post) {
+                // error_log("CS Support: Could not find post with ID {$post_id}");
+                return;
+            }
+
+            // Check if this post has ticket-related metadata
+            $is_ticket = get_post_meta($post_id, '_is_support_ticket', true) ||
+                        get_post_meta($post_id, '_ticket_status', true) ||
+                        (isset($post->post_type) && $post->post_type === 'cs_support_ticket');
+
+            if (!$is_ticket) {
+                // error_log("CS Support: Post {$post_id} is not a support ticket");
+                return;
+            }
+        }
+
+        // Get the comment author ID - try multiple methods
+        $comment_author_id = 0;
+
+        // Method 1: Check user_id field (WordPress standard)
+        if (!empty($comment->user_id)) {
+            $comment_author_id = (int) $comment->user_id;
+        }
+
+        // Method 2: Check comment meta for stored author ID
+        if (!$comment_author_id) {
+            $comment_author_id = (int) get_comment_meta($comment_id, '_comment_author_id', true);
+        }
+
+        // Method 3: Try to find user by email if author is registered
+        if (!$comment_author_id && !empty($comment->comment_author_email)) {
+            $user = get_user_by('email', $comment->comment_author_email);
+            if ($user) {
+                $comment_author_id = $user->ID;
+            }
+        }
+
+        // Method 4: Check if comment author is the currently logged in user
+        if (!$comment_author_id) {
+            $current_user = wp_get_current_user();
+            if ($current_user && $current_user->ID > 0 &&
+                (($comment->comment_author_email && $current_user->user_email === $comment->comment_author_email) ||
+                 ($comment->comment_author && $current_user->display_name === $comment->comment_author))) {
+                $comment_author_id = $current_user->ID;
+            }
+        }
+
+        // Enhanced logging for debugging
+        // error_log("CS Support: Processing comment ID {$comment_id} on post {$post_id}");
+        // error_log("CS Support: Comment author ID: {$comment_author_id}, Email: " . ($comment->comment_author_email ?? 'none'));
+        // error_log("CS Support: Comment author name: " . ($comment->comment_author ?? 'none'));
+
+        // Send the notification (even if author ID is 0 for guest comments)
+        $this->send_customer_reply_notification($post_id, $comment_id, $comment_author_id);
     }
 
     /**
@@ -215,6 +328,7 @@ class Notifications
     {
         global $wpdb;
 
+        // First try to get from custom table
         // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Necessary for ticket notifications, caching unnecessary for one-time notification processing
         $ticket = $wpdb->get_row(
             $wpdb->prepare(
@@ -226,6 +340,27 @@ class Notifications
             ),
             ARRAY_A
         );
+
+        // If not found in custom table, try to get from posts table (fallback)
+        if (!$ticket) {
+            $post = get_post($ticket_id);
+            if ($post && $post->post_type === 'cs_support_ticket') {
+                $author = get_user_by('ID', $post->post_author);
+                $ticket = [
+                    'id' => $post->ID,
+                    'title' => $post->post_title,
+                    'subject' => $post->post_title,
+                    'status' => get_post_meta($post->ID, '_ticket_status', true) ?: 'open',
+                    'priority' => get_post_meta($post->ID, '_ticket_priority', true) ?: 'medium',
+                    'category' => get_post_meta($post->ID, '_ticket_category', true) ?: 'General',
+                    'user_id' => $post->post_author,
+                    'customer_name' => $author ? $author->display_name : '',
+                    'customer_email' => $author ? $author->user_email : '',
+                    'created_at' => $post->post_date,
+                    'description' => $post->post_content
+                ];
+            }
+        }
 
         return $ticket ?: null;
     }
@@ -519,5 +654,241 @@ class Notifications
     {
         // This would typically be a frontend page where customers can view their tickets
         return home_url('/support/ticket/' . $ticket_id);
+    }
+
+    /**
+     * Get reply details from custom table for notifications.
+     *
+     * @param int $reply_id Reply ID.
+     * @return object|null Reply details or null if not found.
+     */
+    private function get_reply_details(int $reply_id): ?object
+    {
+        global $wpdb;
+
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
+        $reply = $wpdb->get_row(
+            $wpdb->prepare(
+                "SELECT * FROM {$wpdb->prefix}cs_support_ticket_replies WHERE id = %d",
+                $reply_id
+            )
+        );
+
+        if (!$reply) {
+            return null;
+        }
+
+        // Normalize the object to look like a WP_Comment object for compatibility
+        $reply->comment_ID = $reply->id;
+        $reply->comment_post_ID = $reply->ticket_id;
+        $reply->comment_content = $reply->reply;
+        $reply->comment_date = $reply->created_at;
+
+        // Get author info
+        $author = get_user_by('ID', $reply->user_id);
+        if ($author) {
+            $reply->comment_author = $author->display_name;
+            $reply->comment_author_email = $author->user_email;
+        } else {
+            $reply->comment_author = 'Support Team';
+            $reply->comment_author_email = '';
+        }
+
+        return $reply;
+    }
+
+    /**
+     * Send customer notification for new reply.
+     *
+     * @param int $ticket_id Ticket ID.
+     * @param int $reply_id Reply ID (comment ID).
+     * @param int $reply_author_id ID of user who replied.
+     * @return bool True if email was sent successfully.
+     */
+    public function send_customer_reply_notification(int $ticket_id, int $reply_id, int $reply_author_id): bool
+    {
+        // Check if customer reply notifications are enabled
+        if (!$this->settings->is_notification_enabled('customer_reply_notifications')) {
+            // error_log("CS Support: Customer reply notifications are disabled");
+            return true; // Consider it successful if disabled
+        }
+
+        $ticket = $this->get_ticket_details($ticket_id);
+        if (!$ticket) {
+            // error_log("CS Support: Could not find ticket details for ticket ID {$ticket_id}");
+            return false;
+        }
+
+        // Get the reply/comment details from our custom table
+        $reply = $this->get_reply_details($reply_id);
+        if (!$reply) {
+            // error_log("CS Support: Could not find reply with ID {$reply_id} in custom table");
+            return false;
+        }
+
+        // Get customer email - try multiple methods
+        $customer_email = '';
+        $customer_name = '';
+
+        // Method 1: From ticket data (custom table)
+        if (!empty($ticket['customer_email'])) {
+            $customer_email = $ticket['customer_email'];
+            $customer_name = $ticket['customer_name'] ?? '';
+        }
+
+        // Method 2: From ticket user_id
+        if (empty($customer_email) && !empty($ticket['user_id'])) {
+            $customer_user = get_user_by('ID', $ticket['user_id']);
+            if ($customer_user) {
+                $customer_email = $customer_user->user_email;
+                $customer_name = $customer_user->display_name;
+            }
+        }
+
+        // Method 3: From post meta
+        if (empty($customer_email)) {
+            $customer_email = get_post_meta($ticket_id, '_customer_email', true);
+            if (!$customer_name) {
+                $customer_name = get_post_meta($ticket_id, '_customer_name', true);
+            }
+        }
+
+        // Method 4: From post author
+        if (empty($customer_email)) {
+            $post = get_post($ticket_id);
+            if ($post && $post->post_author) {
+                $author = get_user_by('ID', $post->post_author);
+                if ($author) {
+                    $customer_email = $author->user_email;
+                    $customer_name = $author->display_name;
+                }
+            }
+        }
+
+        // Method 5: Try to find from ticket metadata
+        if (empty($customer_email)) {
+            $stored_email = get_post_meta($ticket_id, '_ticket_customer_email', true);
+            if (!empty($stored_email)) {
+                $customer_email = $stored_email;
+            }
+        }
+
+        if (empty($customer_email)) {
+            // error_log("CS Support: Could not determine customer email for ticket ID {$ticket_id}");
+            return false;
+        }
+
+        // Don't send notification if the customer is the one who replied
+        $customer_user = get_user_by('email', $customer_email);
+        if ($customer_user && $customer_user->ID === $reply_author_id) {
+            // error_log("CS Support: Customer replied to their own ticket, skipping notification");
+            return true; // Customer replied, no need to notify them
+        }
+
+        // Also check by comment author email to avoid notifying customer of their own reply
+        if (!empty($reply->comment_author_email) && $reply->comment_author_email === $customer_email) {
+            // error_log("CS Support: Reply author email matches customer email, skipping notification");
+            return true;
+        }
+
+        // Get reply author details - handle cases where author ID might be 0
+        $reply_author_name = '';
+        if ($reply_author_id > 0) {
+            $reply_author = get_user_by('ID', $reply_author_id);
+            if ($reply_author) {
+                $reply_author_name = $reply_author->display_name;
+            }
+        }
+
+        // Fallback to comment author name if no user found
+        if (empty($reply_author_name) && !empty($reply->comment_author)) {
+            $reply_author_name = $reply->comment_author;
+        }
+
+        // Final fallback
+        if (empty($reply_author_name)) {
+            $reply_author_name = 'Support Team';
+        }
+
+        $subject = sprintf(
+            // translators: %1$s: site name, %2$d: ticket ID
+            __('[%1$s] New reply on your support ticket #%2$d', 'clientsync-support'),
+            get_bloginfo('name'),
+            $ticket_id
+        );
+
+        $message = $this->get_customer_reply_email_template([
+            'ticket' => $ticket,
+            'reply' => $reply,
+            'reply_author_name' => $reply_author_name,
+            'customer_email' => $customer_email,
+            'customer_name' => $customer_name,
+            'site_name' => get_bloginfo('name'),
+            'ticket_url' => $this->get_ticket_customer_url($ticket_id)
+        ]);
+
+        $headers = $this->settings->get_email_headers();
+
+        $result = wp_mail($customer_email, $subject, $message, $headers);
+
+        // Log the notification attempt
+        if ($result) {
+            // error_log("CS Support: Successfully sent customer reply notification for ticket #{$ticket_id} to {$customer_email} (reply by: {$reply_author_name})");
+        } else {
+            // error_log("CS Support: Failed to send customer reply notification for ticket #{$ticket_id} to {$customer_email}");
+        }
+
+        return $result;
+    }
+
+    /**
+     * Get customer reply email template.
+     *
+     * @param array $data Template data.
+     * @return string Formatted email content.
+     */
+    private function get_customer_reply_email_template(array $data): string
+    {
+        $template = '
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f9f9f9;">
+            <div style="background-color: #ffffff; padding: 30px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                <div style="text-align: center; margin-bottom: 30px;">
+                    <h1 style="color: #333333; margin: 0; font-size: 24px;">New Reply on Your Support Ticket</h1>
+                </div>
+
+                <div style="margin-bottom: 25px;">
+                    <h2 style="color: #0073aa; font-size: 18px; margin-bottom: 10px;">Ticket Details</h2>
+                    <p style="margin: 5px 0;"><strong>Ticket ID:</strong> #{ticket_id}</p>
+                    <p style="margin: 5px 0;"><strong>Subject:</strong> {ticket_title}</p>
+                    <p style="margin: 5px 0;"><strong>Status:</strong> {ticket_status}</p>
+                </div>
+
+                <div style="margin-bottom: 25px;">
+                    <h3 style="color: #333333; font-size: 16px; margin-bottom: 10px;">New Reply from {reply_author_name}:</h3>
+                    <div style="background-color: #f8f9fa; padding: 15px; border-left: 4px solid #0073aa; margin: 10px 0;">
+                        <p style="margin: 0; line-height: 1.6;">{reply_content}</p>
+                    </div>
+                    <p style="font-size: 12px; color: #666666; margin: 10px 0 0 0;">Reply sent on: {reply_date}</p>
+                </div>
+
+                <div style="border-top: 1px solid #e0e0e0; padding-top: 20px; margin-top: 30px; font-size: 12px; color: #666666; text-align: center;">
+                    <p>This is an automated notification from {site_name}. Please do not reply to this email directly.</p>
+                    <p>If you have any questions, please visit our support portal or contact us directly.</p>
+                </div>
+            </div>
+        </div>';
+
+        $replacements = [
+            '{ticket_id}' => $data['ticket']['id'],
+            '{ticket_title}' => esc_html($data['ticket']['title'] ?? $data['ticket']['subject'] ?? 'Support Ticket'),
+            '{ticket_status}' => ucfirst($data['ticket']['status'] ?? 'open'),
+            '{reply_author_name}' => esc_html($data['reply_author_name']),
+            '{reply_content}' => wp_kses_post(wpautop($data['reply']->comment_content)),
+            '{reply_date}' => wp_date(get_option('date_format') . ' ' . get_option('time_format'), strtotime($data['reply']->comment_date)),
+            '{ticket_url}' => esc_url($data['ticket_url']),
+            '{site_name}' => esc_html($data['site_name'])
+        ];
+
+        return str_replace(array_keys($replacements), array_values($replacements), $template);
     }
 }

@@ -69,6 +69,13 @@ class Plugin {
     public string $basename;
 
     /**
+     * Notifications instance.
+     *
+     * @var Notifications|null
+     */
+    private $notifications = null;
+
+    /**
      * Clone function.
      *
      * @return void
@@ -176,5 +183,26 @@ class Plugin {
         require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
         dbDelta($sql);
         dbDelta($sql_replies);
+    }
+
+    /**
+     * Get notifications instance.
+     *
+     * @return Notifications|null
+     */
+    public function get_notifications(): ?Notifications
+    {
+        return $this->notifications;
+    }
+
+    /**
+     * Set notifications instance.
+     *
+     * @param Notifications $notifications Notifications instance.
+     * @return void
+     */
+    public function set_notifications(Notifications $notifications): void
+    {
+        $this->notifications = $notifications;
     }
 }

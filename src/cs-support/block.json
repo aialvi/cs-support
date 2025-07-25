@@ -7,7 +7,7 @@
 	"category": "widgets",
 	"icon": "admin-comments",
 	"keywords": [ "support", "ticket", "help" ],
-	"description": "ClientSync Support plugin for WordPress websites.",
+	"description": "ClientSync Support Form block for creating new support tickets.",
 	"example": {},
 	"supports": {
 		"html": false
