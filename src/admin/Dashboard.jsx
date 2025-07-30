@@ -904,7 +904,7 @@ export default function Dashboard( { navigate } ) {
 																>
 																	<div className="flex justify-between items-start">
 																		<span
-																			className={ `text-sm font-medium mr-2 
+																			className={ `text-sm font-medium mr-2
 																		${
 																			activity.type ===
 																			'system_note'

@@ -877,6 +877,11 @@ export default function Settings() {
 									) }
 								</div>
 							</div>
+
+							{/* Cache Disclaimer */}
+							<div className="max-w-3xl mx-auto mt-8 text-sm text-gray-600">
+								<strong>P.S.</strong> If you are using any cache plugin, please purge your site cache after saving settings. Sometimes cache plugins may show outdated/cached results.
+							</div>
 						</div>
 					</div>
 

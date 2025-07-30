@@ -5,7 +5,7 @@ Donate link: https://www.buymeacoffee.com/aialvi
 Tags: support, customer support, helpdesk, tickets, contact form
 Requires at least: 6.7
 Tested up to: 6.8
-Stable tag: 1.0.1
+Stable tag: 1.0.2
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -14,11 +14,11 @@ Transform your WordPress site into a professional customer support hub with beau
 
 == Description ==
 
-🚀 **Turn Your WordPress Site Into a Customer Support Powerhouse!**
+**Turn Your WordPress Site Into a Customer Support Powerhouse!**
 
 ClientSync Support is the ultimate solution for businesses looking to provide exceptional customer service directly through their WordPress website. Built with modern web standards and user experience in mind, this plugin transforms your site into a professional support hub that both you and your customers will love.
 
-### ✨ Why Choose ClientSync Support?
+### Why Choose ClientSync Support?
 
 **For Your Customers:**
 - 📝 **Simple Ticket Submission** - Beautiful, user-friendly forms that work perfectly on phones, tablets, and desktops
@@ -30,7 +30,7 @@ ClientSync Support is the ultimate solution for businesses looking to provide ex
 - 🎨 **Match Your Brand** - Customize forms and ticket pages to look like your website
 - 📈 **Grow Without Limits** - Scales effortlessly as your business expands
 
-### 🎯 Perfect For:
+### Perfect For:
 
 - Small businesses looking for affordable, professional support tools
 - E-commerce stores managing order inquiries
@@ -38,7 +38,7 @@ ClientSync Support is the ultimate solution for businesses looking to provide ex
 - Educational platforms assisting students
 - Service providers streamlining client communication
 
-### 🌟 Key Features:
+### Key Features:
 
 - **Gorgeous Support Forms:** Add stunning, customizable forms anywhere on your site.
 - **Customer Ticket Portal:** Let users view their support history with ease.
@@ -58,8 +58,8 @@ ClientSync Support is the ultimate solution for businesses looking to provide ex
 == 🚀 Get Started in Minutes ==
 
 ### Step 1: Install
-Go to **WordPress Admin** → **Plugins** → **Add New**  
-Search for “ClientSync Support,” click **Install Now**, then **Activate**  
+Go to **WordPress Admin** → **Plugins** → **Add New**
+Search for “ClientSync Support,” click **Install Now**, then **Activate**
 Find **Support Tickets** in your admin menu
 
 ### Step 2: Add a Support Form
@@ -72,43 +72,9 @@ Add the “ClientSync Support Frontend” block or use `[cs_support_tickets]` to
 ### Step 4: Manage Tickets
 Go to **Support Tickets** in your WordPress admin to view, respond to, and manage inquiries
 
-**🎉 That’s it! Your support system is ready to impress your customers.**
+**That’s it! Your support system is ready to impress your customers.**
 
-== 🎨 Customize It Your Way ==
-
-Make ClientSync Support feel like part of your brand:
-
-- **Change Colors and Styles:** Match your website’s look with easy settings
-- **Add Your Voice:** Customize form titles, button text, and messages
-- **Flexible Layouts:** Adjust sizes, spacing, and more to fit your design
-
-Use the Gutenberg block for live previews or shortcodes for quick setup:
-
-- **Support Form:** `[cs_support title="Need Help?" button_color="#007cba"]`
-- **Ticket List:** `[cs_support_tickets title="My Support Requests" tickets_per_page="5"]`
-
-== 💡 Why Customers Love It ==
-
-- **Effortless to Use:** Submit tickets in seconds, no tech skills needed
-- **Always Accessible:** Check ticket status on any device, anytime
-- **Fast Responses:** Get notified when you reply or update their ticket
-
-== 💼 Why Businesses Love It ==
-
-- **Saves Time:** Manage all tickets from one dashboard
-- **Builds Trust:** Professional forms and quick replies keep customers happy
-- **Secure and Compliant:** Protects customer data and meets GDPR standards
-- **Works with Your Setup:** Integrates with your favorite themes and page builders
-
-= 🆘 Where do I get support? =
-
-**We're Here to Help:**
-- 📧 Email: support@clientsync.tech
-- 💬 WordPress.org support forums
-- 📖 Comprehensive documentation
-- 🎥 Video tutorials
-
-== 📸 Screenshots ==
+== Screenshots ==
 
 1. **Beautiful Support Form** - The customer-facing ticket creation form with modern design
 2. **Powerful Admin Dashboard** - Manage all tickets with advanced filtering and search
@@ -117,7 +83,7 @@ Use the Gutenberg block for live previews or shortcodes for quick setup:
 5. **Admin Ticket Management** - View, edit, and respond to customer inquiries
 6. **AI Assistance** - AI-powered suggestions for ticket responses
 
-== 📋 Changelog ==
+== Changelog ==
 
 = 1.0.1 - The Privacy & GDPR Update =
 *Release Date: July 11, 2025*

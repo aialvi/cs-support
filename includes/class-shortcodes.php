@@ -33,7 +33,7 @@ class Shortcodes {
 
     /**
      * Render the support ticket form shortcode.
-     *
+     * 
      * @param array|string $atts Shortcode attributes.
      * @return string
      */
@@ -71,23 +71,28 @@ class Shortcodes {
 
         // Parse shortcode attributes
         $attributes = shortcode_atts($default_atts, $atts, 'cs_support');
-
-        // Debug mode output - require nonce for any debug actions
+        
+        // Debug mode output
         if (defined('WP_DEBUG') && WP_DEBUG && isset($_GET['debug_shortcode'])) {
-            // Always require nonce for debug actions
-            if (!isset($_GET['_wpnonce']) || !wp_verify_nonce(sanitize_text_field(wp_unslash($_GET['_wpnonce'])), 'cs_support_debug_shortcode')) {
-                wp_die(esc_html__('Security check failed. Access denied.', 'clientsync-support'));
+            // Verify nonce for debug actions
+            $nonce_verified = false;
+            if (isset($_GET['_wpnonce'])) {
+                $nonce_verified = wp_verify_nonce(sanitize_text_field(wp_unslash($_GET['_wpnonce'])), 'cs_support_debug_shortcode');
             }
-
-            require_once plugin_dir_path(__FILE__) . 'shortcode-validator.php';
-            return ShortcodeValidator::debug_shortcode_render('cs_support', $attributes);
+            
+            if ($nonce_verified) {
+                require_once plugin_dir_path(__FILE__) . 'shortcode-validator.php';
+                return ShortcodeValidator::debug_shortcode_render('cs_support', $attributes);
+            } else {
+                return '<div class="cs-support-error">Security check failed. Please use a valid nonce.</div>';
+            }
         }
-
+        
         // Convert string boolean values to actual booleans
         $attributes['showTitle'] = $attributes['show_title'] === 'true';
         $attributes['boxShadow'] = $attributes['box_shadow'] === 'true';
         $attributes['buttonFullWidth'] = $attributes['button_full_width'] === 'true';
-
+        
         // Rename attributes to match block format
         $block_attributes = [
             'title' => $attributes['title'],
@@ -116,26 +121,26 @@ class Shortcodes {
         ];
 
         // Enqueue block styles and scripts
-        $this->enqueue_block_assets('clientsync-support');
+        $this->enqueue_block_assets('cs-support');
 
         // Start output buffering
         ob_start();
-
+        
         // Set the attributes variable for the render file
         $attributes = $block_attributes;
-
+        
         // Include the block render file with the attributes
         $render_file = plugin_dir_path(__FILE__) . '../src/cs-support/render.php';
         if (file_exists($render_file)) {
             include $render_file;
         }
-
+        
         return ob_get_clean();
     }
 
     /**
      * Render the tickets list shortcode.
-     *
+     * 
      * @param array|string $atts Shortcode attributes.
      * @return string
      */
@@ -160,24 +165,29 @@ class Shortcodes {
 
         // Parse shortcode attributes
         $attributes = shortcode_atts($default_atts, $atts, 'cs_support_tickets');
-
-        // Debug mode output - require nonce for any debug actions
+        
+        // Debug mode output
         if (defined('WP_DEBUG') && WP_DEBUG && isset($_GET['debug_shortcode'])) {
-            // Always require nonce for debug actions
-            if (!isset($_GET['_wpnonce']) || !wp_verify_nonce(sanitize_text_field(wp_unslash($_GET['_wpnonce'])), 'cs_support_debug_shortcode')) {
-                wp_die(esc_html__('Security check failed. Access denied.', 'clientsync-support'));
+            // Verify nonce for debug actions
+            $nonce_verified = false;
+            if (isset($_GET['_wpnonce'])) {
+                $nonce_verified = wp_verify_nonce(sanitize_text_field(wp_unslash($_GET['_wpnonce'])), 'cs_support_debug_shortcode');
             }
-
-            require_once plugin_dir_path(__FILE__) . 'shortcode-validator.php';
-            return ShortcodeValidator::debug_shortcode_render('cs_support_tickets', $attributes);
+            
+            if ($nonce_verified) {
+                require_once plugin_dir_path(__FILE__) . 'shortcode-validator.php';
+                return ShortcodeValidator::debug_shortcode_render('cs_support_tickets', $attributes);
+            } else {
+                return '<div class="cs-support-error">Security check failed. Please use a valid nonce.</div>';
+            }
         }
-
+        
         // Convert string values to appropriate types
         $attributes['ticketsPerPage'] = (int) $attributes['tickets_per_page'];
         $attributes['borderRadius'] = (int) $attributes['border_radius'];
         $attributes['boxShadow'] = $attributes['box_shadow'] === 'true';
         $attributes['rowHoverEffect'] = $attributes['row_hover_effect'] === 'true';
-
+        
         // Rename attributes to match block format
         $block_attributes = [
             'title' => $attributes['title'],
@@ -197,16 +207,16 @@ class Shortcodes {
 
         // Start output buffering
         ob_start();
-
+        
         // Set the attributes variable for the render file
         $attributes = $block_attributes;
-
+        
         // Include the block render file with the attributes
         $render_file = plugin_dir_path(__FILE__) . '../src/cs-support-frontend/render.php';
         if (file_exists($render_file)) {
             include $render_file;
         }
-
+        
         return ob_get_clean();
     }
 
@@ -225,7 +235,7 @@ class Shortcodes {
             ],
             $current_url
         );
-
+        
         return esc_url($url);
     }
 
@@ -247,13 +257,13 @@ class Shortcodes {
 
     /**
      * Enqueue block assets for shortcode usage.
-     *
+     * 
      * @param string $block_name The block name.
      */
     private function enqueue_block_assets(string $block_name): void {
         // Enqueue the same styles that blocks use to ensure consistency
         $style_handle = 'cs-support-' . $block_name . '-style';
-
+        
         // The styles are registered in the Editor class, just enqueue them
         if (wp_style_is($style_handle, 'registered')) {
             wp_enqueue_style($style_handle);
@@ -263,10 +273,10 @@ class Shortcodes {
         if (!is_admin()) {
             $plugin_path = plugin_dir_path(__FILE__) . '../';
             $plugin_url = plugin_dir_url(__FILE__) . '../';
-
+            
             $script_file_path = $plugin_path . 'build/' . $block_name . '/view.js';
             $asset_file = $plugin_path . 'build/' . $block_name . '/view.asset.php';
-
+            
             if (file_exists($script_file_path) && file_exists($asset_file)) {
                 $script_handle = 'cs-support-' . $block_name . '-view';
                 if (!wp_script_is($script_handle, 'enqueued')) {

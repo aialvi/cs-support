@@ -6,7 +6,7 @@
 ### Requirements
 - **Requires at least:** WordPress 6.7
 - **Tested up to:** WordPress 6.8
-- **Stable tag:** 1.0.1
+- **Stable tag:** 1.0.2
 - **Requires PHP:** 7.4
 
 ### License
