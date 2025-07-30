@@ -21,14 +21,14 @@ ClientSync Support is the ultimate solution for businesses looking to provide ex
 ### Why Choose ClientSync Support?
 
 **For Your Customers:**
-- 📝 **Simple Ticket Submission** - Beautiful, user-friendly forms that work perfectly on phones, tablets, and desktops
-- 👀 **Track Tickets Easily** - Customers can check ticket status and history anytime
-- ⚡ **Fast and Secure** - Quick responses with top-notch security to protect their information
+- **Simple Ticket Submission** - Beautiful, user-friendly forms that work perfectly on phones, tablets, and desktops
+- **Track Tickets Easily** - Customers can check ticket status and history anytime
+- **Fast and Secure** - Quick responses with top-notch security to protect their information
 
 **For Your Business:**
-- 📊 **Manage Everything in One Place** - Handle all customer inquiries from a single, intuitive dashboard
-- 🎨 **Match Your Brand** - Customize forms and ticket pages to look like your website
-- 📈 **Grow Without Limits** - Scales effortlessly as your business expands
+- **Manage Everything in One Place** - Handle all customer inquiries from a single, intuitive dashboard
+- **Match Your Brand** - Customize forms and ticket pages to look like your website
+- **Grow Without Limits** - Scales effortlessly as your business expands
 
 ### Perfect For:
 
@@ -116,7 +116,7 @@ Go to **Support Tickets** in your WordPress admin to view, respond to, and manag
 * Better documentation for privacy features
 * Performance optimizations for large datasets
 
-== 💝 Support & Feedback ==
+== Support & Feedback ==
 
 **Love ClientSync Support?** Help us make it even better:
 
