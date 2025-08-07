@@ -16,12 +16,20 @@ namespace ClientSync\CS_Support;
 class Editor
 {
 	/**
+	 * Plugin instance
+	 *
+	 * @var Plugin
+	 */
+	protected $plugin;
+
+	/**
 	 * Constructor
 	 *
 	 * @param Plugin $plugin Plugin instance.
 	 */
-	public function __construct(protected Plugin $plugin)
+	public function __construct(Plugin $plugin)
 	{
+		$this->plugin = $plugin;
 		add_action('wp_enqueue_scripts', [$this, 'enqueue_frontend_assets'], 5);
 		add_action('enqueue_block_editor_assets', [$this, 'enqueue_editor_assets']);
 		add_filter('render_block', [$this, 'enqueue_block_assets'], 10, 2);

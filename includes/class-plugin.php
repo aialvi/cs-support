@@ -38,7 +38,7 @@ class Plugin {
      *
      * @var string
      */
-    public string $version = '1.0.2';
+    public string $version = '1.0.3';
 
     /**
      * Plugin text domain for translations.
@@ -110,14 +110,14 @@ class Plugin {
             $file,
             [
                 'display_name' => 'ClientSync Support',
-                'version'      => '1.0.2',
+                'version'      => '1.0.3',
                 'text_domain'  => 'clientsync-support',
             ]
         );
 
         $this->prefix         = 'cs_support';
         $this->display_name   = isset($plugin_file_data['display_name']) ? $plugin_file_data['display_name'] : '';
-        $this->version        = isset($plugin_file_data['version']) ? $plugin_file_data['version'] : '1.0.2';
+        $this->version        = isset($plugin_file_data['version']) ? $plugin_file_data['version'] : '1.0.3';
         $this->text_domain    = isset($plugin_file_data['text_domain']) ? $plugin_file_data['text_domain'] : '';
         $this->dir            = plugin_dir_path($file);
         $this->url            = plugin_dir_url($file);

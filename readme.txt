@@ -3,9 +3,9 @@
 Contributors: clientsync, aialvi, mugniul
 Donate link: https://www.buymeacoffee.com/aialvi
 Tags: support, customer support, helpdesk, tickets, contact form
-Requires at least: 6.7
+Requires at least: 6.0
 Tested up to: 6.8
-Stable tag: 1.0.2
+Stable tag: 1.0.3
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -84,6 +84,34 @@ Go to **Support Tickets** in your WordPress admin to view, respond to, and manag
 6. **AI Assistance** - AI-powered suggestions for ticket responses
 
 == Changelog ==
+
+= 1.0.3 - Compatibility & Stability Update =
+*Release Date: August 7, 2025*
+
+**🔧 Compatibility Improvements:**
+* Enhanced PHP compatibility by removing modern syntax features
+* Improved support for older PHP versions (7.4+)
+* Updated WordPress minimum version requirement from 6.7 to 6.0 for broader compatibility
+* Replaced promoted properties with traditional class property declarations
+* Converted first-class callable syntax to array callback format for better PHP 7.4 support
+
+**🛠️ Code Quality & Structure:**
+* Refactored Admin class with improved method visibility and structure
+* Enhanced Editor class with better plugin instance handling
+* Improved namespace usage and GDPR Manager integration
+* Better code organization and maintainability across core classes
+
+**🐛 Bug Fixes:**
+* Fixed potential compatibility issues with older WordPress installations
+* Improved plugin initialization and bootstrap process
+* Enhanced error handling and method accessibility
+* Better integration with WordPress hooks and actions
+
+**📈 Performance & Stability:**
+* Optimized class constructors and property handling
+* Improved plugin loading and initialization process
+* Enhanced compatibility with various WordPress hosting environments
+* Better resource management and memory usage
 
 = 1.0.1 - The Privacy & GDPR Update =
 *Release Date: July 11, 2025*

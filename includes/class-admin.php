@@ -32,14 +32,22 @@ class Admin
 
 
 	/**
+	 * Plugin instance
+	 *
+	 * @var Plugin
+	 */
+	protected $plugin;
+
+	/**
 	 * Constructor
 	 *
 	 * @param Plugin $plugin Plugin instance.
 	 */
-	public function __construct(protected Plugin $plugin)
+	public function __construct(Plugin $plugin)
 	{
-		add_action('admin_menu', $this->register_page(...));
-		add_action('admin_enqueue_scripts', $this->enqueue_scripts(...));
+		$this->plugin = $plugin;
+		add_action('admin_menu', array($this, 'register_page'));
+		add_action('admin_enqueue_scripts', array($this, 'enqueue_scripts'));
 	}
 
 	/**
@@ -47,7 +55,7 @@ class Admin
 	 *
 	 * @param string $hook Current admin page hook.
 	 */
-	protected function enqueue_scripts(string $hook): void
+	public function enqueue_scripts(string $hook): void
 	{
 		// Only load on our plugin pages
 		if (!in_array($hook, [
@@ -292,14 +300,14 @@ class Admin
 	/**
 	 * Add top-level settings page for the plugin
 	 */
-	protected function register_page(): void
+	public function register_page(): void
 	{
 		$this->hook = add_menu_page(
 			__('CS Support', 'clientsync-support'),
 			__('CS Support', 'clientsync-support'),
 			'manage_options',
 			'clientsync-support-helpdesk',
-			$this->render_page(...),
+			array($this, 'render_page'),
 			'dashicons-schedule',
 			'3.2'
 		);
@@ -362,7 +370,10 @@ class Admin
 	/**
 	 * Render the admin page
 	 */
-	protected function render_page(): void
+		/**
+	 * Display the page based on current route
+	 */
+	public function render_page(): void
 	{
 ?>
 		<div class="wrap">

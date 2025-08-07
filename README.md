@@ -4,9 +4,9 @@
 `support`, `customer support`, `helpdesk`, `tickets`, `contact form`
 
 ### Requirements
-- **Requires at least:** WordPress 6.7
+- **Requires at least:** WordPress 6.0
 - **Tested up to:** WordPress 6.8
-- **Stable tag:** 1.0.2
+- **Stable tag:** 1.0.3
 - **Requires PHP:** 7.4
 
 ### License
